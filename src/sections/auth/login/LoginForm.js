@@ -36,7 +36,15 @@ export default function LoginForm() {
         .post(`${process.env.REACT_APP_API_URL}/login`, values)
         .then((res) => {
           if (res.data.success === true) {
-            dispatch(setLogindata({ Email: values.email, LastLogin: res.data.lastLoggedInAt, Role: res.data.role }));
+            console.log('login user ====> ', res.data);
+            dispatch(
+              setLogindata({
+                Email: values.email,
+                LastLogin: res.data.lastLoggedInAt,
+                Role: res.data.role,
+                FirstName: res.data.name,
+              })
+            );
             console.log('login.data ===>  ', res.data);
             localStorage.setItem('Jtoken', res.data.token);
             swal.fire({

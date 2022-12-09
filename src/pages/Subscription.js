@@ -18,6 +18,7 @@ import {
   TableHead,
   TablePagination,
   Button,
+  Checkbox,
 } from '@mui/material';
 // components
 import Page from '../components/Page';
@@ -27,6 +28,7 @@ import { setLogindata } from '../slices/loginSlice';
 import { setSubscriptions, deleteSubscription } from '../slices/subscriptionSlice';
 import Iconify from '../components/Iconify';
 import EditModal from './EditModal';
+import { UserListToolbar } from '../sections/@dashboard/user';
 
 export default function Subscription() {
   const [page, setPage] = useState(0);
@@ -50,7 +52,9 @@ export default function Subscription() {
       .then((res) => {
         console.log(res.data);
         if (res.data.success === true) {
-          dispatch(setLogindata({ Email: res.data.email, LastLogin: res.data.lastLoggedInAt }));
+          dispatch(
+            setLogindata({ Email: res.data.email, LastLogin: res.data.lastLoggedInAt, FirstName: res.data.name })
+          );
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
         }
       })
@@ -85,6 +89,10 @@ export default function Subscription() {
       });
   };
 
+  const handleFilterByName = (event) => {
+    setFilterName(event.target.value);
+  };
+
   return (
     <Page title="Dashboard">
       <Container>
@@ -100,11 +108,19 @@ export default function Subscription() {
         </Stack>
 
         <Card>
+          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
                 <TableHead>
                   <TableRow>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                      // checked={isItemSelected}
+                      //  onChange={(event) => handleClick(event, name)}
+                      />
+                    </TableCell>
                     <TableCell>SubScription Name</TableCell>
                     <TableCell>Description</TableCell>
                     <TableCell>Frequency</TableCell>
@@ -139,6 +155,12 @@ export default function Subscription() {
                             // selected={isItemSelected}
                             // aria-checked={isItemSelected}
                           >
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                              //  checked={isItemSelected}
+                              //  onChange={(event) => handleClick(event, name)}
+                              />
+                            </TableCell>
                             <TableCell align="left">{row.subscriptionName}</TableCell>
                             <TableCell align="left">{row.description}</TableCell>
                             <TableCell align="left">{row.frequency}</TableCell>

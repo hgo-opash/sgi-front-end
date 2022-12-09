@@ -28,10 +28,13 @@ import Iconify from '../components/Iconify';
 import Label from '../components/Label';
 import { setLogindata } from '../slices/loginSlice';
 import { setSubscriptions, deleteSubscription } from '../slices/subscriptionSlice';
+import { UserListToolbar } from '../sections/@dashboard/user';
 
 const DashBoard = () => {
   const [openSub, setOpenSub] = React.useState(false);
   const [page, setPage] = useState(0);
+  const [filterName, setFilterName] = useState('');
+  const [selected, setSelected] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const dispatch = useDispatch();
@@ -51,9 +54,16 @@ const DashBoard = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        console.log('get subs  ===>  ', res.data);
         if (res.data.success === true) {
-          dispatch(setLogindata({ Email: res.data.email, LastLogin: res.data.lastLoggedInAt, Role: res.data.role }));
+          dispatch(
+            setLogindata({
+              Email: res.data.email,
+              LastLogin: res.data.lastLoggedInAt,
+              Role: res.data.role,
+              FirstName: res.data.name,
+            })
+          );
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
         }
       })
@@ -63,6 +73,10 @@ const DashBoard = () => {
         }
       });
   }, []);
+
+  const handleFilterByName = (event) => {
+    setFilterName(event.target.value);
+  };
 
   return (
     <>
@@ -86,6 +100,8 @@ const DashBoard = () => {
           </Stack>
 
           <Card>
+            <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+
             <Scrollbar>
               <TableContainer sx={{ minWidth: 800 }}>
                 <Table>
@@ -131,9 +147,16 @@ const DashBoard = () => {
                               <TableCell align="left">{moment(row.nextBilling).format('MM/DD/yyyy')}</TableCell>
                               <TableCell align="left">{JSON.stringify(row.autoRenewal)}</TableCell>
                               <TableCell align="left">
-                                <Label variant="ghost" color="success">
-                                  Active
-                                </Label>
+                                {row.status === 'Active' && (
+                                  <Label variant="ghost" color="success">
+                                    {row.status}
+                                  </Label>
+                                )}
+                                {row.status === 'Inactive' && (
+                                  <Label variant="ghost" color="error">
+                                    {row.status}
+                                  </Label>
+                                )}
                               </TableCell>
                             </TableRow>
                           );

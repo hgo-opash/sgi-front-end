@@ -56,6 +56,9 @@ export default function RegisterForm() {
       .required('Confirm Password is required')
       .oneOf([Yup.ref('password'), null], 'Passwords must match'),
     agreeTremsAndConditions: Yup.boolean().isTrue('You must accept the terms and conditions').required(),
+    dateOfBirth: Yup.date().test('dateOfBirth', 'Must be greater than 13 years', (value) => {
+      return moment().diff(moment(value), 'years') >= 13;
+    }),
   });
 
   const initialValues = {

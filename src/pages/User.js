@@ -48,7 +48,14 @@ export default function User() {
       .then((res) => {
         console.log(res.data);
         if (res.data.success === true) {
-          dispatch(setLogindata({ Email: res.data.email, LastLogin: res.data.lastLoggedInAt, Role: res.data.role }));
+          dispatch(
+            setLogindata({
+              Email: res.data.email,
+              LastLogin: res.data.lastLoggedInAt,
+              Role: res.data.role,
+              FirstName: res.data.name,
+            })
+          );
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
         }
       })

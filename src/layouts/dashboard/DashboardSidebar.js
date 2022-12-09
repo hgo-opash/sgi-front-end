@@ -16,7 +16,8 @@ import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
-import navConfig from './NavConfig';
+import navConfig, { navConfig2 } from './NavConfig';
+// import navConfig2 from './NavConfig2';
 import Iconify from '../../components/Iconify';
 
 // ----------------------------------------------------------------------
@@ -48,7 +49,7 @@ DashboardSidebar.propTypes = {
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
   const isDesktop = useResponsive('up', 'lg');
-  const { Email, LastLogin, Role } = useSelector((state) => state.login);
+  const { Email, LastLogin, Role, FirstName } = useSelector((state) => state.login);
 
   // const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
@@ -77,16 +78,16 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' },
       }}
     >
-      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>{/* <Logo /> */}</Box>
+      {/* <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}><Logo /></Box> */}
 
-      <Box sx={{ mb: 5, mx: 2.5 }}>
+      <Box sx={{ mb: 3, mx: 2.5, mt: 3 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
             <Avatar src={account.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
                 {/* {account.displayName} */}
-                {Email}
+                {FirstName}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 {/* {account.role} */}
@@ -97,7 +98,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         </Link>
       </Box>
 
-      <NavSection navConfig={navConfig} />
+      {Role === 'user' ? <NavSection navConfig={navConfig} /> : <NavSection navConfig={navConfig2} />}
 
       <Box sx={{ flexGrow: 1 }} />
       {/* 

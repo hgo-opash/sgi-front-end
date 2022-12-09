@@ -81,7 +81,14 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
       .then((res) => {
         console.log(res.data);
         if (res.data.success === true) {
-          dispatch(setLogindata({ Email: res.data.email, LastLogin: res.data.lastLoggedInAt, Role: res.data.role }));
+          dispatch(
+            setLogindata({
+              Email: res.data.email,
+              LastLogin: res.data.lastLoggedInAt,
+              Role: res.data.role,
+              FirstName: res.data.name,
+            })
+          );
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
         }
       })
@@ -112,6 +119,12 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
     contractStartDate: Yup.string().required('Please Select Contract Start Date'),
     amount: Yup.number().required('Please Enter Amount'),
     autoRenewal: Yup.string().required('Please Select Auto Renewal'),
+    nextBillingDate: Yup.date()
+      .required('Please Select next billing Date')
+      .test('nextBillingDate', 'Must be greater than today', (value) => {
+        return moment(value) > moment();
+      }),
+    status: Yup.string().required('Please select Status'),
   });
 
   const initialValues = {
@@ -119,10 +132,11 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
     company: '',
     description: '',
     frequency: '',
-    contractStartDate: '',
+    contractStartDate: moment().now,
     nextBillingDate: '',
     amount: null,
     autoRenewal: '',
+    status: '',
   };
 
   const SubscriptionForm = useFormik({
@@ -141,14 +155,17 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
         .then((res) => {
           console.log('subscription ADD => ', res.data);
           if (res.data.success === true) {
+            // SubscriptionForm.values.amount = 0;
+            // SubscriptionForm.values.contractStartDate = '';
+            // SubscriptionForm.values.nextBillingDate = '';
+            // SubscriptionForm.values.autoRenewal = '';
+            // SubscriptionForm.values.status = '';
             resetForm(initialValues);
-            SubscriptionForm.values.amount = 0;
-            SubscriptionForm.values.contractStartDate = '';
-            SubscriptionForm.values.nextBillingDate = '';
           }
         });
     },
   });
+  console.log(SubscriptionForm.values, 'fffff');
 
   return (
     <>
@@ -407,6 +424,31 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         {SubscriptionForm.touched.autoRenewal && SubscriptionForm.errors.autoRenewal ? (
                           <FormHelperText>
                             {SubscriptionForm.touched.autoRenewal && SubscriptionForm.errors.autoRenewal}
+                          </FormHelperText>
+                        ) : null}
+                      </FormControl>
+
+                      <FormControl
+                        fullWidth
+                        sx={{ mb: 3 }}
+                        error={SubscriptionForm.touched.status && Boolean(SubscriptionForm.errors.status)}
+                      >
+                        <InputLabel id="select5">Status</InputLabel>
+                        <Field
+                          as={Select}
+                          labelId="select5"
+                          id="select5"
+                          name="status"
+                          label="Status"
+                          value={SubscriptionForm.values.status}
+                          onChange={SubscriptionForm.handleChange}
+                        >
+                          <MenuItem value="Active">Active</MenuItem>
+                          <MenuItem value="Inactive">Inactive</MenuItem>
+                        </Field>
+                        {SubscriptionForm.touched.status && SubscriptionForm.errors.status ? (
+                          <FormHelperText>
+                            {SubscriptionForm.touched.status && SubscriptionForm.errors.status}
                           </FormHelperText>
                         ) : null}
                       </FormControl>
