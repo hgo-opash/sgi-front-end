@@ -1,0 +1,301 @@
+import * as Yup from 'yup';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import MomentUtils from '@date-io/moment';
+
+import { Field, FormikProvider, useFormik } from 'formik';
+import {
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  Stack,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormHelperText,
+  // makeStyles,
+} from '@mui/material';
+import { Icon } from '@iconify/react';
+import axios from 'axios';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import moment from 'moment';
+import Swal from 'sweetalert2';
+import { Box } from '@mui/system';
+
+// ----------------------------------------------------------------------
+
+export default function RegisterForm() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const SignUpSchema = Yup.object().shape({
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Last Name is required'),
+    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    // password: Yup.string().min(6).max(16).required('Password is required'),
+    phoneNo: Yup.string()
+      .typeError('Must be in Numbers')
+      .matches(/^[0-9\- ]{10,10}$/, 'Must be in Numbers & 10 digits'),
+    password: Yup.string()
+      .required('Password is required')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'
+      ),
+    confirmPassword: Yup.string()
+      .required('Confirm Password is required')
+      .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+    agreeTremsAndConditions: Yup.boolean().isTrue('You must accept the terms and conditions').required(),
+  });
+
+  const initialValues = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    middleName: '',
+    confirmPassword: '',
+    dateOfBirth: '',
+    agreeTremsAndConditions: false,
+    phoneNo: '',
+    gender: '',
+    countryCode: '',
+  };
+
+  React.useEffect(() => {
+    console.log(location.pathname);
+  }, []);
+
+  const SignUpFormik = useFormik({
+    enableReinitialize: true,
+    initialValues,
+    validationSchema: SignUpSchema,
+    onSubmit: (values) => {
+      if (location.pathname === '/registerbusiness') {
+        values.role = 'business';
+      } else {
+        values.role = 'user';
+      }
+      axios
+        .post(`${process.env.REACT_APP_API_URL}/register`, values)
+        .then((res) => {
+          if (res.data.success === true) {
+            Swal.fire({
+              icon: 'success',
+              position: 'bottom-end',
+              title: 'Register Successful Please Login to countinue',
+              timer: 3000,
+              toast: true,
+              backdrop: false,
+              showConfirmButton: false,
+            });
+            navigate('/login', { replace: true });
+          }
+        })
+        .catch((e) => {
+          // console.log(e.response.data.message);
+
+          Swal.fire({
+            icon: 'error',
+            position: 'bottom-end',
+            title: e?.response.data.message || e.message,
+            timer: 3000,
+            toast: true,
+            backdrop: false,
+            showConfirmButton: false,
+          });
+        });
+      console.log(values);
+    },
+  });
+
+  return (
+    <>
+      <FormikProvider value={SignUpFormik}>
+        <form onSubmit={SignUpFormik.handleSubmit}>
+          <Stack spacing={3}>
+            <Field
+              as={TextField}
+              name="firstName"
+              label="First Name"
+              onChange={SignUpFormik.handleChange}
+              value={SignUpFormik.values.firstName}
+              error={SignUpFormik.touched.firstName && Boolean(SignUpFormik.errors.firstName)}
+              helperText={SignUpFormik.touched.firstName && SignUpFormik.errors.firstName}
+            />
+            <Field
+              as={TextField}
+              name="middleName"
+              label="Middle Name (optional)"
+              onChange={SignUpFormik.handleChange}
+              value={SignUpFormik.values.middleName}
+              error={SignUpFormik.touched.middleName && Boolean(SignUpFormik.errors.middleName)}
+              helperText={SignUpFormik.touched.middleName && SignUpFormik.errors.middleName}
+            />
+            <Field
+              as={TextField}
+              name="lastName"
+              label="Last  Name"
+              onChange={SignUpFormik.handleChange}
+              value={SignUpFormik.values.lastName}
+              error={SignUpFormik.touched.lastName && Boolean(SignUpFormik.errors.lastName)}
+              helperText={SignUpFormik.touched.lastName && SignUpFormik.errors.lastName}
+            />
+            <FormControl>
+              <FormLabel id="demo-row-radio-buttons-group-label">Gender (optional)</FormLabel>
+
+              <RadioGroup row name="gender" onChange={SignUpFormik.handleChange} value={SignUpFormik.values.gender}>
+                <Stack direction="row" spacing={8}>
+                  <FormControlLabel value="female" control={<Radio />} label="Female" />
+                  <FormControlLabel value="male" control={<Radio />} label="Male" />
+                  <FormControlLabel value="" control={<Radio />} label="Not Specify" defaultChecked />
+                </Stack>
+              </RadioGroup>
+            </FormControl>
+
+            <LocalizationProvider dateAdapter={MomentUtils}>
+              <Field
+                as={DesktopDatePicker}
+                label="Date Of Birth"
+                inputFormat="MM/DD/YYYY"
+                onChange={(e) => {
+                  SignUpFormik.setFieldValue('dateOfBirth', moment(e._d).format('yyyy-MM-DD'));
+                }}
+                value={SignUpFormik.values.dateOfBirth}
+                renderInput={(params) => (
+                  <Field
+                    as={TextField}
+                    name="dateOfBirth"
+                    {...params}
+                    error={SignUpFormik.touched.dateOfBirth && Boolean(SignUpFormik.errors.dateOfBirth)}
+                    helperText={SignUpFormik.touched.dateOfBirth && SignUpFormik.errors.dateOfBirth}
+                  />
+                )}
+              />
+            </LocalizationProvider>
+
+            <Stack direction={'row'} spacing={2}>
+              <FormControl sx={{ width: '120px' }}>
+                <InputLabel>Country Code</InputLabel>
+                <Select
+                  name="countryCode"
+                  value={SignUpFormik.values.countryCode}
+                  onChange={SignUpFormik.handleChange}
+                  autoWidth
+                  label="Country Code"
+                >
+                  {/* <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem> */}
+                  <MenuItem value={+1}>+ 1</MenuItem>
+                  <MenuItem value={+91}>+ 91</MenuItem>
+                </Select>
+              </FormControl>
+              <Field
+                as={TextField}
+                style={{ width: '400px' }}
+                name="phoneNo"
+                label="Phone   Number (optional)"
+                onChange={SignUpFormik.handleChange}
+                value={SignUpFormik.values.phoneNo}
+                error={SignUpFormik.touched.phoneNo && Boolean(SignUpFormik.errors.phoneNo)}
+                helperText={SignUpFormik.touched.phoneNo && SignUpFormik.errors.phoneNo}
+              />
+            </Stack>
+
+            <Field
+              as={TextField}
+              name="email"
+              label="Email"
+              onChange={SignUpFormik.handleChange}
+              value={SignUpFormik.values.email}
+              error={SignUpFormik.touched.email && Boolean(SignUpFormik.errors.email)}
+              helperText={SignUpFormik.touched.email && SignUpFormik.errors.email}
+            />
+            <Field
+              as={TextField}
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              label="Password"
+              onChange={SignUpFormik.handleChange}
+              value={SignUpFormik.values.password}
+              error={SignUpFormik.touched.password && Boolean(SignUpFormik.errors.password)}
+              helperText={SignUpFormik.touched.password && SignUpFormik.errors.password}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton edge="end" onClick={() => setShowPassword(!showPassword)}>
+                      <Icon icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Field
+              as={TextField}
+              type={showConfirmPassword ? 'text' : 'password'}
+              name="confirmPassword"
+              label="Confirm Password"
+              onChange={SignUpFormik.handleChange}
+              value={SignUpFormik.values.confirmPassword}
+              error={SignUpFormik.touched.confirmPassword && Boolean(SignUpFormik.errors.confirmPassword)}
+              helperText={SignUpFormik.touched.confirmPassword && SignUpFormik.errors.confirmPassword}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton edge="end" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                      <Icon icon={showConfirmPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <Field
+              as={FormControlLabel}
+              control={
+                <Checkbox
+                  name="agreeTremsAndConditions"
+                  label="Agree Terms & Conditions"
+                  onChange={SignUpFormik.handleChange}
+                  value={SignUpFormik.values.agreeTremsAndConditions}
+                  onBlur={SignUpFormik.handleBlur}
+                />
+              }
+              error={
+                SignUpFormik.touched.agreeTremsAndConditions && Boolean(SignUpFormik.errors.agreeTremsAndConditions)
+              }
+              label="I accept the Terms & Conditions"
+            />
+            <FormHelperText sx={{ color: 'red', mt: '-5px !important', ml: '40px !important' }}>
+              {SignUpFormik.touched.agreeTremsAndConditions && SignUpFormik.errors.agreeTremsAndConditions}
+            </FormHelperText>
+
+            {/* <Box className="MuiFormHelperText-root Mui-error MuiFormHelperText-sizeMedium MuiFormHelperText-contained">
+              {SignUpFormik.touched.agreeTremsAndConditions && SignUpFormik.errors.agreeTremsAndConditions}{' '}
+            </Box> */}
+            {/* {JSON.stringify(SignUpFormik.errors)} */}
+            <Button
+              disabled={!(SignUpFormik.isValid && SignUpFormik.dirty)}
+              color="primary"
+              variant="contained"
+              type="submit"
+            >
+              Sign Up
+            </Button>
+          </Stack>
+        </form>
+      </FormikProvider>
+    </>
+  );
+}
