@@ -1,7 +1,6 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import swal from 'sweetalert2';
 
 import { Field, FormikProvider, useFormik } from 'formik';
 import { Button, Checkbox, FormControlLabel, IconButton, InputAdornment, Link, Stack, TextField } from '@mui/material';
@@ -9,6 +8,8 @@ import axios from 'axios';
 import { Icon } from '@iconify/react';
 import { useDispatch } from 'react-redux';
 import { setLogindata } from '../../../slices/loginSlice';
+import SuccessToast from '../../../toast/Success';
+import ErrorToast from '../../../toast/Error';
 
 // ----------------------------------------------------------------------
 
@@ -47,26 +48,10 @@ export default function LoginForm() {
             );
             console.log('login.data ===>  ', res.data);
             localStorage.setItem('Jtoken', res.data.token);
-            swal.fire({
-              icon: 'success',
-              position: 'bottom-end',
-              title: 'Login Successful',
-              timer: 3000,
-              toast: true,
-              backdrop: false,
-              showConfirmButton: false,
-            });
+            SuccessToast('Login Successful');
             navigate('/dashboard', { replace: true });
           } else {
-            swal.fire({
-              icon: 'error',
-              position: 'bottom-end',
-              title: res.data.message,
-              timer: 3000,
-              toast: true,
-              backdrop: false,
-              showConfirmButton: false,
-            });
+            ErrorToast(res.data.message)
           }
         })
         .catch((e) => console.log(e));

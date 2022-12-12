@@ -26,8 +26,8 @@ import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import moment from 'moment';
-import Swal from 'sweetalert2';
-import { Box } from '@mui/system';
+import SuccessToast from '../../../toast/Success';
+import ErrorToast from '../../../toast/Error';
 
 // ----------------------------------------------------------------------
 
@@ -93,30 +93,13 @@ export default function RegisterForm() {
         .post(`${process.env.REACT_APP_API_URL}/register`, values)
         .then((res) => {
           if (res.data.success === true) {
-            Swal.fire({
-              icon: 'success',
-              position: 'bottom-end',
-              title: 'Register Successful Please Login to countinue',
-              timer: 3000,
-              toast: true,
-              backdrop: false,
-              showConfirmButton: false,
-            });
+            SuccessToast('Register Successful Please Login to countinue');
             navigate('/login', { replace: true });
           }
         })
         .catch((e) => {
           // console.log(e.response.data.message);
-
-          Swal.fire({
-            icon: 'error',
-            position: 'bottom-end',
-            title: e?.response.data.message || e.message,
-            timer: 3000,
-            toast: true,
-            backdrop: false,
-            showConfirmButton: false,
-          });
+          ErrorToast(e?.response.data.message || e.message);
         });
       console.log(values);
     },

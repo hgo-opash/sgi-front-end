@@ -46,7 +46,7 @@ export default function Router() {
         { path: '/', element: token ? <Navigate to="/dashboard" /> : <Navigate to="/login" /> },
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
-        { path: 'registerbusiness', element: <Register /> },
+        // { path: 'registerbusiness', element: <Register /> },
         { path: 'forgetpassword', element: <ForgetPassword /> },
         { path: 'verify/:token', element: <VerifyToken /> },
         { path: '404', element: <NotFound /> },

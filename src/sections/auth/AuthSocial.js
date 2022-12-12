@@ -6,11 +6,12 @@ import axios from 'axios';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import { setLogindata } from '../../slices/loginSlice';
 
 // component
 import Iconify from '../../components/Iconify';
+import SuccessToast from '../../toast/Success';
+import ErrorToast from '../../toast/Error';
 
 // ----------------------------------------------------------------------
 const CLIENT_ID = '1490110678165861';
@@ -27,26 +28,10 @@ export default function AuthSocial() {
         if (res.data.success === true) {
           dispatch(setLogindata({ Email: res.email }));
           localStorage.setItem('Jtoken', res.data.token);
-          Swal.fire({
-            icon: 'success',
-            position: 'bottom-end',
-            title: 'Login Successful',
-            timer: 1500,
-            toast: true,
-            backdrop: false,
-            showConfirmButton: false,
-          });
+          SuccessToast('Login Successful');
           navigate('/dashboard');
         } else {
-          Swal.fire({
-            icon: 'error',
-            position: 'bottom-end',
-            title: 'Login Failed',
-            timer: 1500,
-            toast: true,
-            backdrop: false,
-            showConfirmButton: false,
-          });
+          ErrorToast('Login Failed')
         }
       })
       .catch((e) => console.log(e));

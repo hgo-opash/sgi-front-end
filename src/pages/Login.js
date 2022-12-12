@@ -99,7 +99,7 @@ export default function Login() {
         <Container maxWidth="sm">
           <ContentStyle>
             <Typography variant="h4" gutterBottom>
-              Sign in to GISave
+              Sign in to SGI
             </Typography>
 
             <Typography sx={{ color: 'text.secondary', mb: 5 }}>Enter your details below.</Typography>
@@ -116,12 +116,12 @@ export default function Login() {
                     Get started
                   </Link>
                 </Typography>
-                <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+                {/* <Typography variant="body2" align="center" sx={{ mt: 3 }}>
                   Register for business?{' '}
                   <Link variant="subtitle2" component={RouterLink} to="/registerbusiness">
                     click here
                   </Link>
-                </Typography>
+                </Typography>  */}
               </>
             )}
             {smDown && (
@@ -132,12 +132,12 @@ export default function Login() {
                     Get started
                   </Link>
                 </Typography>
-                <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+                {/* <Typography variant="body2" align="center" sx={{ mt: 3 }}>
                   Register for business?{' '}
                   <Link variant="subtitle2" component={RouterLink} to="/registerbusiness">
                     click here
                   </Link>
-                </Typography>
+                </Typography> */}
               </>
             )}
           </ContentStyle>

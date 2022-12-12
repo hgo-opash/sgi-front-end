@@ -91,7 +91,7 @@ export default function Register() {
         {mdUp && (
           <SectionStyle>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Welcome to Safalvir GIS Application
+              Welcome to Safalvir SGI Application
             </Typography>
             <img alt="register" src="/static/illustrations/illustration_register.png" />
           </SectionStyle>
@@ -100,7 +100,7 @@ export default function Register() {
         <Container>
           <ContentStyle>
             <Typography variant="h4" gutterBottom>
-              {location.pathname === '/register' ? <>Get started absolutely free.</> : <>Register For Business</>}
+              {location.pathname === '/register' ? <>Get started absolutely free.</> : <></>}
             </Typography>
 
             <Typography sx={{ color: 'text.secondary', mb: 5 }}>
@@ -131,7 +131,7 @@ export default function Register() {
                     Login
                   </Link>
                 </Typography>
-                {location.pathname === '/registerbusiness' ? (
+                {/* {location.pathname === '/registerbusiness' ? (
                   <Typography variant="body2" align="center" sx={{ mt: 3 }}>
                     Don’t have an account?{' '}
                     <Link variant="subtitle2" component={RouterLink} to="/register">
@@ -145,7 +145,7 @@ export default function Register() {
                       click here
                     </Link>
                   </Typography>
-                )}
+                )} */}
               </>
             )}
             {smDown && (
@@ -156,7 +156,7 @@ export default function Register() {
                     Login
                   </Link>
                 </Typography>
-                {location.pathname === '/registerbusiness' ? (
+                {/* {location.pathname === '/registerbusiness' ? (
                   <Typography variant="body2" align="center" sx={{ mt: 3 }}>
                     Don’t have an account?{' '}
                     <Link variant="subtitle2" component={RouterLink} to="/register">
@@ -170,7 +170,7 @@ export default function Register() {
                       click here
                     </Link>
                   </Typography>
-                )}
+                )} */}
               </>
             )}
           </ContentStyle>

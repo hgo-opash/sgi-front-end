@@ -88,8 +88,73 @@ const DashBoard = () => {
         </Box>
         <SubscriptionModal openModal={openSub} setOpenSubModal={setOpenSub} />
 
+        <Card sx={{ m: 6, height: '100px ' }}>
+          <Grid
+            container
+            sx={{
+              justifyContent: 'space-between',
+              mt: '30px',
+              pl: '50px',
+              pr: '80px',
+              display: 'flex',
+              fontSize: '25px',
+            }}
+          >
+            <Box>Total Cost Per Month</Box>
+            <Box>$52</Box>
+          </Grid>
+        </Card>
+        <Card sx={{ m: 6, height: '100px ' }}>
+          <Grid
+            container
+            sx={{
+              justifyContent: 'space-between',
+              mt: '30px',
+              pl: '50px',
+              pr: '80px',
+              display: 'flex',
+              fontSize: '25px',
+            }}
+          >
+            <Box>Total Cost Per Year</Box>
+            <Box>$52</Box>
+          </Grid>
+        </Card>
+        <Card sx={{ m: 6, height: '100px ' }}>
+          <Grid
+            container
+            sx={{
+              justifyContent: 'space-between',
+              mt: '30px',
+              pl: '50px',
+              pr: '80px',
+              display: 'flex',
+              fontSize: '25px',
+            }}
+          >
+            <Box>Total Budget</Box>
+            <Box>$52</Box>
+          </Grid>
+        </Card>
+        <Card sx={{ m: 6, height: '100px ' }}>
+          <Grid
+            container
+            sx={{
+              justifyContent: 'space-between',
+              mt: '30px',
+              pl: '50px',
+              pr: '80px',
+              display: 'flex',
+              fontSize: '25px',
+            }}
+          >
+            <Box>Variance from Budget</Box>
+            <Box>$52</Box>
+          </Grid>
+        </Card>
+
         <Container>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2} pt={3}>
             <Typography variant="h4" gutterBottom>
               {/* User */}
               Subscriptions
@@ -129,8 +194,8 @@ const DashBoard = () => {
                   ) : (
                     <TableBody>
                       {SubscriptionData &&
-                        SubscriptionData.map((row) => {
-                          return (
+                        SubscriptionData.map((row) => 
+                           (
                             <TableRow
                               hover
                               key={row._id}
@@ -159,8 +224,8 @@ const DashBoard = () => {
                                 )}
                               </TableCell>
                             </TableRow>
-                          );
-                        })}
+                          )
+                        )}
                     </TableBody>
                   )}
                 </Table>
@@ -180,70 +245,6 @@ const DashBoard = () => {
             )}
           </Card>
         </Container>
-        <Card sx={{ m: 5, height: '100px ' }}>
-          <Grid
-            container
-            sx={{
-              justifyContent: 'space-between',
-              mt: '30px',
-              pl: '50px',
-              pr: '80px',
-              display: 'flex',
-              fontSize: '25px',
-            }}
-          >
-            <Box>Total Cost Per Month</Box>
-            <Box>$52</Box>
-          </Grid>
-        </Card>
-        <Card sx={{ m: 5, height: '100px ' }}>
-          <Grid
-            container
-            sx={{
-              justifyContent: 'space-between',
-              mt: '30px',
-              pl: '50px',
-              pr: '80px',
-              display: 'flex',
-              fontSize: '25px',
-            }}
-          >
-            <Box>Total Cost Per Year</Box>
-            <Box>$52</Box>
-          </Grid>
-        </Card>
-        <Card sx={{ m: 5, height: '100px ' }}>
-          <Grid
-            container
-            sx={{
-              justifyContent: 'space-between',
-              mt: '30px',
-              pl: '50px',
-              pr: '80px',
-              display: 'flex',
-              fontSize: '25px',
-            }}
-          >
-            <Box>Total Budget</Box>
-            <Box>$52</Box>
-          </Grid>
-        </Card>
-        <Card sx={{ m: 5, height: '100px ' }}>
-          <Grid
-            container
-            sx={{
-              justifyContent: 'space-between',
-              mt: '30px',
-              pl: '50px',
-              pr: '80px',
-              display: 'flex',
-              fontSize: '25px',
-            }}
-          >
-            <Box>Variance from Budget</Box>
-            <Box>$52</Box>
-          </Grid>
-        </Card>
       </Page>
     </>
   );

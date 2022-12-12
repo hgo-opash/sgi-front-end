@@ -19,6 +19,7 @@ import {
   TablePagination,
   Button,
   Checkbox,
+  Box,
 } from '@mui/material';
 // components
 import Page from '../components/Page';
@@ -29,9 +30,11 @@ import { setSubscriptions, deleteSubscription } from '../slices/subscriptionSlic
 import Iconify from '../components/Iconify';
 import EditModal from './EditModal';
 import { UserListToolbar } from '../sections/@dashboard/user';
+import SubscriptionModal from './SubscriptionModal';
 
 export default function Subscription() {
   const [page, setPage] = useState(0);
+  const [openSub, setOpenSub] = React.useState(false);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('name');
@@ -93,6 +96,10 @@ export default function Subscription() {
     setFilterName(event.target.value);
   };
 
+  const handleClickOpenSub = () => {
+    setOpenSub(true);
+  };
+
   return (
     <Page title="Dashboard">
       <Container>
@@ -102,10 +109,12 @@ export default function Subscription() {
             Subscriptions
             {console.log(SubscriptionData)}
           </Typography>
-          {/* <Button variant="contained" component={RouterLink} to="#" startIcon={<Iconify icon="eva:plus-fill" />}>
-            Add New Subscription
-          </Button> */}
+          <Button onClick={handleClickOpenSub} variant="contained">
+            + ADD Subscription
+          </Button>
         </Stack>
+
+        <SubscriptionModal openModal={openSub} setOpenSubModal={setOpenSub} />
 
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />

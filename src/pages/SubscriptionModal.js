@@ -132,7 +132,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
     company: '',
     description: '',
     frequency: '',
-    contractStartDate: moment().now,
+    contractStartDate: '',
     nextBillingDate: '',
     amount: null,
     autoRenewal: '',
@@ -294,7 +294,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                           onChange={SubscriptionForm.handleChange}
                           error={SubscriptionForm.touched.description && Boolean(SubscriptionForm.errors.description)}
                           helperText={SubscriptionForm.touched.description && SubscriptionForm.errors.description}
-                          // disabled
+                          disabled
                         />
                       </FormControl>
 
