@@ -16,8 +16,7 @@ import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
-import navConfig, { navConfig2 } from './NavConfig';
-// import navConfig2 from './NavConfig2';
+import navConfig from './NavConfig';
 import Iconify from '../../components/Iconify';
 
 // ----------------------------------------------------------------------
@@ -97,10 +96,9 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           </AccountStyle>
         </Link>
       </Box>
+      <NavSection navConfig={ navConfig } />
 
-      {Role === 'user' ? <NavSection navConfig={navConfig} /> : <NavSection navConfig={navConfig2} />}
-
-      <Box sx={{ flexGrow: 1 }} />
+      {/* <Box sx={{ flexGrow: 1 }} /> */}
       {/* 
       <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
         <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>

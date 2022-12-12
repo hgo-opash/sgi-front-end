@@ -50,11 +50,13 @@ export default function LoginForm() {
             localStorage.setItem('Jtoken', res.data.token);
             SuccessToast('Login Successful');
             navigate('/dashboard', { replace: true });
-          } else {
-            ErrorToast(res.data.message)
-          }
+          } 
+
         })
-        .catch((e) => console.log(e));
+        .catch((err) => {
+          console.log(err);
+          ErrorToast(err.response.data.message)
+        });
     },
   });
 

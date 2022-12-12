@@ -10,49 +10,31 @@ const navConfig = [
     title: 'Dashboard',
     path: '/dashboard',
     icon: getIcon('eva:pie-chart-2-fill'),
+    roles: ['user', 'business'],
   },
   {
     title: 'Subscriptions',
     path: '/subscription',
     icon: getIcon('eva:shopping-bag-fill'),
+    roles: ['user', 'business'],
   },
   {
     title: 'Reports',
     path: '/reports',
     icon: getIcon('eva:file-text-fill'),
+    roles: ['user', 'business'],
   },
   {
     title: 'Offers',
     path: '/offers',
     icon: getIcon('eva:people-fill'),
-  },
-];
-
-export const navConfig2 = [
-  {
-    title: 'Dashboard',
-    path: '/dashboard',
-    icon: getIcon('eva:pie-chart-2-fill'),
-  },
-  {
-    title: 'Subscriptions',
-    path: '/subscription',
-    icon: getIcon('eva:shopping-bag-fill'),
-  },
-  {
-    title: 'Reports',
-    path: '/reports',
-    icon: getIcon('eva:file-text-fill'),
-  },
-  {
-    title: 'Offers',
-    path: '/offers',
-    icon: getIcon('eva:people-fill'),
+    roles: ['user', 'business'],
   },
   {
     title: 'Companies',
     path: '/companies',
     icon: getIcon('eva:people-fill'),
+    roles: ['business'],
   },
 ];
 

@@ -48,14 +48,14 @@ const EditModal = ({ openEditModal, setOpenEditModal }) => {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={{ ...style, height: '85%', width: 800 }}>
+        <Box sx={{ ...style, height: '80%', width: 800 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ ml: 5 }}>
             <Typography variant="h4" gutterBottom>
               Subscription
             </Typography>
           </Stack>
 
-          <Container sx={{ height: '85%' }}>
+          <Container sx={{ height: '80%' }}>
             <Grid container spacing={1}>
               <Grid item xs={12} sm={12}>
                 {/* <FormikProvider

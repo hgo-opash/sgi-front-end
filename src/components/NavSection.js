@@ -5,6 +5,7 @@ import { NavLink as RouterLink, matchPath, useLocation } from 'react-router-dom'
 import { alpha, useTheme, styled } from '@mui/material/styles';
 import { Box, List, Collapse, ListItemText, ListItemIcon, ListItemButton } from '@mui/material';
 //
+import { useSelector } from 'react-redux';
 import Iconify from './Iconify';
 
 // ----------------------------------------------------------------------
@@ -42,7 +43,7 @@ function NavItem({ item, active }) {
   const { title, path, icon, info, children } = item;
 
   const [open, setOpen] = useState(isActiveRoot);
-
+  
   const handleOpen = () => {
     setOpen((prev) => !prev);
   };
@@ -141,6 +142,7 @@ NavSection.propTypes = {
 
 export default function NavSection({ navConfig, ...other }) {
   const { pathname } = useLocation();
+  const { Email, LastLogin, Role, FirstName } = useSelector((state) => state.login);
 
   const match = (path) => (path ? !!matchPath({ path, end: false }, pathname) : false);
 
@@ -148,6 +150,7 @@ export default function NavSection({ navConfig, ...other }) {
     <Box {...other}>
       <List disablePadding sx={{ p: 1 }}>
         {navConfig.map((item) => (
+          item.roles.includes(Role)&&
           <NavItem key={item.title} item={item} active={match} />
         ))}
       </List>
