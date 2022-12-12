@@ -27,7 +27,6 @@ import axios from 'axios';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import moment from 'moment';
 import Swal from 'sweetalert2';
-import { Box } from '@mui/system';
 
 // ----------------------------------------------------------------------
 
@@ -46,6 +45,11 @@ export default function RegisterForm() {
     phoneNo: Yup.string()
       .typeError('Must be in Numbers')
       .matches(/^[0-9\- ]{10,10}$/, 'Must be in Numbers & 10 digits'),
+    countryCode: Yup.string().when(['phoneNo'], (phoneNo, schema) => {
+      if (phoneNo !== undefined) {
+        return Yup.string().required('Please select country code');
+      }
+    }),
     password: Yup.string()
       .required('Password is required')
       .matches(
@@ -75,10 +79,6 @@ export default function RegisterForm() {
     countryCode: '',
   };
 
-  React.useEffect(() => {
-    console.log(location.pathname);
-  }, []);
-
   const SignUpFormik = useFormik({
     enableReinitialize: true,
     initialValues,
@@ -106,8 +106,6 @@ export default function RegisterForm() {
           }
         })
         .catch((e) => {
-          // console.log(e.response.data.message);
-
           Swal.fire({
             icon: 'error',
             position: 'bottom-end',
@@ -118,7 +116,6 @@ export default function RegisterForm() {
             showConfirmButton: false,
           });
         });
-      console.log(values);
     },
   });
 
@@ -173,6 +170,7 @@ export default function RegisterForm() {
                 inputFormat="MM/DD/YYYY"
                 onChange={(e) => {
                   SignUpFormik.setFieldValue('dateOfBirth', moment(e._d).format('yyyy-MM-DD'));
+                  SignUpFormik.validateField('dateOfBirth');
                 }}
                 value={SignUpFormik.values.dateOfBirth}
                 renderInput={(params) => (
@@ -190,19 +188,27 @@ export default function RegisterForm() {
             <Stack direction={'row'} spacing={2}>
               <FormControl sx={{ width: '120px' }}>
                 <InputLabel>Country Code</InputLabel>
-                <Select
+                <Field
+                  as={Select}
                   name="countryCode"
                   value={SignUpFormik.values.countryCode}
                   onChange={SignUpFormik.handleChange}
                   autoWidth
                   label="Country Code"
+                  error={SignUpFormik.touched.countryCode && Boolean(SignUpFormik.errors.countryCode)}
+                  // helperText={SignUpFormik.touched.countryCode && SignUpFormik.errors.countryCode}
                 >
-                  {/* <MenuItem value="">
+                  <MenuItem value="">
                     <em>None</em>
-                  </MenuItem> */}
+                  </MenuItem>
                   <MenuItem value={+1}>+ 1</MenuItem>
                   <MenuItem value={+91}>+ 91</MenuItem>
-                </Select>
+                </Field>
+                {SignUpFormik.errors.countryCode && (
+                  <FormHelperText sx={{ color: '#FF4842' }}>
+                    {SignUpFormik.touched.countryCode && SignUpFormik.errors.countryCode}
+                  </FormHelperText>
+                )}
               </FormControl>
               <Field
                 as={TextField}
