@@ -19,6 +19,7 @@ import ForgetPassword from './pages/ForgetPassword';
 import VerifyToken from './pages/VerifyToken';
 import Companies from './pages/Companies';
 import DashBoard from './pages/DashBoard';
+import Profile from './pages/Profile';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -36,6 +37,7 @@ export default function Router() {
         { path: '/reports', element: <Reports /> },
         { path: '/offers', element: <Offers /> },
         { path: '/companies', element: <Companies /> },
+        { path: '/profile', element: <Profile /> },
       ],
     },
 
