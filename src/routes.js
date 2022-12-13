@@ -6,13 +6,9 @@ import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 // import Blog from './pages/Blog';
-import User from './pages/User';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
-// import Products from './pages/Products';
-// import DashboardApp from './pages/DashboardApp';
-import Subscription from './pages/Subscription';
 import Reports from './pages/Reports';
 import Offers from './pages/Offers';
 import ForgetPassword from './pages/ForgetPassword';
@@ -20,6 +16,7 @@ import VerifyToken from './pages/VerifyToken';
 import Companies from './pages/Companies';
 import DashBoard from './pages/DashBoard';
 import Profile from './pages/Profile';
+import Subscription from './pages/Subscription';
 // ----------------------------------------------------------------------
 
 export default function Router() {

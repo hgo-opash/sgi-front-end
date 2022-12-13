@@ -22,6 +22,7 @@ import {
   FormHelperText,
   // makeStyles,
 } from '@mui/material';
+import VerifiedIcon from '@mui/icons-material/Verified';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -216,6 +217,21 @@ export default function RegisterForm() {
               value={SignUpFormik.values.email}
               error={SignUpFormik.touched.email && Boolean(SignUpFormik.errors.email)}
               helperText={SignUpFormik.touched.email && SignUpFormik.errors.email}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                     {/* <IconButton edge="end" onClick={() => setShowPassword(!showPassword)}>
+                      <Icon icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                    </IconButton> */}
+                    {/* <Button color="success" variant="contained" sx={{height:"55px"}} >
+                      Verify Email
+                    </Button> */}
+                    <Button color="success" variant="contained" sx={{height:"55px"}} >
+                      Verified <VerifiedIcon color='green' />
+                    </Button>
+                  </InputAdornment>
+                ),
+              }}
             />
             <Field
               as={TextField}

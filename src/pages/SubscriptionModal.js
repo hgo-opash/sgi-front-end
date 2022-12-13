@@ -29,6 +29,7 @@ import SuccsessModal from '../components/SuccsessModal';
 import Logo from '../components/Logo';
 import { setSubscriptions } from '../slices/subscriptionSlice';
 import { setLogindata } from '../slices/loginSlice';
+import SuccessToast from '../toast/Success';
 
 const style = {
   position: 'absolute',
@@ -65,6 +66,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
   const handleClose = () => {
     setOpen(false);
     setOpenSubModal(false);
+    SuccessToast('Subscription is added successfully')
   };
 
   const handleCloseSub = () => {
@@ -451,6 +453,27 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                             {SubscriptionForm.touched.status && SubscriptionForm.errors.status}
                           </FormHelperText>
                         ) : null}
+                      </FormControl>
+
+                      <FormControl
+                        fullWidth
+                        sx={{ mb: 3 }}
+                        error={SubscriptionForm.touched.description && Boolean(SubscriptionForm.errors.description)}
+                      >
+                        <Field
+                          as={TextField}
+                          id="input1"
+                          name="comments"
+                          multiline
+                          rows={2}
+                          label="Comments"
+                          variant="outlined"
+                          // value={SubscriptionForm.values.description}
+                          // onChange={SubscriptionForm.handleChange}
+                          // error={SubscriptionForm.touched.description && Boolean(SubscriptionForm.errors.description)}
+                          // helperText={SubscriptionForm.touched.description && SubscriptionForm.errors.description}
+                          // disabled
+                        />
                       </FormControl>
 
                       <Button

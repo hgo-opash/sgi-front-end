@@ -82,8 +82,8 @@ const DashBoard = () => {
     <>
       <Page title="Subscription">
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-          <Button onClick={handleClickOpenSub} variant="contained" sx={{ mr: 5 }}>
-            + ADD Subscription
+          <Button onClick={handleClickOpenSub} variant="contained" sx={{ mr: 5 }} startIcon={<Iconify icon="eva:plus-fill" />}>
+            ADD Subscription
           </Button>
         </Box>
         <SubscriptionModal openModal={openSub} setOpenSubModal={setOpenSub} />
