@@ -49,7 +49,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
       <ToolbarStyle>
         <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary', display: { lg: 'none' } }}>
         <Avatar
-                sx={{ width: 150, height: 150 }}
+                // sx={{ width: 150, height: 150 }}
                 alt="Remy Sharp"
                 // src="http://localhost:3000/638ed335be04698b37d40b75avatar1.png"
                 src={`${process.env.REACT_APP_API_URL}/${ProfilePic}`}
