@@ -1,9 +1,14 @@
+import axios from 'axios';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 // material
 import { styled } from '@mui/material/styles';
 import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
+import SuccessToast from '../../../toast/Success';
+import ErrorToast from '../../../toast/Error';
+import { setSubscriptions } from '../../../slices/subscriptionSlice';
 
 // ----------------------------------------------------------------------
 
@@ -36,6 +41,25 @@ UserListToolbar.propTypes = {
 };
 
 export default function UserListToolbar({ numSelected, filterName, onFilterName }) {
+  const dispatch = useDispatch();
+  const handleDeleteAll = () => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/deletAll`, null, {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+        },
+      })
+      .then((res) => {
+        if (res.data.success === true) {
+          SuccessToast('Succesfully deleted');
+          dispatch(setSubscriptions({ subscriptions: [] }));
+        }
+      })
+      .catch((err) => {
+        ErrorToast(err.message);
+      });
+  };
+
   return (
     <RootStyle
       sx={{
@@ -64,7 +88,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={() => handleDeleteAll()}>
             <Iconify icon="eva:trash-2-fill" />
           </IconButton>
         </Tooltip>
