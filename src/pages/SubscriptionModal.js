@@ -21,7 +21,7 @@ import {
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import MomentUtils from '@date-io/moment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { Field, FormikProvider, useFormik } from 'formik';
+import { Field, FormikProvider, useFormik, useFormikContext } from 'formik';
 import React from 'react';
 import * as Yup from 'yup';
 import { setCompanies } from '../slices/companiesSlice';
@@ -66,7 +66,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
   const handleClose = () => {
     setOpen(false);
     setOpenSubModal(false);
-    SuccessToast('Subscription is added successfully')
+    SuccessToast('Subscription is added successfully');
   };
 
   const handleCloseSub = () => {
@@ -81,7 +81,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        console.log('dashboard ==> ', res.data);
         if (res.data.success === true) {
           dispatch(
             setLogindata({
@@ -89,6 +89,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
               LastLogin: res.data.lastLoggedInAt,
               Role: res.data.role,
               FirstName: res.data.name,
+              ProfilePic: res.data.profilePic,
             })
           );
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
@@ -195,7 +196,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={8}>
-                  <FormikProvider value={SubscriptionForm}>
+                  <FormikProvider value={SubscriptionForm} initialTouched={{}} validateOnMount>
                     <form onSubmit={SubscriptionForm.handleSubmit}>
                       <FormControl
                         fullWidth
@@ -363,6 +364,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                             inputFormat="MM/DD/YYYY"
                             onChange={(e) => {
                               SubscriptionForm.setFieldValue('nextBillingDate', moment(e._d).format('yyyy-MM-DD'));
+                              SubscriptionForm.setFieldTouched('nextBillingDate', true, false);
                             }}
                             value={SubscriptionForm.values.nextBillingDate}
                             renderInput={(params) => (

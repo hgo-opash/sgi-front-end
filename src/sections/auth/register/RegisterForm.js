@@ -157,7 +157,8 @@ export default function RegisterForm() {
                 inputFormat="MM/DD/YYYY"
                 onChange={(e) => {
                   SignUpFormik.setFieldValue('dateOfBirth', moment(e._d).format('yyyy-MM-DD'));
-                  SignUpFormik.validateField('dateOfBirth');
+                  // SignUpFormik.validateField('dateOfBirth');
+                  SignUpFormik.setFieldTouched('dateOfBirth', true, false);
                 }}
                 value={SignUpFormik.values.dateOfBirth}
                 renderInput={(params) => (
@@ -225,10 +226,10 @@ export default function RegisterForm() {
                     </IconButton> */}
                     {/* <Button color="success" variant="contained" sx={{height:"55px"}} >
                       Verify Email
-                    </Button> */}
+                    </Button>
                     <Button color="success" variant="contained" sx={{height:"55px"}} >
                       Verified <VerifiedIcon color='green' />
-                    </Button>
+                    </Button> */}
                   </InputAdornment>
                 ),
               }}

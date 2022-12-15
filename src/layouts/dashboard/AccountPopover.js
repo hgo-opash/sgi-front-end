@@ -33,6 +33,7 @@ export default function AccountPopover() {
   const [open, setOpen] = useState(null);
   const { Email, LastLogin } = useSelector((state) => state.login);
   const navigate = useNavigate();
+  const { ProfilePic } = useSelector((state) => state.login);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -69,7 +70,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={`${process.env.REACT_APP_API_URL}/${ProfilePic}`} alt="photoURL" />
       </IconButton>
 
       <MenuPopover

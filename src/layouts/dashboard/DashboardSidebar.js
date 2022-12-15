@@ -49,6 +49,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
   const isDesktop = useResponsive('up', 'lg');
   const { Email, LastLogin, Role, FirstName } = useSelector((state) => state.login);
+  const { ProfilePic } = useSelector((state) => state.login);
 
   // const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
@@ -82,7 +83,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ mb: 3, mx: 2.5, mt: 3 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Avatar src={`${process.env.REACT_APP_API_URL}/${ProfilePic}`} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
                 {/* {account.displayName} */}

@@ -19,10 +19,18 @@ import {
   TableContainer,
   TablePagination,
   Box,
+  TableHead,
+  Menu,
+  alpha,
+  MenuItem,
+  Divider,
 } from '@mui/material';
+import styled from 'styled-components';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { CSVLink } from 'react-csv';
+import { saveAs } from "file-saver";
 // components
 import Page from '../components/Page';
 import Label from '../components/Label';
@@ -73,13 +81,14 @@ function getComparator(order, orderBy) {
 
 function applySortFilter(array, comparator, query) {
   const stabilizedThis = array.map((el, index) => [el, index]);
+  console.log(stabilizedThis, 'stabilizedThis');
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.subscriptionName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -90,7 +99,7 @@ export default function Subscription() {
   const [order, setOrder] = useState('asc');
 
   const [selected, setSelected] = useState([]);
-
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const [orderBy, setOrderBy] = useState('name');
   const [open, setOpen] = useState(false);
   const [download, setDownload] = useState(false);
@@ -100,6 +109,7 @@ export default function Subscription() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { SubscriptionData } = useSelector((state) => state.subscription);
+  const openMenu = Boolean(anchorEl);
 
   React.useEffect(() => {
     axios
@@ -112,7 +122,12 @@ export default function Subscription() {
         console.log(res.data);
         if (res.data.success === true) {
           dispatch(
-            setLogindata({ Email: res.data.email, LastLogin: res.data.lastLoggedInAt, FirstName: res.data.name })
+            setLogindata({
+              Email: res.data.email,
+              LastLogin: res.data.lastLoggedInAt,
+              FirstName: res.data.name,
+              ProfilePic: res.data.profilePic,
+            })
           );
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
         }
@@ -132,18 +147,18 @@ export default function Subscription() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = SubscriptionData.map((n) => n.subscriptionName);
+      const newSelecteds = SubscriptionData.map((n) => n._id);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -170,7 +185,7 @@ export default function Subscription() {
         console.log(res.data);
         if (res.data.success === true) {
           dispatch(deleteSubscription(val));
-          SuccessToast('Successfully Deleted')
+          SuccessToast('Successfully Deleted');
         }
       });
   };
@@ -196,11 +211,21 @@ export default function Subscription() {
     setOpenSub(true);
   };
 
+  const handleClickMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SubscriptionData.length) : 0;
 
   const filteredUsers = applySortFilter(SubscriptionData, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
+
+  console.log(SubscriptionData, 'SubscriptionData');
+  
 
   const headers = [
     { label: 'Subscription Name', key: 'subscriptionName' },
@@ -212,6 +237,61 @@ export default function Subscription() {
     { label: 'AutoRenewal', key: 'autoRenewal' },
     { label: 'Status', key: 'status' },
   ];
+  console.log(selected, 'selected');
+
+  const StyledMenu = styled((props) => (
+    <Menu
+      elevation={0}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      {...props}
+    />
+  ))(({ theme }) => ({
+    '& .MuiPaper-root': {
+      borderRadius: 6,
+      marginTop: 1,
+      minWidth: 180,
+      // color:
+      //   theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+      boxShadow:
+        'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+      '& .MuiMenu-list': {
+        padding: '4px 0',
+      },
+      '& .MuiMenuItem-root': {
+        '& .MuiSvgIcon-root': {
+          fontSize: 18,
+          // color: theme.palette.text.secondary,
+          marginRight: 1.5,
+        },
+        '&:active': {
+          // backgroundColor: alpha(
+          //   theme.palette.primary.main,
+          //   theme.palette.action.selectedOpacity,
+          // ),
+        },
+      },
+    },
+  }));
+
+  const exportFile = () => {
+
+    // const subName =  SubscriptionData.map((data) => {
+    //   return subName.push( data.subscriptionName);
+    // })
+  
+
+    // console.log("this is subName ==> ", subName);
+    const blob = new Blob([JSON.stringify(SubscriptionData)], { type: "text/plain;charset=utf-8" });
+    saveAs(blob, "my-subscription");
+    setAnchorEl(null);
+  }
 
   return (
     <Page title="User">
@@ -230,18 +310,60 @@ export default function Subscription() {
               ADD Subscription
             </Button>
             <Box sx={{ height: '100%', alignItems: 'center' }}>
-              <CSVLink
-                data={SubscriptionData}
-                headers={headers}
-                filename={'my-subscription.csv'}
-                className="btn btn-primary"
-                target="_blank"
-                style={{ marginLeft: '15px', textDecoration: 'none' }}
+              <Button
+                id="demo-customized-button"
+                aria-controls={openMenu ? 'demo-customized-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={openMenu ? 'true' : undefined}
+                variant="contained"
+                disableElevation
+                onClick={handleClickMenu}
+                startIcon={<Iconify icon="ic:round-cloud-download" />}
+                endIcon={<KeyboardArrowDownIcon />}
+                sx={{marginLeft:"15px"}}
               >
-                <Button variant="contained" startIcon={<Iconify icon="ic:round-cloud-download" />}>
-                  Download
-                </Button>
-              </CSVLink>
+                Download
+              </Button>
+              <StyledMenu
+                id="demo-customized-menu"
+                MenuListProps={{
+                  'aria-labelledby': 'demo-customized-button',
+                }}
+                anchorEl={anchorEl}
+                open={openMenu}
+                onClose={handleCloseMenu}
+              >
+                <CSVLink
+                  data={SubscriptionData}
+                  headers={headers}
+                  filename={'my-subscription'}
+                  className="btn btn-primary"
+                  target="_blank"
+                  style={{ textDecoration: 'none', color:"black" }}
+                >
+                  <MenuItem onClick={handleCloseMenu} disableRipple>
+                    Export as Comma-Separated Spreadsheet(.CSV)
+                  </MenuItem>
+                </CSVLink>
+
+                <CSVLink
+                  separator={'\t'}
+                  data={SubscriptionData}
+                  headers={headers}
+                  filename={'my-subscription.csv'}
+                  className="btn btn-primary"
+                  target="_blank"
+                  style={{textDecoration: 'none', color:"black" }}
+                >
+                  <MenuItem onClick={handleCloseMenu} disableRipple>
+                    Export as Tab-Delimited Spreadsheet(.DNL)
+                  </MenuItem>
+                </CSVLink>
+
+                <MenuItem onClick={() => exportFile()} disableRipple>
+                  Export as Plain Text(.TXT)
+                </MenuItem>
+              </StyledMenu>
             </Box>
           </Box>
         </Stack>
@@ -250,8 +372,9 @@ export default function Subscription() {
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
+            <TableContainer sx={{ minWidth: 800, overflow: 'hidden' }}>
               <Table>
+                {/* <TableHead sx={{ backgroundColor: '#d0eddb' }}> */}
                 <UserListHead
                   order={order}
                   orderBy={orderBy}
@@ -261,9 +384,10 @@ export default function Subscription() {
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
+                {/* </TableHead> */}
                 <TableBody>
-                  {SubscriptionData &&
-                    SubscriptionData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  {filteredUsers &&
+                    filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                       const isItemSelected = selected.indexOf(row._id) !== -1;
                       return (
                         // {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {

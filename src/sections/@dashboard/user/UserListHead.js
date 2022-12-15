@@ -40,7 +40,7 @@ export default function UserListHead({
   };
 
   return (
-    <TableHead>
+    <TableHead sx={{backgroundColor:"#d0eddb"}}>
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox

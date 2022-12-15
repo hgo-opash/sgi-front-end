@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 // material
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Box, Stack, AppBar, Toolbar, IconButton, Avatar } from '@mui/material';
 // components
+import { useSelector } from 'react-redux';
 import Iconify from '../../components/Iconify';
 //
 import Searchbar from './Searchbar';
@@ -41,11 +42,18 @@ DashboardNavbar.propTypes = {
 };
 
 export default function DashboardNavbar({ onOpenSidebar }) {
+  const { ProfilePic } = useSelector((state) => state.login);
+
   return (
     <RootStyle>
       <ToolbarStyle>
         <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary', display: { lg: 'none' } }}>
-          <Iconify icon="eva:menu-2-fill" />
+        <Avatar
+                sx={{ width: 150, height: 150 }}
+                alt="Remy Sharp"
+                // src="http://localhost:3000/638ed335be04698b37d40b75avatar1.png"
+                src={`${process.env.REACT_APP_API_URL}/${ProfilePic}`}
+              />
         </IconButton>
 
         <Searchbar />

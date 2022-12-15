@@ -1,7 +1,10 @@
 import MomentUtils from '@date-io/moment';
 import {
+  Avatar,
   Box,
+  Button,
   FormControl,
+  FormLabel,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -10,19 +13,67 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { Field } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
-
+import axios from 'axios';
+import SuccessToast from '../toast/Success';
+import { setLogindata } from '../slices/loginSlice';
 
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const { ProfilePic } = useSelector((state) => state.login);
+  const dispatch = useDispatch();
+
+  const pictureUploader = (e) => {
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/profilepic`,
+        { profilepic: e.target.files[0] },
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.success === true) {
+          SuccessToast('Profile picture updated!');
+          dispatch(setLogindata({ ProfilePic: res.data.profilePic }));
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <div>
       <form>
         <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
           <Stack spacing={4} sx={{ width: '70%' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+              <Avatar
+                sx={{ width: 150, height: 150 }}
+                alt="Remy Sharp"
+                src={`${process.env.REACT_APP_API_URL}/${ProfilePic}`}
+              />
+            </Box>
+            {console.log(`${process.env.REACT_APP_API_URL}/${ProfilePic}`)}
+            <input
+              style={{ display: 'none' }}
+              id="contained-button-file"
+              type="file"
+              onChange={(e) => {
+                pictureUploader(e);
+              }}
+            />
+            <FormLabel htmlFor="contained-button-file">
+              <Button variant="contained" color="primary" component="span">
+                Upload
+              </Button>
+            </FormLabel>
             <TextField
               name="firstName"
               label="First Name"

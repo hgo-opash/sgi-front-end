@@ -6,6 +6,7 @@ const initialState = {
   Email: '',
   LastLogin: '',
   Role: '',
+  ProfilePic: '',
 };
 
 export const loginSlice = createSlice({
@@ -18,6 +19,7 @@ export const loginSlice = createSlice({
       state.LastLogin = action.payload.LastLogin;
       state.Role = action.payload.Role;
       state.FirstName = action.payload.FirstName;
+      state.ProfilePic = action.payload.ProfilePic;
       return state;
     },
   },

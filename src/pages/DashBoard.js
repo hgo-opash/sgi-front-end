@@ -62,6 +62,7 @@ const DashBoard = () => {
               LastLogin: res.data.lastLoggedInAt,
               Role: res.data.role,
               FirstName: res.data.name,
+              ProfilePic: res.data.profilePic,
             })
           );
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
@@ -82,70 +83,83 @@ const DashBoard = () => {
     <>
       <Page title="Subscription">
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-          <Button onClick={handleClickOpenSub} variant="contained" sx={{ mr: 5 }} startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button
+            onClick={handleClickOpenSub}
+            variant="contained"
+            sx={{ mr: 6 }}
+            startIcon={<Iconify icon="eva:plus-fill" />}
+          >
             ADD Subscription
           </Button>
         </Box>
         <SubscriptionModal openModal={openSub} setOpenSubModal={setOpenSub} />
 
-        <Card sx={{ m: 6, height: '100px ' }}>
+        <Card sx={{ m: 6, height: '110px' }}>
           <Grid
             container
             sx={{
+              height: '100%',
               justifyContent: 'space-between',
-              mt: '30px',
+              alignItems: 'center',
               pl: '50px',
               pr: '80px',
-              display: 'flex',
               fontSize: '25px',
+              backgroundColor: '#D1E9FC',
+              color: '#061B64',
             }}
           >
             <Box>Total Cost Per Month</Box>
             <Box>$52</Box>
           </Grid>
         </Card>
-        <Card sx={{ m: 6, height: '100px ' }}>
+        <Card sx={{ m: 6, height: '110px ' }}>
           <Grid
             container
             sx={{
+              height: '100%',
               justifyContent: 'space-between',
-              mt: '30px',
+              alignItems: 'center',
               pl: '50px',
               pr: '80px',
-              display: 'flex',
               fontSize: '25px',
+              backgroundColor: '#D0F2FF',
+              color: '#04297A',
             }}
           >
             <Box>Total Cost Per Year</Box>
             <Box>$52</Box>
           </Grid>
         </Card>
-        <Card sx={{ m: 6, height: '100px ' }}>
+        <Card sx={{ m: 6, height: '110px ' }}>
           <Grid
             container
             sx={{
+              height: '100%',
               justifyContent: 'space-between',
-              mt: '30px',
+              alignItems: 'center',
               pl: '50px',
               pr: '80px',
-              display: 'flex',
               fontSize: '25px',
+              backgroundColor: '#FFF7CD',
+              color: '#7A4F01',
             }}
           >
             <Box>Total Budget</Box>
             <Box>$52</Box>
           </Grid>
         </Card>
-        <Card sx={{ m: 6, height: '100px ' }}>
+        <Card sx={{ m: 6, height: '110px ' }}>
           <Grid
             container
             sx={{
+              height: '100%',
               justifyContent: 'space-between',
-              mt: '30px',
+              alignItems: 'center',
               pl: '50px',
               pr: '80px',
-              display: 'flex',
               fontSize: '25px',
+              backgroundColor: '#FFE7D9',
+              color: '#7A0C2E',
             }}
           >
             <Box>Variance from Budget</Box>
@@ -170,7 +184,7 @@ const DashBoard = () => {
             <Scrollbar>
               <TableContainer sx={{ minWidth: 800 }}>
                 <Table>
-                  <TableHead>
+                  <TableHead sx={{ backgroundColor: '#d8e3f4' }}>
                     <TableRow>
                       <TableCell>SubScription Name</TableCell>
                       <TableCell>Frequency</TableCell>
@@ -194,38 +208,36 @@ const DashBoard = () => {
                   ) : (
                     <TableBody>
                       {SubscriptionData &&
-                        SubscriptionData.map((row) => 
-                           (
-                            <TableRow
-                              hover
-                              key={row._id}
-                              tabIndex={-1}
-                              // role="checkbox"
-                              // selected={isItemSelected}
-                              // aria-checked={isItemSelected}
-                            >
-                              <TableCell align="left">{row.subscriptionName}</TableCell>
-                              <TableCell align="left">{row.frequency}</TableCell>
-                              <TableCell align="left">{row.trialDays}</TableCell>
-                              <TableCell align="left">{row.amount}</TableCell>
-                              <TableCell align="left">{moment(row.startDate).format('MM/DD/yyyy')}</TableCell>
-                              <TableCell align="left">{moment(row.nextBilling).format('MM/DD/yyyy')}</TableCell>
-                              <TableCell align="left">{JSON.stringify(row.autoRenewal)}</TableCell>
-                              <TableCell align="left">
-                                {row.status === 'Active' && (
-                                  <Label variant="ghost" color="success">
-                                    {row.status}
-                                  </Label>
-                                )}
-                                {row.status === 'Inactive' && (
-                                  <Label variant="ghost" color="error">
-                                    {row.status}
-                                  </Label>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          )
-                        )}
+                        SubscriptionData.map((row) => (
+                          <TableRow
+                            hover
+                            key={row._id}
+                            tabIndex={-1}
+                            // role="checkbox"
+                            // selected={isItemSelected}
+                            // aria-checked={isItemSelected}
+                          >
+                            <TableCell align="left">{row.subscriptionName}</TableCell>
+                            <TableCell align="left">{row.frequency}</TableCell>
+                            <TableCell align="left">{row.trialDays}</TableCell>
+                            <TableCell align="left">{row.amount}</TableCell>
+                            <TableCell align="left">{moment(row.startDate).format('MM/DD/yyyy')}</TableCell>
+                            <TableCell align="left">{moment(row.nextBilling).format('MM/DD/yyyy')}</TableCell>
+                            <TableCell align="left">{JSON.stringify(row.autoRenewal)}</TableCell>
+                            <TableCell align="left">
+                              {row.status === 'Active' && (
+                                <Label variant="ghost" color="success">
+                                  {row.status}
+                                </Label>
+                              )}
+                              {row.status === 'Inactive' && (
+                                <Label variant="ghost" color="error">
+                                  {row.status}
+                                </Label>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   )}
                 </Table>

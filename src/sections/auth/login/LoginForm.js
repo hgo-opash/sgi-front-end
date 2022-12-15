@@ -44,18 +44,18 @@ export default function LoginForm() {
                 LastLogin: res.data.lastLoggedInAt,
                 Role: res.data.role,
                 FirstName: res.data.name,
+                ProfilePic: res.data.profilePic,
               })
             );
             console.log('login.data ===>  ', res.data);
             localStorage.setItem('Jtoken', res.data.token);
             SuccessToast('Login Successful');
             navigate('/dashboard', { replace: true });
-          } 
-
+          }
         })
         .catch((err) => {
           console.log(err);
-          ErrorToast(err.response.data.message)
+          ErrorToast(err.response.data.message);
         });
     },
   });
