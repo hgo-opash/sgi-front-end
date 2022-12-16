@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
-import axios from 'axios';
 import {
   Box,
   Select,
@@ -30,6 +29,7 @@ import Logo from '../components/Logo';
 import { setSubscriptions } from '../slices/subscriptionSlice';
 import { setLogindata } from '../slices/loginSlice';
 import SuccessToast from '../toast/Success';
+import { GetcompaniesResponse, GetsubsResponse, SavesubsResponse } from '../services/Service';
 
 const style = {
   position: 'absolute',
@@ -74,12 +74,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
   };
 
   React.useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/getsubs`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-        },
-      })
+    GetsubsResponse()
       .then((res) => {
         console.log('dashboard ==> ', res.data);
         if (res.data.success === true) {
@@ -100,18 +95,12 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
           // navigate('/login');
         }
       });
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/getcompanies`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-        },
-      })
-      .then((res) => {
-        console.log('subscription companies => ', res.data);
-        dispatch(setCompanies({ allCompaniesData: res.data.data }));
-        const companiesType = [...new Set(res.data.data.map((item) => item.companyType))];
-        setCompanyTypes(companiesType);
-      });
+    GetcompaniesResponse().then((res) => {
+      console.log('subscription companies => ', res.data);
+      dispatch(setCompanies({ allCompaniesData: res.data.data }));
+      const companiesType = [...new Set(res.data.data.map((item) => item.companyType))];
+      setCompanyTypes(companiesType);
+    });
   }, [openModal]);
 
   const SubscriptionFormSchema = Yup.object().shape({
@@ -149,23 +138,17 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
     onSubmit: (values, { resetForm }) => {
       console.log('values', { ...values, isStandardAlert: true });
       values.companyId = masterComapny._id;
-      axios
-        .post(`${process.env.REACT_APP_API_URL}/savesubs`, values, {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-          },
-        })
-        .then((res) => {
-          console.log('subscription ADD => ', res.data);
-          if (res.data.success === true) {
-            // SubscriptionForm.values.amount = 0;
-            // SubscriptionForm.values.contractStartDate = '';
-            // SubscriptionForm.values.nextBillingDate = '';
-            // SubscriptionForm.values.autoRenewal = '';
-            // SubscriptionForm.values.status = '';
-            resetForm(initialValues);
-          }
-        });
+      SavesubsResponse(values).then((res) => {
+        console.log('subscription ADD => ', res.data);
+        if (res.data.success === true) {
+          // SubscriptionForm.values.amount = 0;
+          // SubscriptionForm.values.contractStartDate = '';
+          // SubscriptionForm.values.nextBillingDate = '';
+          // SubscriptionForm.values.autoRenewal = '';
+          // SubscriptionForm.values.status = '';
+          resetForm(initialValues);
+        }
+      });
     },
   });
   console.log(SubscriptionForm.values, 'fffff');

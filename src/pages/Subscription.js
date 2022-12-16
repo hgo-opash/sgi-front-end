@@ -1,7 +1,6 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import {
@@ -30,7 +29,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { CSVLink } from 'react-csv';
-import { saveAs } from "file-saver";
+import { saveAs } from 'file-saver';
 // components
 import Page from '../components/Page';
 import Label from '../components/Label';
@@ -39,11 +38,11 @@ import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
-import USERLIST from '../_mock/user';
 import { setLogindata } from '../slices/loginSlice';
 import { deleteSubscription, setSubscriptions } from '../slices/subscriptionSlice';
 import SubscriptionModal from './SubscriptionModal';
 import SuccessToast from '../toast/Success';
+import { DeletesubResponse, GetsubsResponse } from '../services/Service';
 
 // ----------------------------------------------------------------------
 
@@ -112,12 +111,7 @@ export default function Subscription() {
   const openMenu = Boolean(anchorEl);
 
   React.useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/getsubs`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-        },
-      })
+    GetsubsResponse()
       .then((res) => {
         console.log(res.data);
         if (res.data.success === true) {
@@ -170,24 +164,13 @@ export default function Subscription() {
   };
 
   const handledelete = (val) => {
-    // console.log(val);
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/deletsub`,
-        { id: val.row._id },
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.success === true) {
-          dispatch(deleteSubscription(val));
-          SuccessToast('Successfully Deleted');
-        }
-      });
+    DeletesubResponse(val).then((res) => {
+      console.log(res.data);
+      if (res.data.success === true) {
+        dispatch(deleteSubscription(val));
+        SuccessToast('Successfully Deleted');
+      }
+    });
   };
 
   const handleChangePage = (event, newPage) => {
@@ -225,7 +208,6 @@ export default function Subscription() {
   const isUserNotFound = filteredUsers.length === 0;
 
   console.log(SubscriptionData, 'SubscriptionData');
-  
 
   const headers = [
     { label: 'Subscription Name', key: 'subscriptionName' },
@@ -280,18 +262,6 @@ export default function Subscription() {
     },
   }));
 
-  const exportFile = () => {
-
-    // const subName =  SubscriptionData.map((data) => {
-    //   return subName.push( data.subscriptionName);
-    // })
-  
-
-    // console.log("this is subName ==> ", subName);
-    const blob = new Blob([JSON.stringify(SubscriptionData)], { type: "text/plain;charset=utf-8" });
-    saveAs(blob, "my-subscription");
-    setAnchorEl(null);
-  }
 
   return (
     <Page title="User">
@@ -320,7 +290,7 @@ export default function Subscription() {
                 onClick={handleClickMenu}
                 startIcon={<Iconify icon="ic:round-cloud-download" />}
                 endIcon={<KeyboardArrowDownIcon />}
-                sx={{marginLeft:"15px"}}
+                sx={{ marginLeft: '15px' }}
               >
                 Download
               </Button>
@@ -339,7 +309,7 @@ export default function Subscription() {
                   filename={'my-subscription'}
                   className="btn btn-primary"
                   target="_blank"
-                  style={{ textDecoration: 'none', color:"black" }}
+                  style={{ textDecoration: 'none', color: 'black' }}
                 >
                   <MenuItem onClick={handleCloseMenu} disableRipple>
                     Export as Comma-Separated Spreadsheet(.CSV)
@@ -350,19 +320,28 @@ export default function Subscription() {
                   separator={'\t'}
                   data={SubscriptionData}
                   headers={headers}
-                  filename={'my-subscription.csv'}
+                  filename={'my-subscription.dnl'}
                   className="btn btn-primary"
                   target="_blank"
-                  style={{textDecoration: 'none', color:"black" }}
+                  style={{ textDecoration: 'none', color: 'black' }}
                 >
                   <MenuItem onClick={handleCloseMenu} disableRipple>
                     Export as Tab-Delimited Spreadsheet(.DNL)
                   </MenuItem>
                 </CSVLink>
 
-                <MenuItem onClick={() => exportFile()} disableRipple>
-                  Export as Plain Text(.TXT)
-                </MenuItem>
+                <CSVLink
+                  data={SubscriptionData}
+                  headers={headers}
+                  filename={'my-subscription.txt'}
+                  className="btn btn-primary"
+                  target="_blank"
+                  style={{ textDecoration: 'none', color: 'black' }}
+                >
+                  <MenuItem onClick={handleCloseMenu} disableRipple>
+                    Export as Plain Text(.TXT)
+                  </MenuItem>
+                </CSVLink>
               </StyledMenu>
             </Box>
           </Box>

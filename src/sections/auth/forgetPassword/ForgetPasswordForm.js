@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { Field, FormikProvider, useFormik } from 'formik';
 import { Button, Stack, TextField } from '@mui/material';
-import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import SuccessToast from '../../../toast/Success';
 import ErrorToast from '../../../toast/Error';
+import { ForgotpassResponse } from '../../../services/Service';
 
 // ----------------------------------------------------------------------
 
@@ -28,15 +28,14 @@ export default function ForgetPasswordForm() {
     validationSchema: ForgetPasswordSchema,
     onSubmit: (values) => {
       console.log(values, 'values');
-      axios
-        .post(`${process.env.REACT_APP_API_URL}/forgotpass`, values)
+      ForgotpassResponse(values)
         .then((res) => {
-          SuccessToast("Reset Password Link send Successfully");
+          SuccessToast('Reset Password Link send Successfully');
           console.log(res.data, 'forgot');
         })
         .catch((err) => {
           console.log(err.message, 'forgot err');
-          ErrorToast(err?.response.data.message || err.message)
+          ErrorToast(err?.response.data.message || err.message);
         });
     },
   });

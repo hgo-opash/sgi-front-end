@@ -17,9 +17,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import React, { useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
-import axios from 'axios';
 import SuccessToast from '../toast/Success';
 import { setLogindata } from '../slices/loginSlice';
+import { ProfilepicResponse } from '../services/Service';
 
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,17 +27,7 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   const pictureUploader = (e) => {
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/profilepic`,
-        { profilepic: e.target.files[0] },
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      )
+    ProfilepicResponse(e)
       .then((res) => {
         console.log(res.data);
         if (res.data.success === true) {

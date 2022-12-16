@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
@@ -26,6 +25,7 @@ import Scrollbar from '../components/Scrollbar';
 import { setLogindata } from '../slices/loginSlice';
 import { setSubscriptions, deleteSubscription } from '../slices/subscriptionSlice';
 import Iconify from '../components/Iconify';
+import { DeletesubResponse, GetsubsResponse } from '../services/Service';
 
 export default function User() {
   const [page, setPage] = useState(0);
@@ -39,12 +39,7 @@ export default function User() {
   const { SubscriptionData } = useSelector((state) => state.subscription);
 
   React.useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/getsubs`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-        },
-      })
+    GetsubsResponse()
       .then((res) => {
         console.log(res.data);
         if (res.data.success === true) {
@@ -67,23 +62,12 @@ export default function User() {
   }, []);
 
   const handledelete = (val) => {
-    // console.log(val);
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/deletsub`,
-        { id: val.row._id },
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.success === true) {
-          dispatch(deleteSubscription(val));
-        }
-      });
+    DeletesubResponse(val).then((res) => {
+      console.log(res.data);
+      if (res.data.success === true) {
+        dispatch(deleteSubscription(val));
+      }
+    });
   };
 
   return (
@@ -130,8 +114,8 @@ export default function User() {
                 ) : (
                   <TableBody>
                     {SubscriptionData &&
-                      SubscriptionData.map((row) => {
-                        return (
+                      SubscriptionData.map((row) => 
+                         (
                           <TableRow
                             hover
                             key={row._id}
@@ -164,8 +148,8 @@ export default function User() {
                               </Button>
                             </TableCell>
                           </TableRow>
-                        );
-                      })}
+                        )
+                      )}
                   </TableBody>
                 )}
               </Table>

@@ -4,7 +4,6 @@ import { alpha, styled } from '@mui/material/styles';
 import { Box, Stack, AppBar, Toolbar, IconButton, Avatar } from '@mui/material';
 // components
 import { useSelector } from 'react-redux';
-import Iconify from '../../components/Iconify';
 //
 import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';

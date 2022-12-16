@@ -107,7 +107,7 @@ export default function Register() {
               {location.pathname === '/register' ? <> (15 days Free trial)</> : <></>}
             </Typography>
 
-            <AuthSocial />
+            {/* <AuthSocial /> */}
 
             <RegisterForm />
 

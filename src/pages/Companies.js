@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import moment from 'moment';
 import TextField from '@mui/material/TextField';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -25,6 +24,7 @@ import {
 } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
 import * as Yup from 'yup';
+import { SaveCompanyResponse } from '../services/Service';
 import Page from '../components/Page';
 import Logo from '../components/Logo';
 import SuccsessModal from '../components/SuccsessModal';
@@ -55,14 +55,9 @@ const Companies = () => {
     validationSchema: CompaniesFormSchema,
     onSubmit: (values, { resetForm }) => {
       console.log('values', values);
-      axios
-        .post(`${process.env.REACT_APP_API_URL}/savecompany`, values, {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-          },
-        })
-        .then((res) => {
-          console.log('Company ADD => ', res.data);
+      SaveCompanyResponse(values)
+      .then((res) => {
+          console.log('Company ADD => ', res);
           resetForm(initialValues);
         });
     },

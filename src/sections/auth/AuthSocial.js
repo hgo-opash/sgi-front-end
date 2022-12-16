@@ -2,7 +2,6 @@ import React from 'react';
 
 // material
 import { Stack, Button, Divider, Typography } from '@mui/material';
-import axios from 'axios';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +11,7 @@ import { setLogindata } from '../../slices/loginSlice';
 import Iconify from '../../components/Iconify';
 import SuccessToast from '../../toast/Success';
 import ErrorToast from '../../toast/Error';
+import { FbloginResponse } from '../../services/Service';
 
 // ----------------------------------------------------------------------
 const CLIENT_ID = '1490110678165861';
@@ -22,8 +22,7 @@ export default function AuthSocial() {
   const handleCallback = (res) => {
     // res.Jtoken = localStorage.getItem('Jtoken');
     console.log('FB LOGIN => ', res);
-    axios
-      .post(`${process.env.REACT_APP_API_URL}/fblogin`, res)
+    FbloginResponse(res)
       .then((res) => {
         if (res.data.success === true) {
           dispatch(setLogindata({ Email: res.email }));
@@ -31,7 +30,7 @@ export default function AuthSocial() {
           SuccessToast('Login Successful');
           navigate('/dashboard');
         } else {
-          ErrorToast('Login Failed')
+          ErrorToast('Login Failed');
         }
       })
       .catch((e) => console.log(e));

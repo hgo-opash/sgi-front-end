@@ -1,4 +1,3 @@
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 // material
@@ -9,6 +8,7 @@ import Iconify from '../../../components/Iconify';
 import SuccessToast from '../../../toast/Success';
 import ErrorToast from '../../../toast/Error';
 import { setSubscriptions } from '../../../slices/subscriptionSlice';
+import { DeletAllResponse } from '../../../services/Service';
 
 // ----------------------------------------------------------------------
 
@@ -43,12 +43,7 @@ UserListToolbar.propTypes = {
 export default function UserListToolbar({ numSelected, filterName, onFilterName }) {
   const dispatch = useDispatch();
   const handleDeleteAll = () => {
-    axios
-      .post(`${process.env.REACT_APP_API_URL}/deletAll`, null, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-        },
-      })
+    DeletAllResponse()
       .then((res) => {
         if (res.data.success === true) {
           SuccessToast('Succesfully deleted');

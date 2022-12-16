@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
@@ -31,6 +30,7 @@ import Iconify from '../components/Iconify';
 import EditModal from './EditModal';
 import { UserListToolbar } from '../sections/@dashboard/user';
 import SubscriptionModal from './SubscriptionModal';
+import { DeletesubResponse, GetsubsResponse } from '../services/Service';
 
 export default function Subscription() {
   const [page, setPage] = useState(0);
@@ -46,12 +46,7 @@ export default function Subscription() {
   const { SubscriptionData } = useSelector((state) => state.subscription);
 
   React.useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/getsubs`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-        },
-      })
+    GetsubsResponse()
       .then((res) => {
         console.log(res.data);
         if (res.data.success === true) {
@@ -78,23 +73,12 @@ export default function Subscription() {
   };
 
   const handledelete = (val) => {
-    // console.log(val);
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/deletsub`,
-        { id: val.row._id },
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.success === true) {
-          dispatch(deleteSubscription(val));
-        }
-      });
+    DeletesubResponse(val).then((res) => {
+      console.log(res.data);
+      if (res.data.success === true) {
+        dispatch(deleteSubscription(val));
+      }
+    });
   };
 
   const handleFilterByName = (event) => {

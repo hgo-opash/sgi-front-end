@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 
 import { Field, FormikProvider, useFormik } from 'formik';
 import { Button, Checkbox, FormControlLabel, IconButton, InputAdornment, Link, Stack, TextField } from '@mui/material';
-import axios from 'axios';
 import { Icon } from '@iconify/react';
 import { useDispatch } from 'react-redux';
 import { setLogindata } from '../../../slices/loginSlice';
 import SuccessToast from '../../../toast/Success';
 import ErrorToast from '../../../toast/Error';
+import { LoginResponse } from '../../../services/Service';
 
 // ----------------------------------------------------------------------
 
@@ -33,8 +33,7 @@ export default function LoginForm() {
     initialValues,
     validationSchema: LoginSchema,
     onSubmit: (values) => {
-      axios
-        .post(`${process.env.REACT_APP_API_URL}/login`, values)
+      LoginResponse(values)
         .then((res) => {
           if (res.data.success === true) {
             console.log('login user ====> ', res.data);

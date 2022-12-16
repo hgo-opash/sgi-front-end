@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { Field, FormikProvider, useFormik } from 'formik';
 import { Button, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
-import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { Icon } from '@iconify/react';
+import { VerifyLoginToken } from '../../../services/Service';
 
 // ----------------------------------------------------------------------
 
@@ -39,8 +39,7 @@ export default function NewPasswordForm(props) {
     initialValues,
     validationSchema: NewPasswordSchema,
     onSubmit: (values) => {
-      axios
-        .post(`${process.env.REACT_APP_API_URL}/verify/${props.token}`, values)
+      VerifyLoginToken(values,props)
         .then((res) => {
           console.log(res.data);
           if (res.data.success === true) {

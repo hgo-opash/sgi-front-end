@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import moment from 'moment';
-import axios from 'axios';
 import {
   Box,
   Button,
@@ -29,6 +28,7 @@ import Label from '../components/Label';
 import { setLogindata } from '../slices/loginSlice';
 import { setSubscriptions, deleteSubscription } from '../slices/subscriptionSlice';
 import { UserListToolbar } from '../sections/@dashboard/user';
+import { GetsubsResponse } from '../services/Service';
 
 const DashBoard = () => {
   const [openSub, setOpenSub] = React.useState(false);
@@ -47,32 +47,27 @@ const DashBoard = () => {
   };
 
   React.useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/getsubs`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-        },
-      })
-      .then((res) => {
-        console.log('get subs  ===>  ', res.data);
-        if (res.data.success === true) {
-          dispatch(
-            setLogindata({
-              Email: res.data.email,
-              LastLogin: res.data.lastLoggedInAt,
-              Role: res.data.role,
-              FirstName: res.data.name,
-              ProfilePic: res.data.profilePic,
-            })
-          );
-          dispatch(setSubscriptions({ subscriptions: res.data.data }));
-        }
-      })
-      .catch((err) => {
-        if (err.response.status === 401) {
+    GetsubsResponse()
+    .then((res) => {
+      console.log('get subs  ===>  ', res.data);
+      if (res.data.success === true) {
+        dispatch(
+          setLogindata({
+            Email: res.data.email,
+            LastLogin: res.data.lastLoggedInAt,
+            Role: res.data.role,
+            FirstName: res.data.name,
+            ProfilePic: res.data.profilePic,
+          })
+        );
+        dispatch(setSubscriptions({ subscriptions: res.data.data }));
+      }
+    })
+    .catch((err) => {
+      if (err.response.status === 401) {
           navigate('/login');
-        }
-      });
+      }
+    });
   }, []);
 
   const handleFilterByName = (event) => {

@@ -150,7 +150,7 @@ export default function NavSection({ navConfig, ...other }) {
     <Box {...other}>
       <List disablePadding sx={{ p: 1 }}>
         {navConfig.map((item) => (
-          item.roles.includes(Role)&&
+          item.roles && item.roles.includes(Role)&&
           <NavItem key={item.title} item={item} active={match} />
         ))}
       </List>

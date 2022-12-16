@@ -24,11 +24,11 @@ import {
 } from '@mui/material';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import { Icon } from '@iconify/react';
-import axios from 'axios';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import moment from 'moment';
 import SuccessToast from '../../../toast/Success';
 import ErrorToast from '../../../toast/Error';
+import { RegisterResponse } from '../../../services/Service';
 
 // ----------------------------------------------------------------------
 
@@ -91,8 +91,7 @@ export default function RegisterForm() {
       } else {
         values.role = 'user';
       }
-      axios
-        .post(`${process.env.REACT_APP_API_URL}/register`, values)
+      RegisterResponse(values)
         .then((res) => {
           if (res.data.success === true) {
             SuccessToast('Register Successful Please Login to countinue');
@@ -221,7 +220,7 @@ export default function RegisterForm() {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                     {/* <IconButton edge="end" onClick={() => setShowPassword(!showPassword)}>
+                    {/* <IconButton edge="end" onClick={() => setShowPassword(!showPassword)}>
                       <Icon icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
                     </IconButton> */}
                     {/* <Button color="success" variant="contained" sx={{height:"55px"}} >

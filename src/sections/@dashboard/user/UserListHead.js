@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 // material
-import { Box, Checkbox, TableRow, TableCell, TableHead, TableSortLabel } from '@mui/material';
+import { Box, Checkbox, TableRow, TableCell, TableHead, TableSortLabel, Button, Typography } from '@mui/material';
+import Iconify from '../../../components/Iconify';
 
 // ----------------------------------------------------------------------
 
@@ -35,12 +36,15 @@ export default function UserListHead({
   onRequestSort,
   onSelectAllClick,
 }) {
-  const createSortHandler = (property) => (event) => {
+  const createAscSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
+  const createDscSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
 
   return (
-    <TableHead sx={{backgroundColor:"#d0eddb"}}>
+    <TableHead sx={{ backgroundColor: '#d0eddb' }}>
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
@@ -53,19 +57,25 @@ export default function UserListHead({
           <TableCell
             key={headCell.id}
             align={headCell.alignRight ? 'right' : 'left'}
-            sortDirection={orderBy === headCell.id ? order : false}
+            // sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              hideSortIcon
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
+            {/* <TableSortLabel
+              // hideSortIcon
+              // active={orderBy === headCell.id}
+              // direction={orderBy === headCell.id ? order : 'asc'}
+              // onClick={createSortHandler(headCell.id)}
+            > */}
+              <span>{headCell.label}</span>
+              {/* <Button> */}
+                <Iconify onClick={createAscSortHandler(headCell.id)} icon={'mdi:arrow-up'} sx={{cursor:"pointer"}} />
+                <Iconify onClick={createDscSortHandler(headCell.id)} icon={'mdi:arrow-down'} sx={{cursor:"pointer"}} />
+              {/* </Button> */}
+              {/* <Button> */}
+              {/* </Button> */}
               {orderBy === headCell.id ? (
                 <Box sx={{ ...visuallyHidden }}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</Box>
               ) : null}
-            </TableSortLabel>
+            {/* </TableSortLabel> */}
           </TableCell>
         ))}
       </TableRow>
