@@ -45,6 +45,7 @@ export default function AccountPopover() {
   const handleLogout = () => {
     setOpen(null);
     localStorage.removeItem('Jtoken');
+    localStorage.removeItem('Role');
     // window.FB.getLoginStatus((e) => console.log('status ===== ', e));
     // window.FB.logout();
     navigate('/login', { replace: true });

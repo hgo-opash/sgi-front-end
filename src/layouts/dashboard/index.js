@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 //
@@ -25,6 +26,11 @@ const MainStyle = styled('div')(({ theme }) => ({
   paddingBottom: theme.spacing(10),
   [theme.breakpoints.up('lg')]: {
     paddingTop: APP_BAR_DESKTOP + 24,
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+  },
+  [theme.breakpoints.down('lg')]: {
+    paddingTop: APP_BAR_DESKTOP + 24,
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
   },
@@ -34,6 +40,18 @@ const MainStyle = styled('div')(({ theme }) => ({
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  // const { Role } = useSelector((state) => state.login);
+  const Role = localStorage.getItem('Role');
+
+  useEffect(() => {
+    if (Role === 'business') {
+      navigate('/companies', { replace: true });
+    }
+    if (Role === 'user') {
+      navigate('/dashboard', { replace: true });
+    }
+  }, []);
 
   return (
     <RootStyle>

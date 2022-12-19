@@ -38,10 +38,10 @@ export const SavesubsResponse = (values) =>
     },
   });
 
-export const DeletesubResponse = (val) =>
+export const EditsubsResponse = (id, values) =>
   axios.post(
-    `${process.env.REACT_APP_API_URL}/deletsub`,
-    { id: val.row._id },
+    `${process.env.REACT_APP_API_URL}/editsub`,
+    { id, values },
     {
       headers: {
         authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
@@ -49,8 +49,15 @@ export const DeletesubResponse = (val) =>
     }
   );
 
-export const DeletAllResponse = () =>
-  axios.post(`${process.env.REACT_APP_API_URL}/deletAll`, null, {
+export const DeletesubResponse = (id) =>
+  axios.post(`${process.env.REACT_APP_API_URL}/deletsub`, [id], {
+    headers: {
+      authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+    },
+  });
+
+export const DeletAllResponse = (selectedIDs) =>
+  axios.post(`${process.env.REACT_APP_API_URL}/deletsub`, selectedIDs, {
     headers: {
       authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
     },

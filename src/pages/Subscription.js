@@ -29,7 +29,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { CSVLink } from 'react-csv';
-import { saveAs } from 'file-saver';
 // components
 import Page from '../components/Page';
 import Label from '../components/Label';
@@ -43,19 +42,31 @@ import { deleteSubscription, setSubscriptions } from '../slices/subscriptionSlic
 import SubscriptionModal from './SubscriptionModal';
 import SuccessToast from '../toast/Success';
 import { DeletesubResponse, GetsubsResponse } from '../services/Service';
+import EditModal from './EditModal';
+import DeleteModal from './DeleteModal';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'subscription_name', label: 'Subscription Name', alignRight: false },
+  {
+    id: 'subscription_name',
+    label: 'Subscription Name',
+    alignRight: false,
+    sort: true,
+  },
   { id: 'description', label: 'Description', alignRight: false },
   { id: 'frequency', label: 'Frequency', alignRight: false },
   { id: 'trial_days', label: 'Trial Days', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'start_date	', label: 'Start Date', alignRight: false },
-  { id: 'next_billing_date', label: 'Next Billing Date', alignRight: false },
+  { id: 'amount', label: 'Amount', alignRight: false, sort: true },
+  { id: 'start_date', label: 'Start Date', alignRight: false, sort: true },
+  {
+    id: 'next_billing_date',
+    label: 'Next Billing Date',
+    alignRight: false,
+    sort: true,
+  },
   { id: 'auto_renewal', label: 'Auto Renewal', alignRight: false },
-  { id: 'edit	', label: 'Edit', alignRight: false },
+  { id: 'edit', label: 'Edit', alignRight: false },
   { id: 'delete', label: 'Delete', alignRight: false },
   // { id: '' },
 ];
@@ -98,13 +109,16 @@ export default function Subscription() {
   const [order, setOrder] = useState('asc');
 
   const [selected, setSelected] = useState([]);
+  const [editData, setEditData] = useState('');
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [orderBy, setOrderBy] = useState('name');
   const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
   const [download, setDownload] = useState(false);
   const [filterName, setFilterName] = useState('');
   const [openSub, setOpenSub] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { SubscriptionData } = useSelector((state) => state.subscription);
@@ -163,16 +177,6 @@ export default function Subscription() {
     setSelected(newSelected);
   };
 
-  const handledelete = (val) => {
-    DeletesubResponse(val).then((res) => {
-      console.log(res.data);
-      if (res.data.success === true) {
-        dispatch(deleteSubscription(val));
-        SuccessToast('Successfully Deleted');
-      }
-    });
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -194,6 +198,14 @@ export default function Subscription() {
     setOpenSub(true);
   };
 
+  const handleClickOpenDel = () => {
+    setOpenDelete(true);
+  };
+
+  const handleClickCloseDel = () => {
+    setOpenDelete(false);
+  };
+
   const handleClickMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -203,7 +215,19 @@ export default function Subscription() {
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SubscriptionData.length) : 0;
 
-  const filteredUsers = applySortFilter(SubscriptionData, getComparator(order, orderBy), filterName);
+  const activeData = SubscriptionData.filter((row) => row.status === 'Active').sort();
+  const inactiveData = SubscriptionData.filter((row) => row.status === 'Inactive').sort();
+  const sub1 = activeData.sort((a, b) =>
+    // eslint-disable-next-line no-nested-ternary
+    a.subscriptionName > b.subscriptionName ? 1 : b.subscriptionName > a.subscriptionName ? -1 : 0
+  );
+  const sub2 = inactiveData.sort((a, b) =>
+    // eslint-disable-next-line no-nested-ternary
+    a.subscriptionName > b.subscriptionName ? 1 : b.subscriptionName > a.subscriptionName ? -1 : 0
+  );
+  const filteredUsersData = [...sub1, ...sub2];
+
+  const filteredUsers = applySortFilter(filteredUsersData, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
 
@@ -219,7 +243,6 @@ export default function Subscription() {
     { label: 'AutoRenewal', key: 'autoRenewal' },
     { label: 'Status', key: 'status' },
   ];
-  console.log(selected, 'selected');
 
   const StyledMenu = styled((props) => (
     <Menu
@@ -262,117 +285,136 @@ export default function Subscription() {
     },
   }));
 
+  const sortData = SubscriptionData.map((row) => ({
+    ...row,
+    startDate: moment(row.startDate).format('MM-DD-yyyy'),
+    nextBilling: moment(row.nextBilling).format('MM-DD-yyyy'),
+  }));
+  console.log(sortData, 'sortData>>>>');
 
   return (
     <Page title="User">
-      <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Subscriptions
-          </Typography>
-          <Box sx={{ display: 'flex' }}>
+      {/* <Container> */}
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Typography variant="h4" gutterBottom>
+          Subscriptions
+        </Typography>
+        <Box sx={{ display: 'flex' }}>
+          <Button
+            onClick={handleClickOpenSub}
+            variant="contained"
+            component={RouterLink}
+            startIcon={<Iconify icon="eva:plus-fill" />}
+          >
+            ADD Subscription
+          </Button>
+          <Box sx={{ height: '100%', alignItems: 'center' }}>
             <Button
-              onClick={handleClickOpenSub}
+              id="demo-customized-button"
+              aria-controls={openMenu ? 'demo-customized-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={openMenu ? 'true' : undefined}
               variant="contained"
-              component={RouterLink}
-              startIcon={<Iconify icon="eva:plus-fill" />}
+              disableElevation
+              onClick={handleClickMenu}
+              startIcon={<Iconify icon="ic:round-cloud-download" />}
+              endIcon={<KeyboardArrowDownIcon />}
+              sx={{ marginLeft: '15px' }}
             >
-              ADD Subscription
+              Download
             </Button>
-            <Box sx={{ height: '100%', alignItems: 'center' }}>
-              <Button
-                id="demo-customized-button"
-                aria-controls={openMenu ? 'demo-customized-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={openMenu ? 'true' : undefined}
-                variant="contained"
-                disableElevation
-                onClick={handleClickMenu}
-                startIcon={<Iconify icon="ic:round-cloud-download" />}
-                endIcon={<KeyboardArrowDownIcon />}
-                sx={{ marginLeft: '15px' }}
+            <StyledMenu
+              id="demo-customized-menu"
+              MenuListProps={{
+                'aria-labelledby': 'demo-customized-button',
+              }}
+              anchorEl={anchorEl}
+              open={openMenu}
+              onClose={handleCloseMenu}
+            >
+              <CSVLink
+                data={filteredUsers}
+                headers={headers}
+                filename={'my-subscription'}
+                className="btn btn-primary"
+                target="_blank"
+                style={{ textDecoration: 'none', color: 'black' }}
               >
-                Download
-              </Button>
-              <StyledMenu
-                id="demo-customized-menu"
-                MenuListProps={{
-                  'aria-labelledby': 'demo-customized-button',
-                }}
-                anchorEl={anchorEl}
-                open={openMenu}
-                onClose={handleCloseMenu}
+                <MenuItem onClick={handleCloseMenu} disableRipple>
+                  Export as Comma-Separated Spreadsheet(.CSV)
+                </MenuItem>
+              </CSVLink>
+
+              <CSVLink
+                separator={'\t'}
+                data={filteredUsers}
+                headers={headers}
+                filename={'my-subscription.dnl'}
+                className="btn btn-primary"
+                target="_blank"
+                style={{ textDecoration: 'none', color: 'black' }}
               >
-                <CSVLink
-                  data={SubscriptionData}
-                  headers={headers}
-                  filename={'my-subscription'}
-                  className="btn btn-primary"
-                  target="_blank"
-                  style={{ textDecoration: 'none', color: 'black' }}
-                >
-                  <MenuItem onClick={handleCloseMenu} disableRipple>
-                    Export as Comma-Separated Spreadsheet(.CSV)
-                  </MenuItem>
-                </CSVLink>
+                <MenuItem onClick={handleCloseMenu} disableRipple>
+                  Export as Tab-Delimited Spreadsheet(.DNL)
+                </MenuItem>
+              </CSVLink>
 
-                <CSVLink
-                  separator={'\t'}
-                  data={SubscriptionData}
-                  headers={headers}
-                  filename={'my-subscription.dnl'}
-                  className="btn btn-primary"
-                  target="_blank"
-                  style={{ textDecoration: 'none', color: 'black' }}
-                >
-                  <MenuItem onClick={handleCloseMenu} disableRipple>
-                    Export as Tab-Delimited Spreadsheet(.DNL)
-                  </MenuItem>
-                </CSVLink>
-
-                <CSVLink
-                  data={SubscriptionData}
-                  headers={headers}
-                  filename={'my-subscription.txt'}
-                  className="btn btn-primary"
-                  target="_blank"
-                  style={{ textDecoration: 'none', color: 'black' }}
-                >
-                  <MenuItem onClick={handleCloseMenu} disableRipple>
-                    Export as Plain Text(.TXT)
-                  </MenuItem>
-                </CSVLink>
-              </StyledMenu>
-            </Box>
+              <CSVLink
+                data={filteredUsers}
+                headers={headers}
+                filename={'my-subscription.txt'}
+                className="btn btn-primary"
+                target="_blank"
+                style={{ textDecoration: 'none', color: 'black' }}
+              >
+                <MenuItem onClick={handleCloseMenu} disableRipple>
+                  Export as Plain Text(.TXT)
+                </MenuItem>
+              </CSVLink>
+            </StyledMenu>
           </Box>
-        </Stack>
-        <SubscriptionModal openModal={openSub} setOpenSubModal={setOpenSub} />
-        <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+        </Box>
+      </Stack>
 
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800, overflow: 'hidden' }}>
-              <Table>
-                {/* <TableHead sx={{ backgroundColor: '#d0eddb' }}> */}
-                <UserListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={SubscriptionData.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                {/* </TableHead> */}
-                <TableBody>
-                  {filteredUsers &&
-                    filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                      const isItemSelected = selected.indexOf(row._id) !== -1;
-                      return (
-                        // {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                        // const { id, name, role, status, company, avatarUrl, isVerified } = row;
+      <SubscriptionModal openModal={openSub} setOpenSubModal={setOpenSub} />
 
-                        // return (
+      <Card>
+        <UserListToolbar
+          numSelected={selected.length}
+          filterName={filterName}
+          onFilterName={handleFilterByName}
+          selectedIDs={selected}
+          setSelected={setSelected}
+        />
+        <Scrollbar>
+          <TableContainer sx={{ minWidth: 800, overflow: 'hidden' }}>
+            <Table>
+              <UserListHead
+                order={order}
+                orderBy={orderBy}
+                headLabel={TABLE_HEAD}
+                rowCount={SubscriptionData.length}
+                numSelected={selected.length}
+                onRequestSort={handleRequestSort}
+                onSelectAllClick={handleSelectAllClick}
+              />
+              <TableBody>
+                {filteredUsers &&
+                  filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    const isItemSelected = selected.indexOf(row._id) !== -1;
+                    return (
+                      // {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                      // const { id, name, role, status, company, avatarUrl, isVerified } = row;
+
+                      // return (
+                      <>
+                        <EditModal openEditModal={open} setOpenEditModal={setOpen} data={editData} />
+                        <DeleteModal
+                          openDeleteModal={openDelete}
+                          setOpenDelete={setOpenDelete}
+                          id={row._id}
+                          setSelected={setSelected}
+                        />
                         <TableRow
                           hover
                           key={row._id}
@@ -385,7 +427,12 @@ export default function Subscription() {
                             <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row._id)} />
                           </TableCell>
                           <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                              color={row.status === 'Active' ? '#229A16' : '#ff4c00'}
+                            >
                               {/* <Avatar alt={name} src={avatarUrl} /> */}
                               <Typography variant="subtitle2" noWrap>
                                 {row.subscriptionName}
@@ -398,12 +445,14 @@ export default function Subscription() {
                           <TableCell align="left">{row.amount}</TableCell>
                           <TableCell align="left">{moment(row.startDate).format('MM/DD/yyyy')}</TableCell>
                           <TableCell align="left">{moment(row.nextBilling).format('MM/DD/yyyy')}</TableCell>
-                          <TableCell align="left">{JSON.stringify(row.autoRenewal)}</TableCell>
+                          <TableCell align="left">{row.autoRenewal ? 'Yes' : 'No'}</TableCell>
+
                           <TableCell align="center">
                             <Button
                               onClick={(e) => {
                                 e.preventDefault();
                                 handleClickOpen(handleClickOpen);
+                                setEditData(row);
                               }}
                             >
                               <Iconify icon="ic:twotone-mode-edit-outline" color="#1877F2" width={22} height={22} />
@@ -413,7 +462,10 @@ export default function Subscription() {
                             <Button
                               onClick={(e) => {
                                 e.preventDefault();
-                                handledelete({ row });
+                                setOpenDelete(true);
+                                // handledelete(row._id);
+                                setSelected([]);
+                                // handleClick(e, row._id);
                               }}
                             >
                               <Iconify icon="ic:twotone-delete" color="#DF3E30" width={22} height={22} />
@@ -429,41 +481,41 @@ export default function Subscription() {
                             <UserMoreMenu />
                           </TableCell> */}
                         </TableRow>
-                        //   )
-                        // )}
-                      );
-                    })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-
-                {isUserNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <SearchNotFound searchQuery={filterName} />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
+                      </> //   )
+                      // )}
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
                 )}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+              </TableBody>
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={SubscriptionData.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Card>
-      </Container>
+              {isUserNotFound && (
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <SearchNotFound searchQuery={filterName} />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              )}
+            </Table>
+          </TableContainer>
+        </Scrollbar>
+
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={SubscriptionData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Card>
+      {/* </Container> */}
     </Page>
   );
 }

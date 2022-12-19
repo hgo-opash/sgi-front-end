@@ -48,6 +48,7 @@ export default function LoginForm() {
             );
             console.log('login.data ===>  ', res.data);
             localStorage.setItem('Jtoken', res.data.token);
+            localStorage.setItem('Role', res.data.role);
             SuccessToast('Login Successful');
             navigate('/dashboard', { replace: true });
           }

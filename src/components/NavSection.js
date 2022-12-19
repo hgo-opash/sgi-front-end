@@ -43,7 +43,7 @@ function NavItem({ item, active }) {
   const { title, path, icon, info, children } = item;
 
   const [open, setOpen] = useState(isActiveRoot);
-  
+
   const handleOpen = () => {
     setOpen((prev) => !prev);
   };
@@ -149,10 +149,9 @@ export default function NavSection({ navConfig, ...other }) {
   return (
     <Box {...other}>
       <List disablePadding sx={{ p: 1 }}>
-        {navConfig.map((item) => (
-          item.roles && item.roles.includes(Role)&&
-          <NavItem key={item.title} item={item} active={match} />
-        ))}
+        {navConfig.map(
+          (item) => item.roles && item.roles.includes(Role) && <NavItem key={item.title} item={item} active={match} />
+        )}
       </List>
     </Box>
   );

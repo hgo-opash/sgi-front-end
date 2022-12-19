@@ -1,14 +1,17 @@
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 // material
+import { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
 import SuccessToast from '../../../toast/Success';
 import ErrorToast from '../../../toast/Error';
-import { setSubscriptions } from '../../../slices/subscriptionSlice';
+import { deleteSubscription } from '../../../slices/subscriptionSlice';
 import { DeletAllResponse } from '../../../services/Service';
+// import DeleteModal from '../../../DeleteModal';
+import DeleteModal from '../../../pages/DeleteModal';
 
 // ----------------------------------------------------------------------
 
@@ -40,20 +43,9 @@ UserListToolbar.propTypes = {
   onFilterName: PropTypes.func,
 };
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName }) {
+export default function UserListToolbar({ numSelected, filterName, onFilterName, selectedIDs, setSelected }) {
   const dispatch = useDispatch();
-  const handleDeleteAll = () => {
-    DeletAllResponse()
-      .then((res) => {
-        if (res.data.success === true) {
-          SuccessToast('Succesfully deleted');
-          dispatch(setSubscriptions({ subscriptions: [] }));
-        }
-      })
-      .catch((err) => {
-        ErrorToast(err.message);
-      });
-  };
+  const [openDelete, setOpenDelete] = useState(false);
 
   return (
     <RootStyle
@@ -82,11 +74,24 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
       )}
 
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton onClick={() => handleDeleteAll()}>
-            <Iconify icon="eva:trash-2-fill" />
-          </IconButton>
-        </Tooltip>
+        <>
+          <DeleteModal
+            openDeleteModal={openDelete}
+            setOpenDelete={setOpenDelete}
+            id={selectedIDs}
+            setSelected={setSelected}
+          />
+          <Tooltip title="Delete">
+            <IconButton
+              onClick={() => {
+                setOpenDelete(true);
+                // handleDeleteAll();
+              }}
+            >
+              <Iconify icon="eva:trash-2-fill" />
+            </IconButton>
+          </Tooltip>
+        </>
       ) : (
         <Tooltip title="Filter list">
           <IconButton>

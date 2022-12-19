@@ -20,7 +20,7 @@ import Subscription from './pages/Subscription';
 // ----------------------------------------------------------------------
 
 export default function Router() {
-  const { Auth } = useSelector((state) => state.login);
+  const { Auth, Role } = useSelector((state) => state.login);
 
   const token = localStorage.getItem('Jtoken');
 

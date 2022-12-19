@@ -14,12 +14,17 @@ export const subscriptionSlice = createSlice({
     },
 
     deleteSubscription: (state, action) => {
-      console.log('pload ', action.payload);
-      const newState = state.SubscriptionData.filter((val) => val._id !== action.payload.row._id);
+      const newState = state.SubscriptionData.filter((el) => action.payload.indexOf(el._id) < 0);
       state.SubscriptionData = newState;
-
       return state;
     },
+
+    // deleteSubscriptionArray: (state, action) => {
+    //   console.log('pload ==> ', action.payload);
+    //   const newState = state.SubscriptionData.filter((el) => action.payload.indexOf(el._id) < 0);
+    //   state.SubscriptionData = newState;
+    //   return state;
+    // },
   },
 });
 

@@ -53,6 +53,7 @@ export default function UserListHead({
             onChange={onSelectAllClick}
           />
         </TableCell>
+        {console.log(headLabel, 'label.....')}
         {headLabel.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -65,16 +66,26 @@ export default function UserListHead({
               // direction={orderBy === headCell.id ? order : 'asc'}
               // onClick={createSortHandler(headCell.id)}
             > */}
-              <span>{headCell.label}</span>
-              {/* <Button> */}
-                <Iconify onClick={createAscSortHandler(headCell.id)} icon={'mdi:arrow-up'} sx={{cursor:"pointer"}} />
-                <Iconify onClick={createDscSortHandler(headCell.id)} icon={'mdi:arrow-down'} sx={{cursor:"pointer"}} />
-              {/* </Button> */}
-              {/* <Button> */}
-              {/* </Button> */}
-              {orderBy === headCell.id ? (
-                <Box sx={{ ...visuallyHidden }}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</Box>
-              ) : null}
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box>{headCell.label}</Box>
+              {headCell.sort && (
+                <Box sx={{ display: 'flex' }}>
+                  <Iconify
+                    onClick={createAscSortHandler(headCell.id)}
+                    icon={'mdi:arrow-up'}
+                    sx={{ cursor: 'pointer' }}
+                  />
+                  <Iconify
+                    onClick={createDscSortHandler(headCell.id)}
+                    icon={'mdi:arrow-down'}
+                    sx={{ cursor: 'pointer' }}
+                  />
+                </Box>
+              )}
+            </Box>
+            {orderBy === headCell.id ? (
+              <Box sx={{ ...visuallyHidden }}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</Box>
+            ) : null}
             {/* </TableSortLabel> */}
           </TableCell>
         ))}

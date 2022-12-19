@@ -63,11 +63,14 @@ export default function Login() {
   const mdUp = useResponsive('up', 'md');
   const navigate = useNavigate();
 
-  const token = localStorage.getItem('Jtoken');
+  const Role = localStorage.getItem('Role');
 
   React.useEffect(() => {
-    if (token) {
+    if (Role === 'user') {
       navigate('/dashboard', { replace: true });
+    }
+    if (Role === 'business') {
+      navigate('/companies', { replace: true });
     }
   }, []);
 

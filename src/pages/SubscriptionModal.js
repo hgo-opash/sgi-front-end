@@ -151,7 +151,6 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
       });
     },
   });
-  console.log(SubscriptionForm.values, 'fffff');
 
   return (
     <>
