@@ -215,21 +215,25 @@ export default function Subscription() {
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SubscriptionData.length) : 0;
 
-  const activeData = SubscriptionData.filter((row) => row.status === 'Active').sort();
-  const inactiveData = SubscriptionData.filter((row) => row.status === 'Inactive').sort();
-  const sub1 = activeData.sort((a, b) =>
-    // eslint-disable-next-line no-nested-ternary
-    a.subscriptionName > b.subscriptionName ? 1 : b.subscriptionName > a.subscriptionName ? -1 : 0
-  );
-  const sub2 = inactiveData.sort((a, b) =>
-    // eslint-disable-next-line no-nested-ternary
-    a.subscriptionName > b.subscriptionName ? 1 : b.subscriptionName > a.subscriptionName ? -1 : 0
-  );
-  const filteredUsersData = [...sub1, ...sub2];
+  const sortName = (a, b) => {
+    if (a.subscriptionName < b.subscriptionName) {
+      return -1;
+    }
+    if (a.subscriptionName > b.subscriptionName) {
+      return 1;
+    }
+    return 0;
+  };
 
-  const filteredUsers = applySortFilter(filteredUsersData, getComparator(order, orderBy), filterName);
+  const activeData = SubscriptionData.filter((row) => row.status === 'Active');
+  const inactiveData = SubscriptionData.filter((row) => row.status === 'Inactive');
+  const sub1 = activeData.sort(sortName);
+  const sub2 = inactiveData.sort(sortName);
+  const filteredSubsData = [...sub1, ...sub2];
 
-  const isUserNotFound = filteredUsers.length === 0;
+  const filteredSubs = applySortFilter(filteredSubsData, getComparator(order, orderBy), filterName);
+
+  const isUserNotFound = filteredSubs.length === 0;
 
   console.log(SubscriptionData, 'SubscriptionData');
 
@@ -285,7 +289,7 @@ export default function Subscription() {
     },
   }));
 
-  const sortData = SubscriptionData.map((row) => ({
+  const sortData = filteredSubs.map((row) => ({
     ...row,
     startDate: moment(row.startDate).format('MM-DD-yyyy'),
     nextBilling: moment(row.nextBilling).format('MM-DD-yyyy'),
@@ -333,7 +337,7 @@ export default function Subscription() {
               onClose={handleCloseMenu}
             >
               <CSVLink
-                data={filteredUsers}
+                data={sortData}
                 headers={headers}
                 filename={'my-subscription'}
                 className="btn btn-primary"
@@ -347,7 +351,7 @@ export default function Subscription() {
 
               <CSVLink
                 separator={'\t'}
-                data={filteredUsers}
+                data={sortData}
                 headers={headers}
                 filename={'my-subscription.dnl'}
                 className="btn btn-primary"
@@ -360,7 +364,7 @@ export default function Subscription() {
               </CSVLink>
 
               <CSVLink
-                data={filteredUsers}
+                data={sortData}
                 headers={headers}
                 filename={'my-subscription.txt'}
                 className="btn btn-primary"
@@ -399,8 +403,8 @@ export default function Subscription() {
                 onSelectAllClick={handleSelectAllClick}
               />
               <TableBody>
-                {filteredUsers &&
-                  filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                {filteredSubs &&
+                  filteredSubs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                     const isItemSelected = selected.indexOf(row._id) !== -1;
                     return (
                       // {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {

@@ -91,6 +91,12 @@ const DashBoard = () => {
   const inactiveDataSort = inactiveData.sort(sortName);
   const sortedData = [...activeDataSort, ...inactiveDataSort];
 
+  // const budget = 1000;
+
+  // const costPerMonth = SubscriptionData.reduce((a, v) => (a += v.amount), 0);
+
+  // console.log(costPerMonth, 'costPerMonth');
+
   return (
     <>
       {Role === 'user' && (
@@ -122,7 +128,7 @@ const DashBoard = () => {
               }}
             >
               <Box>Total Cost Per Month</Box>
-              <Box>$52</Box>
+              <Box>$15</Box>
             </Grid>
           </Card>
           <Card sx={{ m: 6, height: '110px ' }}>
@@ -140,7 +146,7 @@ const DashBoard = () => {
               }}
             >
               <Box>Total Cost Per Year</Box>
-              <Box>$52</Box>
+              <Box>$15</Box>
             </Grid>
           </Card>
           <Card sx={{ m: 6, height: '110px ' }}>
@@ -158,7 +164,7 @@ const DashBoard = () => {
               }}
             >
               <Box>Total Budget</Box>
-              <Box>$52</Box>
+              <Box>$15</Box>
             </Grid>
           </Card>
           <Card sx={{ m: 6, height: '110px ' }}>
@@ -225,46 +231,44 @@ const DashBoard = () => {
                     ) : (
                       <TableBody>
                         {sortedData &&
-                          sortedData
-                            .map((row) => (
-                              <TableRow
-                                hover
-                                key={row._id}
-                                tabIndex={-1}
-                                // role="checkbox"
-                                // selected={isItemSelected}
-                                // aria-checked={isItemSelected}
-                              >
-                                <TableCell align="left">
-                                  <Typography
-                                    variant="subtitle2"
-                                    color={row.status === 'Active' ? '#229A16' : '#ff4c00'}
-                                    noWrap
-                                  >
-                                    {row.subscriptionName}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="left">{row.frequency}</TableCell>
-                                <TableCell align="left">{row.trialDays}</TableCell>
-                                <TableCell align="left">{row.amount}</TableCell>
-                                <TableCell align="left">{moment(row.startDate).format('MM/DD/yyyy')}</TableCell>
-                                <TableCell align="left">{moment(row.nextBilling).format('MM/DD/yyyy')}</TableCell>
-                                <TableCell align="left">{JSON.stringify(row.autoRenewal)}</TableCell>
-                                <TableCell align="left">
-                                  {row.status === 'Active' && (
-                                    <Label variant="ghost" color="success">
-                                      {row.status}
-                                    </Label>
-                                  )}
-                                  {row.status === 'Inactive' && (
-                                    <Label variant="ghost" color="error">
-                                      {row.status}
-                                    </Label>
-                                  )}
-                                </TableCell>
-                              </TableRow>
-                            ))
-                            .sort()}
+                          sortedData.map((row) => (
+                            <TableRow
+                              hover
+                              key={row._id}
+                              tabIndex={-1}
+                              // role="checkbox"
+                              // selected={isItemSelected}
+                              // aria-checked={isItemSelected}
+                            >
+                              <TableCell align="left">
+                                <Typography
+                                  variant="subtitle2"
+                                  color={row.status === 'Active' ? '#229A16' : '#ff4c00'}
+                                  noWrap
+                                >
+                                  {row.subscriptionName}
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="left">{row.frequency}</TableCell>
+                              <TableCell align="left">{row.trialDays}</TableCell>
+                              <TableCell align="left">{row.amount}</TableCell>
+                              <TableCell align="left">{moment(row.startDate).format('MM/DD/yyyy')}</TableCell>
+                              <TableCell align="left">{moment(row.nextBilling).format('MM/DD/yyyy')}</TableCell>
+                              <TableCell align="left">{JSON.stringify(row.autoRenewal)}</TableCell>
+                              <TableCell align="left">
+                                {row.status === 'Active' && (
+                                  <Label variant="ghost" color="success">
+                                    {row.status}
+                                  </Label>
+                                )}
+                                {row.status === 'Inactive' && (
+                                  <Label variant="ghost" color="error">
+                                    {row.status}
+                                  </Label>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
                       </TableBody>
                     )}
                   </Table>

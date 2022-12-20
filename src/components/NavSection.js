@@ -142,7 +142,8 @@ NavSection.propTypes = {
 
 export default function NavSection({ navConfig, ...other }) {
   const { pathname } = useLocation();
-  const { Email, LastLogin, Role, FirstName } = useSelector((state) => state.login);
+  // const { Email, LastLogin, Role, FirstName } = useSelector((state) => state.login);
+  const Role = localStorage.getItem('Role');
 
   const match = (path) => (path ? !!matchPath({ path, end: false }, pathname) : false);
 

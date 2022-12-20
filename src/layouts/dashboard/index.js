@@ -44,14 +44,14 @@ export default function DashboardLayout() {
   // const { Role } = useSelector((state) => state.login);
   const Role = localStorage.getItem('Role');
 
-  useEffect(() => {
-    if (Role === 'business') {
-      navigate('/companies', { replace: true });
-    }
-    if (Role === 'user') {
-      navigate('/dashboard', { replace: true });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (Role === 'business') {
+  //     navigate('/companies', { replace: true });
+  //   }
+  //   if (Role === 'user') {
+  //     navigate('/dashboard', { replace: true });
+  //   }
+  // }, []);
 
   return (
     <RootStyle>
