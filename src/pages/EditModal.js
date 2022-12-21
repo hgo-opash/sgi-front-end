@@ -16,6 +16,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch } from 'react-redux';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import * as Yup from 'yup';
@@ -39,7 +40,10 @@ const style = {
   border: '2px solid #FFF',
   borderRadius: '20px',
   boxShadow: 24,
-  p: 4,
+  // p: "4 0 4 4",
+  pl: 4,
+  pt: 4,
+  pb: 4,
 };
 
 const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
@@ -68,7 +72,9 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
     nextBillingDate: data?.nextBilling,
     amount: data?.amount,
     autoRenewal: data?.autoRenewal ? 'true' : 'false',
-    status: data?.status,
+    status: `${data?.status}`,
+    comments: data?.comments,
+    description: data?.description,
   };
 
   const EditForm = useFormik({
@@ -116,21 +122,26 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={{ ...style, width: 800 }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ ml: 5 }}>
+        <Box sx={{ ...style, height: '90%', width: 800 }}>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ ml: 3, mb: 3 }}>
             <Typography variant="h4" gutterBottom>
-              Subscription
+              {data.subscriptionName} Subscription
             </Typography>
+            <Box sx={{ pr: 2 }}>
+              <Button onClick={handleClose} color="error">
+                <CloseIcon />
+              </Button>
+            </Box>
           </Stack>
 
-          <Container>
+          <Container sx={{ height: '90%', overflowY: 'scroll' }}>
             <Grid container spacing={1}>
               <Grid item xs={12} sm={12}>
                 <FormikProvider value={EditForm}>
                   <form onSubmit={EditForm.handleSubmit}>
                     <FormControl
                       fullWidth
-                      sx={{ mb: 3 }}
+                      sx={{ mb: 3, mt: 2 }}
                       // error={EditForm.touched.frequency && Boolean(EditForm.errors.frequency)}
                     >
                       <InputLabel id="select3">Frequency</InputLabel>
@@ -253,19 +264,33 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
                       <Select
                         labelId="select4"
                         id="select4"
-                        name="Status"
+                        name="status"
                         label="Status"
-                        value={`${EditForm.values.status}`}
+                        value={EditForm.values.status}
                         onChange={EditForm.handleChange}
                       >
-                        <MenuItem value="Active">Active</MenuItem>
-                        <MenuItem value="Inactive">Inactive</MenuItem>
+                        <MenuItem value={'Active'}>Active</MenuItem>
+                        <MenuItem value={'Inactive'}>Inactive</MenuItem>
                       </Select>
                       {/* {EditForm.touched.autoRenewal && EditForm.errors.autoRenewal ? (
                           <FormHelperText>
                             {EditForm.touched.autoRenewal && EditForm.errors.autoRenewal}
                           </FormHelperText>
                         ) : null} */}
+                    </FormControl>
+
+                    <FormControl fullWidth sx={{ mb: 3 }}>
+                      <Field
+                        as={TextField}
+                        id="input1"
+                        name="comments"
+                        multiline
+                        rows={2}
+                        label="Comments"
+                        variant="outlined"
+                        value={EditForm.values.comments}
+                        onChange={EditForm.handleChange}
+                      />
                     </FormControl>
 
                     <Button
@@ -275,9 +300,9 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
                       // onClick={handleClickOpen}
                       disabled={!EditForm.isValid}
                     >
-                      Edit
+                      Save
                     </Button>
-                    <Button color="error" variant="contained" onClick={() => handleClose()} sx={{ ml: 3 }}>
+                    <Button color="error" variant="contained" onClick={handleClose} sx={{ ml: 3 }}>
                       Cancel
                     </Button>
                   </form>

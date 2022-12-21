@@ -30,6 +30,28 @@ import { setSubscriptions, deleteSubscription } from '../slices/subscriptionSlic
 import { UserListToolbar } from '../sections/@dashboard/user';
 import { GetsubsResponse } from '../services/Service';
 
+const TABLE_HEAD = [
+  {
+    id: 'subscription_name',
+    label: 'Subscription Name',
+    alignRight: false,
+    sort: true,
+  },
+  { id: 'frequency', label: 'Frequency', alignRight: false },
+  { id: 'trial_days', label: 'Trial Days', alignRight: false },
+  { id: 'amount', label: 'Amount', alignRight: false, sort: true },
+  { id: 'start_date', label: 'Start Date', alignRight: false, sort: true },
+  {
+    id: 'next_billing_date',
+    label: 'Next Billing Date',
+    alignRight: false,
+    sort: true,
+  },
+  { id: 'auto_renewal', label: 'Auto Renewal', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
+  // { id: '' },
+];
+
 const DashBoard = () => {
   const [openSub, setOpenSub] = React.useState(false);
   const [page, setPage] = useState(0);
@@ -45,6 +67,15 @@ const DashBoard = () => {
 
   const handleClickOpenSub = () => {
     setOpenSub(true);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   React.useEffect(() => {
@@ -85,17 +116,30 @@ const DashBoard = () => {
     return 0;
   };
 
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SubscriptionData.length) : 0;
+
   const activeData = SubscriptionData.filter((row) => row.status === 'Active').sort();
   const inactiveData = SubscriptionData.filter((row) => row.status === 'Inactive').sort();
   const activeDataSort = activeData.sort(sortName);
   const inactiveDataSort = inactiveData.sort(sortName);
   const sortedData = [...activeDataSort, ...inactiveDataSort];
 
-  // const budget = 1000;
+  const budget = 1000;
 
-  // const costPerMonth = SubscriptionData.reduce((a, v) => (a += v.amount), 0);
+  const costPerMonthArray = SubscriptionData.map((val) =>
+    val.frequency === 'Monthly' && val.status === 'Active' ? val.amount : val.amount / 12
+  );
+  const costPerYearArray = SubscriptionData.map((val) =>
+    val.frequency === 'Annually' && val.status === 'Active' ? val.amount : val.amount * 12
+  );
 
-  // console.log(costPerMonth, 'costPerMonth');
+  // eslint-disable-next-line no-return-assign
+  const costPerMonth = costPerMonthArray.reduce((a, v) => a + v, 0).toFixed(2);
+  // eslint-disable-next-line no-return-assign
+  const costPerYear = costPerYearArray.reduce((a, v) => a + v, 0).toFixed(2);
+  const variance = (budget - costPerYear).toFixed(2);
+
+  console.log(costPerMonthArray, 'costPerMonth');
 
   return (
     <>
@@ -128,7 +172,7 @@ const DashBoard = () => {
               }}
             >
               <Box>Total Cost Per Month</Box>
-              <Box>$15</Box>
+              <Box>${costPerMonth}</Box>
             </Grid>
           </Card>
           <Card sx={{ m: 6, height: '110px ' }}>
@@ -146,7 +190,7 @@ const DashBoard = () => {
               }}
             >
               <Box>Total Cost Per Year</Box>
-              <Box>$15</Box>
+              <Box>${costPerYear}</Box>
             </Grid>
           </Card>
           <Card sx={{ m: 6, height: '110px ' }}>
@@ -164,7 +208,7 @@ const DashBoard = () => {
               }}
             >
               <Box>Total Budget</Box>
-              <Box>$15</Box>
+              <Box>${budget}</Box>
             </Grid>
           </Card>
           <Card sx={{ m: 6, height: '110px ' }}>
@@ -182,7 +226,7 @@ const DashBoard = () => {
               }}
             >
               <Box>Variance from Budget</Box>
-              <Box>$52</Box>
+              <Box>${variance}</Box>
             </Grid>
           </Card>
 
@@ -198,12 +242,6 @@ const DashBoard = () => {
             </Stack>
 
             <Card>
-              <UserListToolbar
-                numSelected={selected.length}
-                filterName={filterName}
-                onFilterName={handleFilterByName}
-              />
-
               <Scrollbar>
                 <TableContainer sx={{ minWidth: 800 }}>
                   <Table>
@@ -279,11 +317,11 @@ const DashBoard = () => {
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25]}
                   component="div"
-                  count={SubscriptionData?.length}
+                  count={sortedData?.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
-                  // onPageChange={handleChangePage}
-                  // onRowsPerPageChange={handleChangeRowsPerPage}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
                 />
               )}
             </Card>

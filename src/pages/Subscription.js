@@ -66,9 +66,9 @@ const TABLE_HEAD = [
     sort: true,
   },
   { id: 'auto_renewal', label: 'Auto Renewal', alignRight: false },
+  { id: 'comments', label: 'Comments', alignRight: false },
   { id: 'edit', label: 'Edit', alignRight: false },
   { id: 'delete', label: 'Delete', alignRight: false },
-  // { id: '' },
 ];
 
 // ----------------------------------------------------------------------
@@ -84,21 +84,30 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
+  console.log(orderBy, '>?????');
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function applySortFilter(array, comparator, query) {
+function applySortFilter(array, comparator, query, cname) {
+  console.log(query, cname, 'query');
   const stabilizedThis = array.map((el, index) => [el, index]);
-  console.log(stabilizedThis, 'stabilizedThis');
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.subscriptionName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    if (cname === 'description') {
+      return filter(array, (_user) => _user?.description.toLowerCase().indexOf(query?.toLowerCase()) !== -1);
+    }
+    if (cname === 'subscriptionName') {
+      return filter(array, (_user) => _user?.subscriptionName.toLowerCase().indexOf(query?.toLowerCase()) !== -1);
+    }
+    // return filter(array, (_user) => {
+    //   return _user?.description.toLowerCase().indexOf(query?.toLowerCase()) !== -1;
+    // });
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -118,6 +127,7 @@ export default function Subscription() {
   const [filterName, setFilterName] = useState('');
   const [openSub, setOpenSub] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [cname, setCname] = useState('description');
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -231,7 +241,7 @@ export default function Subscription() {
   const sub2 = inactiveData.sort(sortName);
   const filteredSubsData = [...sub1, ...sub2];
 
-  const filteredSubs = applySortFilter(filteredSubsData, getComparator(order, orderBy), filterName);
+  const filteredSubs = applySortFilter(filteredSubsData, getComparator(order, orderBy), filterName, cname);
 
   const isUserNotFound = filteredSubs.length === 0;
 
@@ -245,6 +255,7 @@ export default function Subscription() {
     { label: 'Next Billing', key: 'nextBilling' },
     { label: 'Amount', key: 'amount' },
     { label: 'AutoRenewal', key: 'autoRenewal' },
+    { label: 'Comments', key: 'comments' },
     { label: 'Status', key: 'status' },
   ];
 
@@ -397,7 +408,7 @@ export default function Subscription() {
                 order={order}
                 orderBy={orderBy}
                 headLabel={TABLE_HEAD}
-                rowCount={SubscriptionData.length}
+                rowCount={filteredSubs.length}
                 numSelected={selected.length}
                 onRequestSort={handleRequestSort}
                 onSelectAllClick={handleSelectAllClick}
@@ -450,6 +461,7 @@ export default function Subscription() {
                           <TableCell align="left">{moment(row.startDate).format('MM/DD/yyyy')}</TableCell>
                           <TableCell align="left">{moment(row.nextBilling).format('MM/DD/yyyy')}</TableCell>
                           <TableCell align="left">{row.autoRenewal ? 'Yes' : 'No'}</TableCell>
+                          <TableCell align="left">{row.comments}</TableCell>
 
                           <TableCell align="center">
                             <Button

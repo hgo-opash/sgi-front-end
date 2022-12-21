@@ -17,6 +17,7 @@ import {
   OutlinedInput,
   InputAdornment,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import MomentUtils from '@date-io/moment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -117,6 +118,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
         return moment(value) > moment();
       }),
     status: Yup.string().required('Please select Status'),
+    comments: Yup.string(),
   });
 
   const initialValues = {
@@ -129,6 +131,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
     amount: null,
     autoRenewal: '',
     status: '',
+    comments: '',
   };
 
   const SubscriptionForm = useFormik({
@@ -167,6 +170,11 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
               <Typography variant="h4" gutterBottom>
                 Subscription
               </Typography>
+              <Box sx={{ pr: 2 }}>
+                <Button onClick={handleCloseSub} color="error">
+                  <CloseIcon />
+                </Button>
+              </Box>
             </Stack>
 
             <Container sx={{ height: '90%', overflowY: 'scroll' }}>
@@ -191,7 +199,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                           id="subscriptionType"
                           // name="subscriptionType"
                         >
-                          Subscription Type
+                          Subscription Type*
                         </InputLabel>
 
                         <Field
@@ -201,19 +209,12 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                           label="Subscription Type"
                           value={SubscriptionForm.values.subscriptionType}
                           onChange={SubscriptionForm.handleChange}
-                          // helperText={
-                          //   SubscriptionForm.touched.subscriptionType && SubscriptionForm.errors.subscriptionType
-                          // }
                         >
                           {companyTypes.map((item) => (
                             <MenuItem key={item} value={item} onClick={() => handleCompanyClick(item)}>
                               {item}
                             </MenuItem>
                           ))}
-                          {/* <MenuItem value={'Streaming'}>Streaming</MenuItem>
-                        <MenuItem value={'Banking'}>Banking</MenuItem>
-                        <MenuItem value={'I.T.'}>I.T.</MenuItem>
-                        <MenuItem value={'Beauty & Fashion'}>Beauty & Fashion</MenuItem> */}
                         </Field>
                         {SubscriptionForm.touched.subscriptionType && SubscriptionForm.errors.subscriptionType ? (
                           <FormHelperText>
@@ -227,7 +228,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         sx={{ mb: 3 }}
                         error={SubscriptionForm.touched.company && Boolean(SubscriptionForm.errors.company)}
                       >
-                        <InputLabel id="company">Company</InputLabel>
+                        <InputLabel id="company">Company*</InputLabel>
                         <Field
                           as={Select}
                           id="company"
@@ -250,9 +251,6 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                               {item.name}
                             </MenuItem>
                           ))}
-                          {/* <MenuItem value={'Netflix'}>Netflix</MenuItem>
-                        <MenuItem value={'Prime video'}>Prime video</MenuItem>
-                        <MenuItem value={'Hulu'}>Hulu</MenuItem> */}
                         </Field>
                         {SubscriptionForm.touched.company && SubscriptionForm.errors.company ? (
                           <FormHelperText>
@@ -288,7 +286,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         sx={{ mb: 3 }}
                         error={SubscriptionForm.touched.frequency && Boolean(SubscriptionForm.errors.frequency)}
                       >
-                        <InputLabel id="select3">Frequency</InputLabel>
+                        <InputLabel id="select3">Frequency*</InputLabel>
                         <Field
                           as={Select}
                           labelId="select3"
@@ -313,7 +311,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         <LocalizationProvider dateAdapter={MomentUtils}>
                           <Field
                             as={DesktopDatePicker}
-                            label="Contract Start Date"
+                            label="Contract Start Date*"
                             inputFormat="MM/DD/YYYY"
                             onChange={(e) => {
                               SubscriptionForm.setFieldValue('contractStartDate', moment(e._d).format('yyyy-MM-DD'));
@@ -342,7 +340,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         <LocalizationProvider dateAdapter={MomentUtils}>
                           <Field
                             as={DesktopDatePicker}
-                            label="Next Billing Date"
+                            label="Next Billing Date*"
                             inputFormat="MM/DD/YYYY"
                             onChange={(e) => {
                               SubscriptionForm.setFieldValue('nextBillingDate', moment(e._d).format('yyyy-MM-DD'));
@@ -372,7 +370,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         sx={{ mb: 3 }}
                         error={SubscriptionForm.touched.amount && Boolean(SubscriptionForm.errors.amount)}
                       >
-                        <InputLabel htmlFor="amount">Amount</InputLabel>
+                        <InputLabel htmlFor="amount">Amount*</InputLabel>
                         <Field
                           as={OutlinedInput}
                           label="Amount"
@@ -394,7 +392,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         sx={{ mb: 3 }}
                         error={SubscriptionForm.touched.autoRenewal && Boolean(SubscriptionForm.errors.autoRenewal)}
                       >
-                        <InputLabel id="select4">Auto Renewal</InputLabel>
+                        <InputLabel id="select4">Auto Renewal*</InputLabel>
                         <Field
                           as={Select}
                           labelId="select4"
@@ -419,7 +417,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         sx={{ mb: 3 }}
                         error={SubscriptionForm.touched.status && Boolean(SubscriptionForm.errors.status)}
                       >
-                        <InputLabel id="select5">Status</InputLabel>
+                        <InputLabel id="select5">Status*</InputLabel>
                         <Field
                           as={Select}
                           labelId="select5"
@@ -439,11 +437,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         ) : null}
                       </FormControl>
 
-                      <FormControl
-                        fullWidth
-                        sx={{ mb: 3 }}
-                        error={SubscriptionForm.touched.description && Boolean(SubscriptionForm.errors.description)}
-                      >
+                      <FormControl fullWidth sx={{ mb: 3 }}>
                         <Field
                           as={TextField}
                           id="input1"
@@ -452,11 +446,6 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                           rows={2}
                           label="Comments"
                           variant="outlined"
-                          // value={SubscriptionForm.values.description}
-                          // onChange={SubscriptionForm.handleChange}
-                          // error={SubscriptionForm.touched.description && Boolean(SubscriptionForm.errors.description)}
-                          // helperText={SubscriptionForm.touched.description && SubscriptionForm.errors.description}
-                          // disabled
                         />
                       </FormControl>
 
@@ -469,7 +458,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                       >
                         Create
                       </Button>
-                      <Button color="error" variant="contained" onClick={() => handleCloseSub()} sx={{ ml: 3 }}>
+                      <Button color="error" variant="contained" onClick={handleCloseSub} sx={{ ml: 3 }}>
                         Cancel
                       </Button>
                     </form>

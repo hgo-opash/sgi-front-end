@@ -17,6 +17,8 @@ export const SaveCompanyResponse = (values) =>
     },
   });
 
+export const GetcountiesResponse = () => axios.get(`${process.env.REACT_APP_API_URL}/countries`);
+
 export const GetcompaniesResponse = () =>
   axios.get(`${process.env.REACT_APP_API_URL}/getcompanies`, {
     headers: {

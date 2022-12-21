@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MomentUtils from '@date-io/moment';
 
@@ -20,6 +20,8 @@ import {
   MenuItem,
   InputLabel,
   FormHelperText,
+  Box,
+  Typography,
   // makeStyles,
 } from '@mui/material';
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -28,8 +30,7 @@ import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import moment from 'moment';
 import SuccessToast from '../../../toast/Success';
 import ErrorToast from '../../../toast/Error';
-import { RegisterResponse } from '../../../services/Service';
-
+import { GetcountiesResponse, RegisterResponse } from '../../../services/Service';
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
@@ -38,6 +39,14 @@ export default function RegisterForm() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    GetcountiesResponse().then((res) => {
+      // console.log('countries ===> ', res.data.data);
+      setCountries(res.data.data);
+    });
+  });
 
   const SignUpSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
@@ -71,6 +80,7 @@ export default function RegisterForm() {
     firstName: '',
     lastName: '',
     email: '',
+    country: '',
     password: '',
     middleName: '',
     confirmPassword: '',
@@ -233,6 +243,40 @@ export default function RegisterForm() {
                 ),
               }}
             />
+
+            <FormControl>
+              <InputLabel>Country</InputLabel>
+              <Field
+                as={Select}
+                name="country"
+                value={SignUpFormik.values.country}
+                onChange={SignUpFormik.handleChange}
+                autoWidth
+                label="Country "
+                error={SignUpFormik.touched.country && Boolean(SignUpFormik.errors.country)}
+                // style={{ display: 'flex' }}
+
+                // helperText={SignUpFormik.touched.countryCode && SignUpFormik.errors.countryCode}
+                sx={{
+                  '& .MuiSelect-select': {
+                    display: 'flex',
+                  },
+                }}
+              >
+                {countries.map((val) => (
+                  <MenuItem key={val.name} value={val.name} sx={{ display: 'flex' }}>
+                    <img src={val.image} alt={val.code} height={'20px'} width={'20px'} style={{ display: 'inline' }} />
+                    <span style={{ padding: '0 8px' }}>{val.name}</span>
+                  </MenuItem>
+                ))}
+              </Field>
+              {SignUpFormik.errors.countryCode && (
+                <FormHelperText sx={{ color: '#FF4842' }}>
+                  {SignUpFormik.touched.country && SignUpFormik.errors.country}
+                </FormHelperText>
+              )}
+            </FormControl>
+
             <Field
               as={TextField}
               type={showPassword ? 'text' : 'password'}

@@ -1,4 +1,13 @@
-import { Box, Button, Dialog, DialogContent, DialogContentText, DialogTitle, Modal } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Modal,
+} from '@mui/material';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { DeletAllResponse, DeletesubResponse } from '../services/Service';
@@ -17,7 +26,7 @@ const DeleteModal = ({ openDeleteModal, setOpenDelete, id, setSelected }) => {
     width: 400,
     bgcolor: 'background.paper',
     border: '2px solid #000',
-    boxShadow: 24,
+    // boxShadow: 24,
     pt: 2,
     px: 4,
     pb: 3,
@@ -59,96 +68,79 @@ const DeleteModal = ({ openDeleteModal, setOpenDelete, id, setSelected }) => {
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
-        <Box sx={{ ...style, width: 500 }}>
+        <Box sx={{ ...style, width: 450, height: 180, pt: 3 }}>
           <DialogTitle id="alert-dialog-title" sx={{ textAlign: 'center' }}>
-            Deleting Subscription is Successful
+            Do you sure want to Delete Data?
           </DialogTitle>
 
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description" sx={{ mb: 2, textAlign: 'center' }}>
-              Do you sure want to Delete Data?
-            </DialogContentText>
+          <Box
+            sx={{
+              display: 'flex',
+              flexFlow: 'row',
+              justifyContent: 'center',
+            }}
+          >
+            <Box sx={{ display: 'flex', mt: 1 }}>
+              <Button
+                variant="contained"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (id.length > 1) {
+                    console.log('handle all');
+                    handleDeleteAll(id);
+                  } else {
+                    console.log('handle 1');
+                    handledelete(id);
+                  }
+                  setOpenDelete(false);
+                }}
+              >
+                Yes
+              </Button>
+            </Box>
 
-            <Box
-              sx={{
-                display: 'flex',
-                flexFlow: 'row',
-                justifyContent: 'center',
+            <Box sx={{ display: 'flex', ml: 3, mt: 1 }}>
+              <Button
+                variant="contained"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setOpenDelete(false);
+                }}
+              >
+                No
+              </Button>
+            </Box>
+          </Box>
+          {/* </DialogContent> */}
+          {/* <DialogActions>
+            <Button
+              variant="contained"
+              onClick={(e) => {
+                e.preventDefault();
+                if (id.length > 1) {
+                  console.log('handle all');
+                  handleDeleteAll(id);
+                } else {
+                  console.log('handle 1');
+                  handledelete(id);
+                }
+                setOpenDelete(false);
               }}
             >
-              <Box sx={{ display: 'flex', mb: 2 }}>
-                <Button
-                  variant="contained"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (id.length > 1) {
-                      console.log('handle all');
-                      handleDeleteAll(id);
-                    } else {
-                      console.log('handle 1');
-                      handledelete(id);
-                    }
-                    setOpenDelete(false);
-                  }}
-                >
-                  Yes
-                </Button>
-              </Box>
-
-              <Box sx={{ display: 'flex', mb: 2, ml: 3 }}>
-                <Button
-                  variant="contained"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setOpenDelete(false);
-                  }}
-                >
-                  No
-                </Button>
-              </Box>
-            </Box>
-          </DialogContent>
+              Yes
+            </Button>
+            <Button
+              variant="contained"
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenDelete(false);
+              }}
+            >
+              No
+            </Button>
+          </DialogActions> */}
         </Box>
       </Modal>
-      {/* <Dialog
-          open={openDeleteModal}
-          // onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          fullWidth
-          maxWidth={'sm'}
-        >
-          <DialogTitle id="alert-dialog-title" sx={{ textAlign: 'center' }}>
-            Deleting Subscription is Successful
-          </DialogTitle>
-  
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description" sx={{ mb: 2, textAlign: 'center' }}>
-              Do you sure want to Delete Data?
-            </DialogContentText>
-  
-            <Box sx={{ display: 'flex', flexFlow: 'row', justifyContent: 'center' }}>
-              <Box sx={{ display: 'flex', mb: 2 }}>
-                <Button variant="contained" onClick={(id) => handledelete(id)}>
-                  Yes
-                </Button>
-              </Box>
-  
-              <Box sx={{ display: 'flex', mb: 2, ml: 3 }}>
-                <Button variant="contained" onClick={setOpenDeleteModal}>
-                  No
-                </Button>
-              </Box>
-            </Box>
-          </DialogContent>
-  
-          {/* <DialogActions>
-            <Button onClick={handleClose}>Disagree</Button>
-            <Button onClick={handleClose} autoFocus>
-              Agree
-            </Button>
-          </DialogActions> 
-        </Dialog> */}
     </>
   );
 };

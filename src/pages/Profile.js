@@ -12,8 +12,12 @@ import {
   Select,
   Stack,
   TextField,
+  Card,
+  Grid,
+  Typography,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import EditIcon from '@mui/icons-material/Edit';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import React, { useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
@@ -43,27 +47,50 @@ const Profile = () => {
       <form>
         <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
           <Stack spacing={4} sx={{ width: '70%' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-              <Avatar
-                sx={{ width: 150, height: 150 }}
-                alt="Remy Sharp"
-                src={`${process.env.REACT_APP_API_URL}/${ProfilePic}`}
-              />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+              <Box>
+                <Avatar
+                  sx={{ width: 150, height: 150 }}
+                  alt="Remy Sharp"
+                  src={`${process.env.REACT_APP_API_URL}/${ProfilePic}`}
+                />
+                {console.log(`${process.env.REACT_APP_API_URL}/${ProfilePic}`)}
+                <input
+                  style={{ display: 'none' }}
+                  id="contained-button-file"
+                  type="file"
+                  onChange={(e) => {
+                    pictureUploader(e);
+                  }}
+                />
+                <FormLabel htmlFor="contained-button-file">
+                  <Button variant="contained" color="primary" component="span" sx={{ ml: 4, mt: 2 }}>
+                    Upload
+                  </Button>
+                </FormLabel>
+              </Box>
+              <Card sx={{ mt: 4, height: '110px ', width: '300px' }}>
+                <Grid
+                  container
+                  sx={{
+                    height: '100%',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    pl: '20px',
+                    pr: '30px',
+
+                    backgroundColor: '#FFF7CD',
+                    color: '#7A4F01',
+                  }}
+                >
+                  <Box sx={{ display: 'flex' }}>
+                    <Typography sx={{ fontSize: '23px' }}>Total Budget:</Typography>
+                    <Typography sx={{ fontSize: '23px' }}>$15</Typography>
+                  </Box>
+                  <EditIcon sx={{ cursor: 'pointer' }} />
+                </Grid>
+              </Card>
             </Box>
-            {console.log(`${process.env.REACT_APP_API_URL}/${ProfilePic}`)}
-            <input
-              style={{ display: 'none' }}
-              id="contained-button-file"
-              type="file"
-              onChange={(e) => {
-                pictureUploader(e);
-              }}
-            />
-            <FormLabel htmlFor="contained-button-file">
-              <Button variant="contained" color="primary" component="span">
-                Upload
-              </Button>
-            </FormLabel>
             <TextField
               name="firstName"
               label="First Name"
