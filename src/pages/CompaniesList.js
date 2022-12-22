@@ -41,7 +41,7 @@ import { setLogindata } from '../slices/loginSlice';
 import { deleteSubscription, setSubscriptions } from '../slices/subscriptionSlice';
 import SubscriptionModal from './SubscriptionModal';
 import SuccessToast from '../toast/Success';
-import { DeletesubResponse, GetsubsResponse } from '../services/Service';
+import { DeletesubResponse, GetcompaniesResponse, GetsubsResponse } from '../services/Service';
 import EditModal from './EditModal';
 import DeleteModal from './DeleteModal';
 
@@ -49,24 +49,17 @@ import DeleteModal from './DeleteModal';
 
 const TABLE_HEAD = [
   {
-    id: 'subscription_name',
-    label: 'Subscription Name',
+    id: 'companyType',
+    label: 'Type',
     alignRight: false,
-    sort: true,
   },
+  { id: 'name', label: 'Name', alignRight: false, sort: true },
   { id: 'description', label: 'Description', alignRight: false },
-  { id: 'frequency', label: 'Frequency', alignRight: false },
-  { id: 'trial_days', label: 'Trial Days', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false, sort: true },
-  { id: 'start_date', label: 'Start Date', alignRight: false, sort: true },
-  {
-    id: 'next_billing_date',
-    label: 'Next Billing Date',
-    alignRight: false,
-    sort: true,
-  },
-  { id: 'auto_renewal', label: 'Auto Renewal', alignRight: false },
-  { id: 'comments', label: 'Comments', alignRight: false },
+  { id: 'website', label: 'Website', alignRight: false },
+  { id: 'price', label: 'Price', alignRight: false, sort: true },
+  { id: 'popular', label: 'Popular', alignRight: false },
+  { id: 'createdAt', label: 'Created At', alignRight: false, sort: true },
+  { id: 'updatedAt', label: 'Updated At', alignRight: false, sort: true },
   { id: 'edit', label: 'Edit', alignRight: false },
   { id: 'delete', label: 'Delete', alignRight: false },
 ];
@@ -74,8 +67,6 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
-  console.log(a, b, 'ab>>>>>>>>>');
-  console.log(orderBy, 'orderBy');
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -86,7 +77,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  console.log(orderBy, 'orderBy2');
+  console.log(orderBy, '>?????');
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -114,22 +105,22 @@ function applySortFilter(array, comparator, query, cname) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Subscription() {
+export default function CompaniesList() {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
 
   const [selected, setSelected] = useState([]);
   const [editData, setEditData] = useState('');
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const [orderBy, setOrderBy] = useState('name');
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [download, setDownload] = useState(false);
   const [filterName, setFilterName] = useState('');
-  const [openSub, setOpenSub] = useState(false);
+  const [openSub, setOpenSub] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [cname, setCname] = useState('description');
-  const [deleteid, setDeleteId] = useState();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -137,9 +128,9 @@ export default function Subscription() {
   const openMenu = Boolean(anchorEl);
 
   React.useEffect(() => {
-    GetsubsResponse()
+    GetcompaniesResponse()
       .then((res) => {
-        console.log(res.data);
+        console.log(res.data, '????????/');
         if (res.data.success === true) {
           dispatch(
             setLogindata({
@@ -237,11 +228,12 @@ export default function Subscription() {
     return 0;
   };
 
-  const activeData = SubscriptionData.filter((row) => row.status === 'Active');
-  const inactiveData = SubscriptionData.filter((row) => row.status === 'Inactive');
-  const sub1 = activeData.sort(sortName);
-  const sub2 = inactiveData.sort(sortName);
-  const filteredSubsData = [...sub1, ...sub2];
+  //   const activeData = SubscriptionData.filter((row) => row.status === 'Active');
+  //   const inactiveData = SubscriptionData.filter((row) => row.status === 'Inactive');
+  //   const sub1 = activeData.sort(sortName);
+  //   const sub2 = inactiveData.sort(sortName);
+  //   const filteredSubsData = [...sub1, ...sub2];
+  const filteredSubsData = SubscriptionData;
 
   const filteredSubs = applySortFilter(filteredSubsData, getComparator(order, orderBy), filterName, cname);
 
@@ -250,15 +242,14 @@ export default function Subscription() {
   console.log(SubscriptionData, 'SubscriptionData');
 
   const headers = [
-    { label: 'Subscription Name', key: 'subscriptionName' },
-    { label: 'Frequency', key: 'frequency' },
-    { label: 'Trial Days', key: 'trialDays' },
-    { label: 'Start Date', key: 'startDate' },
-    { label: 'Next Billing', key: 'nextBilling' },
-    { label: 'Amount', key: 'amount' },
-    { label: 'AutoRenewal', key: 'autoRenewal' },
-    { label: 'Comments', key: 'comments' },
-    { label: 'Status', key: 'status' },
+    { label: 'Type', key: 'companyType' },
+    { label: 'Name', key: 'name' },
+    { label: 'Description', key: 'description' },
+    { label: 'Website', key: 'website' },
+    { label: 'Price', key: 'price' },
+    { label: 'Popular', key: 'popular' },
+    { label: 'Created At', key: 'createdAt' },
+    { label: 'Updated At', key: 'updatedAt' },
   ];
 
   const StyledMenu = styled((props) => (
@@ -304,20 +295,18 @@ export default function Subscription() {
 
   const sortData = filteredSubs.map((row) => ({
     ...row,
-    startDate: moment(row.startDate).format('MM-DD-yyyy'),
-    nextBilling: moment(row.nextBilling).format('MM-DD-yyyy'),
-    autoRenewal: row.autoRenewal ? 'Yes' : 'No',
+    startDate: moment(row.createdAt).format('MM-DD-yyyy'),
+    nextBilling: moment(row.updatedAt).format('MM-DD-yyyy'),
+    popular: row.popular ? 'Yes' : 'No',
   }));
-
-  const handledelete = (id) => {
-    setDeleteId(id);
-  };
+  console.log(sortData, 'sortData>>>>');
 
   return (
-    <Page title="User">
+    <Page title="Subscriptions">
+      {/* <Container> */}
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4" gutterBottom>
-          Subscriptions
+          Subscriptions List
         </Typography>
         <Box sx={{ display: 'flex' }}>
           <Button
@@ -428,7 +417,7 @@ export default function Subscription() {
                         <DeleteModal
                           openDeleteModal={openDelete}
                           setOpenDelete={setOpenDelete}
-                          id={[deleteid]}
+                          id={row._id}
                           setSelected={setSelected}
                         />
                         <TableRow
@@ -443,25 +432,17 @@ export default function Subscription() {
                             <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row._id)} />
                           </TableCell>
                           <TableCell component="th" scope="row" padding="none">
-                            <Stack
-                              direction="row"
-                              alignItems="center"
-                              spacing={2}
-                              color={row.status === 'Active' ? '#229A16' : '#ff4c00'}
-                            >
-                              <Typography variant="subtitle2" noWrap>
-                                {row.subscriptionName}
-                              </Typography>
-                            </Stack>
+                            <Typography variant="subtitle2" noWrap>
+                              {row.companyType}
+                            </Typography>
                           </TableCell>
+                          <TableCell align="left">{row.name}</TableCell>
                           <TableCell align="left">{row.description}</TableCell>
-                          <TableCell align="left">{row.frequency}</TableCell>
-                          <TableCell align="left">{row.trialDays}</TableCell>
-                          <TableCell align="left">${row.amount}</TableCell>
-                          <TableCell align="left">{moment(row.startDate).format('MM/DD/yyyy')}</TableCell>
-                          <TableCell align="left">{moment(row.nextBilling).format('MM/DD/yyyy')}</TableCell>
-                          <TableCell align="left">{row.autoRenewal ? 'Yes' : 'No'}</TableCell>
-                          <TableCell align="left">{row.comments}</TableCell>
+                          <TableCell align="left">{row.website}</TableCell>
+                          <TableCell align="left">{row.price}</TableCell>
+                          <TableCell align="left">{row.popular ? 'Yes' : 'No'}</TableCell>
+                          <TableCell align="left">{moment(row.createdAt).format('MM/DD/yyyy')}</TableCell>
+                          <TableCell align="left">{moment(row.updatedAt).format('MM/DD/yyyy')}</TableCell>
 
                           <TableCell align="center">
                             <Button
@@ -479,15 +460,26 @@ export default function Subscription() {
                               onClick={(e) => {
                                 e.preventDefault();
                                 setOpenDelete(true);
-                                handledelete(row._id);
+                                // handledelete(row._id);
                                 setSelected([]);
+                                // handleClick(e, row._id);
                               }}
                             >
                               <Iconify icon="ic:twotone-delete" color="#DF3E30" width={22} height={22} />
                             </Button>
                           </TableCell>
+                          {/* <TableCell align="left">
+                          <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
+                            {sentenceCase(status)}
+                          </Label>
+                        </TableCell> */}
+
+                          {/* <TableCell align="right">
+                            <UserMoreMenu />
+                          </TableCell> */}
                         </TableRow>
-                      </>
+                      </> //   )
+                      // )}
                     );
                   })}
                 {emptyRows > 0 && (
@@ -520,6 +512,7 @@ export default function Subscription() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
+      {/* </Container> */}
     </Page>
   );
 }

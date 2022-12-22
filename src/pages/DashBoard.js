@@ -49,7 +49,6 @@ const TABLE_HEAD = [
   },
   { id: 'auto_renewal', label: 'Auto Renewal', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
-  // { id: '' },
 ];
 
 const DashBoard = () => {
@@ -116,8 +115,6 @@ const DashBoard = () => {
     return 0;
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SubscriptionData.length) : 0;
-
   const activeData = SubscriptionData.filter((row) => row.status === 'Active').sort();
   const inactiveData = SubscriptionData.filter((row) => row.status === 'Inactive').sort();
   const activeDataSort = activeData.sort(sortName);
@@ -126,20 +123,23 @@ const DashBoard = () => {
 
   const budget = 1000;
 
-  const costPerMonthArray = SubscriptionData.map((val) =>
-    val.frequency === 'Monthly' && val.status === 'Active' ? val.amount : val.amount / 12
-  );
-  const costPerYearArray = SubscriptionData.map((val) =>
-    val.frequency === 'Annually' && val.status === 'Active' ? val.amount : val.amount * 12
-  );
+  const costPerMonthArray = SubscriptionData.map((val) => {
+    if (val.status === 'Active') {
+      return val.frequency === 'Monthly' ? val.amount : val.amount / 12;
+    }
+    return 0;
+  });
 
-  // eslint-disable-next-line no-return-assign
+  const costPerYearArray = SubscriptionData.map((val) => {
+    if (val.status === 'Active') {
+      return val.frequency === 'Annually' ? val.amount : val.amount * 12;
+    }
+    return 0;
+  });
+
   const costPerMonth = costPerMonthArray.reduce((a, v) => a + v, 0).toFixed(2);
-  // eslint-disable-next-line no-return-assign
   const costPerYear = costPerYearArray.reduce((a, v) => a + v, 0).toFixed(2);
   const variance = (budget - costPerYear).toFixed(2);
-
-  console.log(costPerMonthArray, 'costPerMonth');
 
   return (
     <>
@@ -211,7 +211,7 @@ const DashBoard = () => {
               <Box>${budget}</Box>
             </Grid>
           </Card>
-          <Card sx={{ m: 6, height: '110px ' }}>
+          <Card sx={{ m: 6, height: '110px' }}>
             <Grid
               container
               sx={{
@@ -269,7 +269,7 @@ const DashBoard = () => {
                     ) : (
                       <TableBody>
                         {sortedData &&
-                          sortedData.map((row) => (
+                          sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                             <TableRow
                               hover
                               key={row._id}

@@ -1,10 +1,4 @@
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import ErrorToast from '../toast/Error';
-import SuccessToast from '../toast/Success';
-import { setLogindata } from '../slices/loginSlice';
-import { deleteSubscription, setSubscriptions } from '../slices/subscriptionSlice';
-import { setCompanies } from '../slices/companiesSlice';
 
 export const LoginResponse = (values) => axios.post(`${process.env.REACT_APP_API_URL}/login`, values);
 
@@ -52,18 +46,26 @@ export const EditsubsResponse = (id, values) =>
   );
 
 export const DeletesubResponse = (id) =>
-  axios.post(`${process.env.REACT_APP_API_URL}/deletsub`, [id], {
-    headers: {
-      authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-    },
-  });
+  axios.post(
+    `${process.env.REACT_APP_API_URL}/deletsub`,
+    { id },
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+      },
+    }
+  );
 
 export const DeletAllResponse = (selectedIDs) =>
-  axios.post(`${process.env.REACT_APP_API_URL}/deletsub`, selectedIDs, {
-    headers: {
-      authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-    },
-  });
+  axios.post(
+    `${process.env.REACT_APP_API_URL}/deletsub`,
+    { id: selectedIDs },
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+      },
+    }
+  );
 
 export const ProfilepicResponse = (e) =>
   axios.post(

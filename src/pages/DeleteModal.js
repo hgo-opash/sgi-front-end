@@ -111,34 +111,6 @@ const DeleteModal = ({ openDeleteModal, setOpenDelete, id, setSelected }) => {
               </Button>
             </Box>
           </Box>
-          {/* </DialogContent> */}
-          {/* <DialogActions>
-            <Button
-              variant="contained"
-              onClick={(e) => {
-                e.preventDefault();
-                if (id.length > 1) {
-                  console.log('handle all');
-                  handleDeleteAll(id);
-                } else {
-                  console.log('handle 1');
-                  handledelete(id);
-                }
-                setOpenDelete(false);
-              }}
-            >
-              Yes
-            </Button>
-            <Button
-              variant="contained"
-              onClick={(e) => {
-                e.preventDefault();
-                setOpenDelete(false);
-              }}
-            >
-              No
-            </Button>
-          </DialogActions> */}
         </Box>
       </Modal>
     </>

@@ -5,7 +5,6 @@ import Iconify from '../../components/Iconify';
 
 const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
-
 const navConfig = [
   {
     title: 'Dashboard',
@@ -32,16 +31,22 @@ const navConfig = [
     roles: ['user'],
   },
   {
+    title: 'Companies',
+    path: '/companieslist',
+    icon: getIcon('eva:people-fill'),
+    roles: ['business'],
+  },
+  {
     title: 'Add Companies',
     path: '/companies',
     icon: getIcon('eva:people-fill'),
     roles: ['business'],
   },
   {
-    title: 'Companies',
-    path: '/companieslist',
+    title: 'Admin',
+    path: '/companies',
     icon: getIcon('eva:people-fill'),
-    roles: ['business'],
+    roles: ['admin'],
   },
 ];
 

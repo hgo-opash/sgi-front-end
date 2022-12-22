@@ -17,6 +17,7 @@ import Companies from './pages/Companies';
 import DashBoard from './pages/DashBoard';
 import Profile from './pages/Profile';
 import Subscription from './pages/Subscription';
+import CompaniesList from './pages/CompaniesList';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -35,6 +36,7 @@ export default function Router() {
         { path: '/offers', element: <Offers /> },
         { path: '/companies', element: <Companies /> },
         { path: '/profile', element: <Profile /> },
+        { path: '/companieslist', element: <CompaniesList /> },
       ],
     },
 

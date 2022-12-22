@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 // material
 import { Box, Checkbox, TableRow, TableCell, TableHead, TableSortLabel, Button, Typography } from '@mui/material';
+import moment from 'moment';
 import Iconify from '../../../components/Iconify';
 
 // ----------------------------------------------------------------------
@@ -41,6 +42,11 @@ export default function UserListHead({
   };
   const createDscSortHandler = (property) => (event) => {
     onRequestSort(event, property);
+  };
+
+  const dateSort = (a, b) => {
+    console.log(a, b, 'aaaaaaaaaaaaaaaaaaaaaaaaaab');
+    return moment(a).valueOf() - moment(b).valueOf();
   };
 
   return (
