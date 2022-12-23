@@ -27,8 +27,8 @@ const navConfig = [
   {
     title: 'Offers',
     path: '/offers',
-    icon: getIcon('eva:people-fill'),
-    roles: ['user'],
+    icon: getIcon('bxs:offer'),
+    roles: ['user', 'business'],
   },
   {
     title: 'Companies',

@@ -60,6 +60,7 @@ const TABLE_HEAD = [
   { id: 'popular', label: 'Popular', alignRight: false },
   { id: 'createdAt', label: 'Created At', alignRight: false, sort: true },
   { id: 'updatedAt', label: 'Updated At', alignRight: false, sort: true },
+  { id: 'updatedBy', label: 'Updated By', alignRight: false },
   { id: 'edit', label: 'Edit', alignRight: false },
   { id: 'delete', label: 'Delete', alignRight: false },
 ];
@@ -250,6 +251,7 @@ export default function CompaniesList() {
     { label: 'Popular', key: 'popular' },
     { label: 'Created At', key: 'createdAt' },
     { label: 'Updated At', key: 'updatedAt' },
+    { label: 'Updated By', key: 'updatedBy' },
   ];
 
   const StyledMenu = styled((props) => (
@@ -439,10 +441,11 @@ export default function CompaniesList() {
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell align="left">{row.description}</TableCell>
                           <TableCell align="left">{row.website}</TableCell>
-                          <TableCell align="left">{row.price}</TableCell>
                           <TableCell align="left">{row.popular ? 'Yes' : 'No'}</TableCell>
+                          <TableCell align="left">{row.price}</TableCell>
                           <TableCell align="left">{moment(row.createdAt).format('MM/DD/yyyy')}</TableCell>
                           <TableCell align="left">{moment(row.updatedAt).format('MM/DD/yyyy')}</TableCell>
+                          <TableCell align="left">{row.updatedBy}</TableCell>
 
                           <TableCell align="center">
                             <Button

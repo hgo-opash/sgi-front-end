@@ -70,7 +70,7 @@ export default function Login() {
       navigate('/dashboard', { replace: true });
     }
     if (Role === 'business') {
-      navigate('/companies', { replace: true });
+      navigate('/companieslist', { replace: true });
     }
   }, []);
 

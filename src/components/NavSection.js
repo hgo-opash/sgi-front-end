@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { NavLink as RouterLink, matchPath, useLocation } from 'react-router-dom';
+import { NavLink as RouterLink, matchPath, useLocation, useNavigate } from 'react-router-dom';
 // material
 import { alpha, useTheme, styled } from '@mui/material/styles';
 import { Box, List, Collapse, ListItemText, ListItemIcon, ListItemButton } from '@mui/material';
 //
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Iconify from './Iconify';
+import { GetUserResponse } from '../services/Service';
+import { setLogindata } from '../slices/loginSlice';
 
 // ----------------------------------------------------------------------
 
@@ -141,6 +143,32 @@ NavSection.propTypes = {
 };
 
 export default function NavSection({ navConfig, ...other }) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    GetUserResponse()
+      .then((res) => {
+        console.log('get user  ===>  ', res.data);
+        if (res.data.success === true) {
+          dispatch(
+            setLogindata({
+              Email: res.data.email,
+              LastLogin: res.data.lastLoggedInAt,
+              Role: res.data.role,
+              FirstName: res.data.name,
+              ProfilePic: res.data.profilePic,
+            })
+          );
+        }
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          console.log(err);
+        }
+      });
+  }, []);
+
   const { pathname } = useLocation();
   // const { Email, LastLogin, Role, FirstName } = useSelector((state) => state.login);
   const Role = localStorage.getItem('Role');
@@ -150,6 +178,7 @@ export default function NavSection({ navConfig, ...other }) {
   return (
     <Box {...other}>
       <List disablePadding sx={{ p: 1 }}>
+        {console.log('sffffffffff')}
         {navConfig.map(
           (item) => item.roles && item.roles.includes(Role) && <NavItem key={item.title} item={item} active={match} />
         )}

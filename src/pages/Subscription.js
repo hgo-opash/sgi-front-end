@@ -128,7 +128,7 @@ export default function Subscription() {
   const [filterName, setFilterName] = useState('');
   const [openSub, setOpenSub] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [cname, setCname] = useState('description');
+  const [cname, setCname] = useState('subscriptionName');
   const [deleteid, setDeleteId] = useState();
 
   const navigate = useNavigate();

@@ -4,6 +4,13 @@ export const LoginResponse = (values) => axios.post(`${process.env.REACT_APP_API
 
 export const RegisterResponse = (values) => axios.post(`${process.env.REACT_APP_API_URL}/register`, values);
 
+export const GetUserResponse = () =>
+  axios.get(`${process.env.REACT_APP_API_URL}/getuser`, {
+    headers: {
+      authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+    },
+  });
+
 export const SaveCompanyResponse = (values) =>
   axios.post(`${process.env.REACT_APP_API_URL}/savecompany`, values, {
     headers: {

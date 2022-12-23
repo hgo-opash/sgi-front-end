@@ -47,19 +47,19 @@ export default function DashboardNavbar({ onOpenSidebar }) {
     <RootStyle>
       <ToolbarStyle>
         <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary', display: { lg: 'none' } }}>
-        <Avatar
-                // sx={{ width: 150, height: 150 }}
-                alt="Remy Sharp"
-                // src="http://localhost:3000/638ed335be04698b37d40b75avatar1.png"
-                src={`${process.env.REACT_APP_API_URL}/${ProfilePic}`}
-              />
+          <Avatar
+            // sx={{ width: 150, height: 150 }}
+            alt="Avtar"
+            // src="http://localhost:3000/638ed335be04698b37d40b75avatar1.png"
+            src={`${process.env.REACT_APP_API_URL}/${ProfilePic}`}
+          />
         </IconButton>
 
-        <Searchbar />
+        {/* <Searchbar /> */}
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-          <LanguagePopover />
+          {/* <LanguagePopover /> */}
           <NotificationsPopover />
           <AccountPopover />
         </Stack>

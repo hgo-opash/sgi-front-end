@@ -17,7 +17,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import { sentenceCase } from 'change-case';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Page from '../components/Page';
