@@ -51,6 +51,16 @@ export const EditsubsResponse = (id, values) =>
       },
     }
   );
+export const EditComapnysubsResponse = (id, values) =>
+  axios.post(
+    `${process.env.REACT_APP_API_URL}/editcompany`,
+    { id, values },
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+      },
+    }
+  );
 
 export const DeletesubResponse = (id) =>
   axios.post(

@@ -1,5 +1,6 @@
 // import { useStaticState } from '@material-ui/pickers';
 import { createSlice } from '@reduxjs/toolkit';
+import { countries } from '../_mock/countries';
 
 const initialState = {
   FirstName: '',
@@ -7,6 +8,7 @@ const initialState = {
   LastLogin: '',
   Role: '',
   ProfilePic: '',
+  Countries: countries,
 };
 
 export const loginSlice = createSlice({

@@ -46,7 +46,7 @@ export default function RegisterForm() {
       // console.log('countries ===> ', res.data.data);
       setCountries(res.data.data);
     });
-  });
+  }, []);
 
   const SignUpSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),

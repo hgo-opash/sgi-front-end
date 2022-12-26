@@ -44,11 +44,12 @@ export default function AccountPopover() {
   };
   const handleLogout = () => {
     setOpen(null);
-    localStorage.removeItem('Jtoken');
-    localStorage.removeItem('Role');
+    // localStorage.removeItem('Jtoken');
+    localStorage.clear();
+    window.location.reload();
     // window.FB.getLoginStatus((e) => console.log('status ===== ', e));
     // window.FB.logout();
-    navigate('/login', { replace: true });
+    // navigate('/login');
   };
 
   return (

@@ -28,7 +28,13 @@ const navConfig = [
     title: 'Offers',
     path: '/offers',
     icon: getIcon('bxs:offer'),
-    roles: ['user', 'business'],
+    roles: ['user'],
+  },
+  {
+    title: 'Agenda',
+    path: '/agenda',
+    icon: getIcon('bxs:offer'),
+    roles: ['user'],
   },
   {
     title: 'Companies',
@@ -44,7 +50,7 @@ const navConfig = [
   },
   {
     title: 'Admin',
-    path: '/companies',
+    path: '/admin/dashboard',
     icon: getIcon('eva:people-fill'),
     roles: ['admin'],
   },

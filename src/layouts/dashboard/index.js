@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 // material
@@ -6,6 +6,8 @@ import { styled } from '@mui/material/styles';
 //
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
+import { setLogindata } from '../../slices/loginSlice';
+import { GetUserResponse } from '../../services/Service';
 
 // ----------------------------------------------------------------------
 
@@ -40,9 +42,9 @@ const MainStyle = styled('div')(({ theme }) => ({
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
+
   // const { Role } = useSelector((state) => state.login);
-  const Role = localStorage.getItem('Role');
+  // const Role = localStorage.getItem('Role');
 
   // useEffect(() => {
   //   if (Role === 'business') {

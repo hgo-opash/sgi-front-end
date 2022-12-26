@@ -18,6 +18,8 @@ import DashBoard from './pages/DashBoard';
 import Profile from './pages/Profile';
 import Subscription from './pages/Subscription';
 import CompaniesList from './pages/CompaniesList';
+import Agenda from './pages/Agenda';
+import AdminTest from './pages/AdminTest';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -34,9 +36,11 @@ export default function Router() {
         { path: '/subscription', element: <Subscription /> },
         { path: '/reports', element: <Reports /> },
         { path: '/offers', element: <Offers /> },
+        { path: '/agenda', element: <Agenda /> },
         { path: '/companies', element: <Companies /> },
         { path: '/profile', element: <Profile /> },
         { path: '/companieslist', element: <CompaniesList /> },
+        { path: '/admin/dashboard', element: <AdminTest /> },
       ],
     },
 

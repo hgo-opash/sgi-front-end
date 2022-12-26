@@ -23,9 +23,12 @@ import {
   alpha,
   MenuItem,
   Divider,
+  Collapse,
+  IconButton,
 } from '@mui/material';
 import styled from 'styled-components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { CSVLink } from 'react-csv';
@@ -42,12 +45,13 @@ import { deleteSubscription, setSubscriptions } from '../slices/subscriptionSlic
 import SubscriptionModal from './SubscriptionModal';
 import SuccessToast from '../toast/Success';
 import { DeletesubResponse, GetcompaniesResponse, GetsubsResponse } from '../services/Service';
-import EditModal from './EditModal';
 import DeleteModal from './DeleteModal';
+import EditCompanyModal from './EditCompanyModal';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  // { id: '', label: '' },
   {
     id: 'companyType',
     label: 'Type',
@@ -68,6 +72,8 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
+  // console.log(a, b, orderBy, 'ab company>>>>>>>>>');
+  console.log(orderBy, 'orderBy company');
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -78,7 +84,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  console.log(orderBy, '>?????');
+  console.log(order, orderBy, '>?????');
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -106,7 +112,7 @@ function applySortFilter(array, comparator, query, cname) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function CompaniesList() {
+export default function CompaniesList(props) {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -122,16 +128,19 @@ export default function CompaniesList() {
   const [openSub, setOpenSub] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [cname, setCname] = useState('description');
+  const [deleteid, setDeleteId] = useState();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { SubscriptionData } = useSelector((state) => state.subscription);
   const openMenu = Boolean(anchorEl);
 
+  console.log(editData, 'editData>>>');
+
   React.useEffect(() => {
     GetcompaniesResponse()
       .then((res) => {
-        console.log(res.data, '????????/');
+        console.log(res.data, 'company ????????/');
         if (res.data.success === true) {
           dispatch(
             setLogindata({
@@ -152,6 +161,7 @@ export default function CompaniesList() {
   }, []);
 
   const handleRequestSort = (event, property) => {
+    console.log(property, event, 'not ok company....');
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -215,6 +225,10 @@ export default function CompaniesList() {
   };
   const handleCloseMenu = () => {
     setAnchorEl(null);
+  };
+
+  const handledelete = (id) => {
+    setDeleteId(id);
   };
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SubscriptionData.length) : 0;
@@ -415,11 +429,11 @@ export default function CompaniesList() {
                     const isItemSelected = selected.indexOf(row._id) !== -1;
                     return (
                       <>
-                        <EditModal openEditModal={open} setOpenEditModal={setOpen} data={editData} />
+                        <EditCompanyModal openEditModal={open} setOpenEditModal={setOpen} data={editData} />
                         <DeleteModal
                           openDeleteModal={openDelete}
                           setOpenDelete={setOpenDelete}
-                          id={row._id}
+                          id={[deleteid]}
                           setSelected={setSelected}
                         />
                         <TableRow
@@ -433,20 +447,36 @@ export default function CompaniesList() {
                           <TableCell padding="checkbox">
                             <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row._id)} />
                           </TableCell>
+                          {/* <TableCell>
+                            <IconButton aria-label="expand row" size="small" onClick={() => setOpenTable(!openTable)}>
+                              {openTable ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                            </IconButton>
+                          </TableCell> */}
                           <TableCell component="th" scope="row" padding="none">
                             <Typography variant="subtitle2" noWrap>
                               {row.companyType}
                             </Typography>
                           </TableCell>
                           <TableCell align="left">{row.name}</TableCell>
-                          <TableCell align="left">{row.description}</TableCell>
+                          <TableCell align="left">
+                            <span
+                              style={{
+                                display: '-webkit-box',
+                                overflow: 'hidden',
+                                WebkitBoxOrient: 'vertical',
+                                WebkitLineClamp: 3,
+                                textOverflow: 'ellipsis',
+                              }}
+                            >
+                              {row.description}
+                            </span>
+                          </TableCell>
                           <TableCell align="left">{row.website}</TableCell>
                           <TableCell align="left">{row.popular ? 'Yes' : 'No'}</TableCell>
                           <TableCell align="left">{row.price}</TableCell>
                           <TableCell align="left">{moment(row.createdAt).format('MM/DD/yyyy')}</TableCell>
                           <TableCell align="left">{moment(row.updatedAt).format('MM/DD/yyyy')}</TableCell>
                           <TableCell align="left">{row.updatedBy}</TableCell>
-
                           <TableCell align="center">
                             <Button
                               onClick={(e) => {
@@ -463,9 +493,8 @@ export default function CompaniesList() {
                               onClick={(e) => {
                                 e.preventDefault();
                                 setOpenDelete(true);
-                                // handledelete(row._id);
+                                handledelete(row._id);
                                 setSelected([]);
-                                // handleClick(e, row._id);
                               }}
                             >
                               <Iconify icon="ic:twotone-delete" color="#DF3E30" width={22} height={22} />

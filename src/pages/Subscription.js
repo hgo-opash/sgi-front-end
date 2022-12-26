@@ -23,9 +23,12 @@ import {
   alpha,
   MenuItem,
   Divider,
+  IconButton,
+  Collapse,
 } from '@mui/material';
 import styled from 'styled-components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { CSVLink } from 'react-csv';
@@ -49,23 +52,23 @@ import DeleteModal from './DeleteModal';
 
 const TABLE_HEAD = [
   {
-    id: 'subscription_name',
+    id: 'subscriptionName',
     label: 'Subscription Name',
     alignRight: false,
     sort: true,
   },
   { id: 'description', label: 'Description', alignRight: false },
   { id: 'frequency', label: 'Frequency', alignRight: false },
-  { id: 'trial_days', label: 'Trial Days', alignRight: false },
+  { id: 'trialDays', label: 'Trial Days', alignRight: false },
   { id: 'amount', label: 'Amount', alignRight: false, sort: true },
-  { id: 'start_date', label: 'Start Date', alignRight: false, sort: true },
+  { id: 'startDate', label: 'Start Date', alignRight: false, sort: true },
   {
-    id: 'next_billing_date',
+    id: 'nextBilling',
     label: 'Next Billing Date',
     alignRight: false,
     sort: true,
   },
-  { id: 'auto_renewal', label: 'Auto Renewal', alignRight: false },
+  { id: 'autoRenewal', label: 'Auto Renewal', alignRight: false },
   { id: 'comments', label: 'Comments', alignRight: false },
   { id: 'edit', label: 'Edit', alignRight: false },
   { id: 'delete', label: 'Delete', alignRight: false },
@@ -74,7 +77,7 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
-  console.log(a, b, 'ab>>>>>>>>>');
+  // console.log(a, b, orderBy, 'ab>>>>>>>>>');
   console.log(orderBy, 'orderBy');
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -160,6 +163,7 @@ export default function Subscription() {
   }, []);
 
   const handleRequestSort = (event, property) => {
+    console.log(property, event, 'not ok....');
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -405,6 +409,8 @@ export default function Subscription() {
           onFilterName={handleFilterByName}
           selectedIDs={selected}
           setSelected={setSelected}
+          onRequestSort={handleRequestSort}
+          headLabel={TABLE_HEAD}
         />
         <Scrollbar>
           <TableContainer sx={{ minWidth: 800, overflow: 'hidden' }}>
@@ -454,7 +460,20 @@ export default function Subscription() {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{row.description}</TableCell>
+
+                          <TableCell align="left">
+                            <span
+                              style={{
+                                display: '-webkit-box',
+                                overflow: 'hidden',
+                                WebkitBoxOrient: 'vertical',
+                                WebkitLineClamp: 3,
+                                textOverflow: 'ellipsis',
+                              }}
+                            >
+                              {row.description}
+                            </span>
+                          </TableCell>
                           <TableCell align="left">{row.frequency}</TableCell>
                           <TableCell align="left">{row.trialDays}</TableCell>
                           <TableCell align="left">${row.amount}</TableCell>

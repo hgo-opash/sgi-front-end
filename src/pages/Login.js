@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link as RouterLink, Navigate, useNavigate } from 'react-router-dom';
 // @mui
+import { useSelector } from 'react-redux';
 import { styled } from '@mui/material/styles';
 import { Card, Link, Container, Typography } from '@mui/material';
 // hooks
@@ -63,7 +64,7 @@ export default function Login() {
   const mdUp = useResponsive('up', 'md');
   const navigate = useNavigate();
 
-  const Role = localStorage.getItem('Role');
+  const { Role } = useSelector((state) => state.login);
 
   React.useEffect(() => {
     if (Role === 'user') {
@@ -71,6 +72,9 @@ export default function Login() {
     }
     if (Role === 'business') {
       navigate('/companieslist', { replace: true });
+    }
+    if (Role === 'admin') {
+      navigate('/admin/dashboard', { replace: true });
     }
   }, []);
 
