@@ -28,6 +28,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import { Icon } from '@iconify/react';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 import SuccessToast from '../../../toast/Success';
 import ErrorToast from '../../../toast/Error';
 import { GetcountiesResponse, RegisterResponse } from '../../../services/Service';
@@ -39,14 +40,7 @@ export default function RegisterForm() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [countries, setCountries] = useState([]);
-
-  useEffect(() => {
-    GetcountiesResponse().then((res) => {
-      // console.log('countries ===> ', res.data.data);
-      setCountries(res.data.data);
-    });
-  }, []);
+   const {Countries} = useSelector(state => state.login);
 
   const SignUpSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
@@ -263,7 +257,7 @@ export default function RegisterForm() {
                   },
                 }}
               >
-                {countries.map((val) => (
+                {Countries.map((val) => (
                   <MenuItem key={val.name} value={val.name} sx={{ display: 'flex' }}>
                     <img src={val.image} alt={val.code} height={'20px'} width={'20px'} style={{ display: 'inline' }} />
                     <span style={{ padding: '0 8px' }}>{val.name}</span>
