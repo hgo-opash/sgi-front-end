@@ -48,20 +48,8 @@ DashboardSidebar.propTypes = {
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
   const isDesktop = useResponsive('up', 'lg');
-  const { Email, LastLogin, Role, FirstName } = useSelector((state) => state.login);
-  const { ProfilePic } = useSelector((state) => state.login);
+  const { user } = useSelector((state) => state.login);
 
-  // const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
-
-  // useEffect(() => {
-  //   if (Role === 'business') {
-  //     navConfig.push({
-  //       title: 'Companies',
-  //       path: '/companies',
-  //       icon: getIcon('eva:people-fill'),
-  //     });
-  //   }
-  // }, []);
 
   useEffect(() => {
     if (isOpenSidebar) {
@@ -78,52 +66,22 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' },
       }}
     >
-      {/* <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}><Logo /></Box> */}
-
       <Box sx={{ mb: 3, mx: 2.5, mt: 3 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-          {/* <Avatar src={account.photoURL} alt="photoURL" /> */}
-            <Avatar src={`${process.env.REACT_APP_API_URL}/${ProfilePic}`} alt="photoURL" />
+            <Avatar src={`${process.env.REACT_APP_API_URL}/${user?.profilePic}`} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {/* {account.displayName} */}
-                {FirstName}
+                {user?.firstName}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {/* {account.role} */}
-                Last Login:{moment(LastLogin).format('MMMM Do YYYY, h:mm:ss a')}
+                Last Login:{moment(user?.lastLoggedInAt).format('MMMM Do YYYY, h:mm:ss a')}
               </Typography>
             </Box>
           </AccountStyle>
         </Link>
       </Box>
-      <NavSection navConfig={ navConfig } />
-
-      {/* <Box sx={{ flexGrow: 1 }} /> */}
-      {/* 
-      <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
-        <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
-          <Box
-            component="img"
-            src="/static/illustrations/illustration_avatar.png"
-            sx={{ width: 100, position: 'absolute', top: -50 }}
-          />
-
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography gutterBottom variant="h6">
-              Get more?
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              From only $69
-            </Typography>
-          </Box>
-
-          <Button href="https://material-ui.com/store/items/minimal-dashboard/" target="_blank" variant="contained">
-            Upgrade to Pro
-          </Button>
-        </Stack>
-      </Box> */}
+      <NavSection navConfig={navConfig} />
     </Scrollbar>
   );
 

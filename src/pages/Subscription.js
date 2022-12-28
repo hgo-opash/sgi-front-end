@@ -1,5 +1,4 @@
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
@@ -7,44 +6,33 @@ import {
   Card,
   Table,
   Stack,
-  Avatar,
   Button,
   Checkbox,
   TableRow,
   TableBody,
   TableCell,
-  Container,
   Typography,
   TableContainer,
   TablePagination,
   Box,
-  TableHead,
   Menu,
-  alpha,
   MenuItem,
-  Divider,
-  IconButton,
-  Collapse,
 } from '@mui/material';
 import styled from 'styled-components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { CSVLink } from 'react-csv';
 // components
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
+import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import { setLogindata } from '../slices/loginSlice';
-import { deleteSubscription, setSubscriptions } from '../slices/subscriptionSlice';
+import { setSubscriptions } from '../slices/subscriptionSlice';
 import SubscriptionModal from './SubscriptionModal';
-import SuccessToast from '../toast/Success';
-import { DeletesubResponse, GetsubsResponse } from '../services/Service';
+import { GetsubsResponse } from '../services/Service';
 import EditModal from './EditModal';
 import DeleteModal from './DeleteModal';
 
@@ -144,14 +132,6 @@ export default function Subscription() {
       .then((res) => {
         console.log(res.data);
         if (res.data.success === true) {
-          dispatch(
-            setLogindata({
-              Email: res.data.email,
-              LastLogin: res.data.lastLoggedInAt,
-              FirstName: res.data.name,
-              ProfilePic: res.data.profilePic,
-            })
-          );
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
         }
       })
@@ -212,14 +192,6 @@ export default function Subscription() {
 
   const handleClickOpenSub = () => {
     setOpenSub(true);
-  };
-
-  const handleClickOpenDel = () => {
-    setOpenDelete(true);
-  };
-
-  const handleClickCloseDel = () => {
-    setOpenDelete(false);
   };
 
   const handleClickMenu = (event) => {
@@ -283,8 +255,6 @@ export default function Subscription() {
       borderRadius: 6,
       marginTop: 1,
       minWidth: 180,
-      // color:
-      //   theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
       boxShadow:
         'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
       '& .MuiMenu-list': {
@@ -293,14 +263,7 @@ export default function Subscription() {
       '& .MuiMenuItem-root': {
         '& .MuiSvgIcon-root': {
           fontSize: 18,
-          // color: theme.palette.text.secondary,
           marginRight: 1.5,
-        },
-        '&:active': {
-          // backgroundColor: alpha(
-          //   theme.palette.primary.main,
-          //   theme.palette.action.selectedOpacity,
-          // ),
         },
       },
     },

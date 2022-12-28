@@ -21,14 +21,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import MomentUtils from '@date-io/moment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { Field, FormikProvider, useFormik, useFormikContext } from 'formik';
+import { Field, FormikProvider, useFormik } from 'formik';
 import React from 'react';
 import * as Yup from 'yup';
 import { setCompanies } from '../slices/companiesSlice';
 import SuccsessModal from '../components/SuccsessModal';
 import Logo from '../components/Logo';
 import { setSubscriptions } from '../slices/subscriptionSlice';
-import { setLogindata } from '../slices/loginSlice';
 import SuccessToast from '../toast/Success';
 import { GetcompaniesResponse, GetsubsResponse, SavesubsResponse } from '../services/Service';
 
@@ -79,15 +78,6 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
       .then((res) => {
         console.log('dashboard ==> ', res.data);
         if (res.data.success === true) {
-          dispatch(
-            setLogindata({
-              Email: res.data.email,
-              LastLogin: res.data.lastLoggedInAt,
-              Role: res.data.role,
-              FirstName: res.data.name,
-              ProfilePic: res.data.profilePic,
-            })
-          );
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
         }
       })
@@ -144,11 +134,6 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
       SavesubsResponse(values).then((res) => {
         console.log('subscription ADD => ', res.data);
         if (res.data.success === true) {
-          // SubscriptionForm.values.amount = 0;
-          // SubscriptionForm.values.contractStartDate = '';
-          // SubscriptionForm.values.nextBillingDate = '';
-          // SubscriptionForm.values.autoRenewal = '';
-          // SubscriptionForm.values.status = '';
           resetForm(initialValues);
         }
       });
@@ -197,7 +182,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                       >
                         <InputLabel
                           id="subscriptionType"
-                          // name="subscriptionType"
+                        // name="subscriptionType"
                         >
                           Subscription Type*
                         </InputLabel>
@@ -273,7 +258,6 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                           label="Description"
                           variant="outlined"
                           value={SubscriptionForm.values.description}
-                          // value={masterComapny?.description}
                           onChange={SubscriptionForm.handleChange}
                           error={SubscriptionForm.touched.description && Boolean(SubscriptionForm.errors.description)}
                           helperText={SubscriptionForm.touched.description && SubscriptionForm.errors.description}

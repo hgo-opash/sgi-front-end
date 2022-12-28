@@ -1,21 +1,31 @@
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
 // routes
-import Router from './routes';
-// theme
 import ThemeProvider from './theme';
 // components
 import ScrollToTop from './components/ScrollToTop';
-import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
+import MainRoutes from './routes';
+import { getProfile } from './slices/loginSlice';
 
 // ----------------------------------------------------------------------
 
 export default function App() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    dispatch(getProfile())
+    .unwrap()
+    .catch(() => {
+      navigate('/login')
+    })
+  }, [dispatch]);
+  
   return (
     <ThemeProvider>
       <ScrollToTop />
-      {/* <BaseOptionChartStyle /> */}
-      <Router />
+      <MainRoutes/>
     </ThemeProvider>
   );
 }

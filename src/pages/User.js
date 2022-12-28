@@ -21,8 +21,6 @@ import {
 // components
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
-
-import { setLogindata } from '../slices/loginSlice';
 import { setSubscriptions, deleteSubscription } from '../slices/subscriptionSlice';
 import Iconify from '../components/Iconify';
 import { DeletesubResponse, GetsubsResponse } from '../services/Service';
@@ -43,14 +41,6 @@ export default function User() {
       .then((res) => {
         console.log(res.data);
         if (res.data.success === true) {
-          dispatch(
-            setLogindata({
-              Email: res.data.email,
-              LastLogin: res.data.lastLoggedInAt,
-              Role: res.data.role,
-              FirstName: res.data.name,
-            })
-          );
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
         }
       })
@@ -75,13 +65,9 @@ export default function User() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            {/* User */}
             Dashboard
             {console.log(SubscriptionData)}
           </Typography>
-          {/* <Button variant="contained" component={RouterLink} to="#" startIcon={<Iconify icon="eva:plus-fill" />}>
-            Add New Subscription
-          </Button> */}
         </Stack>
 
         <Card>

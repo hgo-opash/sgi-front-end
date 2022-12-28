@@ -24,9 +24,7 @@ import SubscriptionModal from './SubscriptionModal';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import Label from '../components/Label';
-import { setLogindata } from '../slices/loginSlice';
-import { setSubscriptions, deleteSubscription } from '../slices/subscriptionSlice';
-import { UserListToolbar } from '../sections/@dashboard/user';
+import { setSubscriptions } from '../slices/subscriptionSlice';
 import { GetsubsResponse } from '../services/Service';
 
 const TABLE_HEAD = [
@@ -61,7 +59,7 @@ const DashBoard = () => {
   const navigate = useNavigate();
 
   const { SubscriptionData } = useSelector((state) => state.subscription);
-  const { Role } = useSelector((state) => state.login);
+  const { user } = useSelector((state) => state.login);
 
   const handleClickOpenSub = () => {
     setOpenSub(true);
@@ -81,15 +79,15 @@ const DashBoard = () => {
       .then((res) => {
         console.log('get subs  ===>  ', res.data);
         if (res.data.success === true) {
-          dispatch(
-            setLogindata({
-              Email: res.data.email,
-              LastLogin: res.data.lastLoggedInAt,
-              Role: res.data.role,
-              FirstName: res.data.name,
-              ProfilePic: res.data.profilePic,
-            })
-          );
+          // dispatch(
+          //   setLogindata({
+          //     Email: res.data.email,
+          //     LastLogin: res.data.lastLoggedInAt,
+          //     Role: res.data.role,
+          //     FirstName: res.data.name,
+          //     ProfilePic: res.data.profilePic,
+          //   })
+          // );
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
         }
       })
@@ -142,7 +140,6 @@ const DashBoard = () => {
 
   return (
     <>
-      {Role === 'user' && (
         <Page title="Subscription">
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
             <Button
@@ -326,7 +323,7 @@ const DashBoard = () => {
             </Card>
           </Container>
         </Page>
-      )}
+     
     </>
   );
 };

@@ -6,10 +6,8 @@ import { Field, FormikProvider, useFormik } from 'formik';
 import { Button, Checkbox, FormControlLabel, IconButton, InputAdornment, Link, Stack, TextField } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { useDispatch } from 'react-redux';
-import { setLogindata } from '../../../slices/loginSlice';
+import { loginUser } from '../../../slices/loginSlice';
 import SuccessToast from '../../../toast/Success';
-import ErrorToast from '../../../toast/Error';
-import { LoginResponse } from '../../../services/Service';
 
 // ----------------------------------------------------------------------
 
@@ -33,29 +31,24 @@ export default function LoginForm() {
     initialValues,
     validationSchema: LoginSchema,
     onSubmit: (values) => {
-      LoginResponse(values)
-        .then((res) => {
-          if (res.data.success === true) {
-            console.log('login user ====> ', res.data);
-            dispatch(
-              setLogindata({
-                Email: values.email,
-                LastLogin: res.data.lastLoggedInAt,
-                Role: res.data.role,
-                FirstName: res.data.name,
-                ProfilePic: res.data.profilePic,
-              })
-            );
-            console.log('login.data ===>  ', res.data);
-            localStorage.setItem('Jtoken', res.data.token);
-            localStorage.setItem('Role', res.data.role);
+      dispatch(loginUser(values))
+        .unwrap()
+        .then((data) => {
+          if (data.role === 'admin') {
+            navigate('/admin/dashboard');
             SuccessToast('Login Successful');
-            navigate('/dashboard', { replace: true });
+          }
+          if (data.role === 'user') {
+            navigate('/dashboard');
+            SuccessToast('Login Successful');
+          }
+          if (data.role === 'business') {
+            navigate('/business/companieslist');
+            SuccessToast('Login Successful');
           }
         })
         .catch((err) => {
           console.log(err);
-          ErrorToast(err.response.data.message);
         });
     },
   });

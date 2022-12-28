@@ -20,14 +20,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch } from 'react-redux';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import * as Yup from 'yup';
-import { Field, Formik, FormikProvider, useFormik } from 'formik';
+import { Field, FormikProvider, useFormik } from 'formik';
 import MomentUtils from '@date-io/moment';
-import React, { useState } from 'react';
-import Logo from '../components/Logo';
-import SuccsessModal from '../components/SuccsessModal';
+import React from 'react';
 import { EditComapnysubsResponse, GetsubsResponse } from '../services/Service';
 import SuccessToast from '../toast/Success';
-import { setLogindata } from '../slices/loginSlice';
 import { setSubscriptions } from '../slices/subscriptionSlice';
 
 const style = {
@@ -90,14 +87,6 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
           GetsubsResponse()
             .then((res) => {
               if (res.data.success === true) {
-                dispatch(
-                  setLogindata({
-                    Email: res.data.email,
-                    LastLogin: res.data.lastLoggedInAt,
-                    FirstName: res.data.name,
-                    ProfilePic: res.data.profilePic,
-                  })
-                );
                 dispatch(setSubscriptions({ subscriptions: res.data.data }));
               }
             })
@@ -125,7 +114,7 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
         <Box sx={{ ...style, height: '90%', width: 800 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ ml: 3, mb: 3 }}>
             <Typography variant="h4" gutterBottom>
-              {data.subscriptionName} Subscription
+              {data?.subscriptionName} Subscription
             </Typography>
             <Box sx={{ pr: 2 }}>
               <Button onClick={handleClose} color="error">
@@ -142,7 +131,6 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
                     <FormControl
                       fullWidth
                       sx={{ mb: 3, mt: 2 }}
-                      // error={EditForm.touched.frequency && Boolean(EditForm.errors.frequency)}
                     >
                       <InputLabel id="select3">Frequency</InputLabel>
                       <Select
@@ -157,11 +145,6 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
                         <MenuItem value={'Annually'}>Annually</MenuItem>
                         <MenuItem value={'Trial'}>Trial</MenuItem>
                       </Select>
-                      {/* {EditForm.touched.frequency && EditForm.errors.frequency ? (
-                          <FormHelperText>
-                            {EditForm.touched.frequency && EditForm.errors.frequency}
-                          </FormHelperText>
-                        ) : null} */}
                     </FormControl>
 
                     <FormControl fullWidth sx={{ mb: 3 }}>
@@ -213,7 +196,6 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
                     <FormControl
                       fullWidth
                       sx={{ mb: 3 }}
-                      // error={EditForm.touched.amount && Boolean(EditForm.errors.amount)}
                     >
                       <InputLabel htmlFor="amount">Amount</InputLabel>
                       <OutlinedInput
@@ -224,17 +206,11 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
                         onChange={EditForm.handleChange}
                         startAdornment={<InputAdornment position="start">$</InputAdornment>}
                       />
-                      {/* {EditForm.touched.amount && EditForm.errors.amount ? (
-                          <FormHelperText>
-                            {EditForm.touched.amount && EditForm.errors.amount}
-                          </FormHelperText>
-                        ) : null} */}
                     </FormControl>
 
                     <FormControl
                       fullWidth
                       sx={{ mb: 3 }}
-                      // error={EditForm.touched.autoRenewal && Boolean(EditForm.errors.autoRenewal)}
                     >
                       <InputLabel id="select4">Popular</InputLabel>
                       <Select
@@ -252,31 +228,6 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
                         <FormHelperText>{EditForm.touched.popular && EditForm.errors.popular}</FormHelperText>
                       ) : null}
                     </FormControl>
-
-                    {/* <FormControl
-                      fullWidth
-                      sx={{ mb: 3 }}
-                      // error={EditForm.touched.autoRenewal && Boolean(EditForm.errors.autoRenewal)}
-                    >
-                      <InputLabel id="select4">Status</InputLabel>
-                      <Select
-                        labelId="select4"
-                        id="select4"
-                        name="status"
-                        label="Status"
-                        value={EditForm.values.status}
-                        onChange={EditForm.handleChange}
-                      >
-                        <MenuItem value={'Active'}>Active</MenuItem>
-                        <MenuItem value={'Inactive'}>Inactive</MenuItem>
-                      </Select>
-                      {EditForm.touched.autoRenewal && EditForm.errors.autoRenewal ? (
-                          <FormHelperText>
-                            {EditForm.touched.autoRenewal && EditForm.errors.autoRenewal}
-                          </FormHelperText>
-                        ) : null}
-                    </FormControl> */}
-
                     <FormControl fullWidth sx={{ mb: 3 }}>
                       <Field
                         as={TextField}
@@ -295,7 +246,6 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
                       color="primary"
                       variant="contained"
                       type="submit"
-                      // onClick={handleClickOpen}
                       disabled={!EditForm.isValid}
                     >
                       Save
@@ -307,7 +257,6 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
                 </FormikProvider>
               </Grid>
             </Grid>
-            {/* <SuccsessModal open={open} handleClose={handleClose} /> */}
           </Container>
         </Box>
       </Modal>

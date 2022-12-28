@@ -1,64 +1,70 @@
-import { useEffect } from 'react';
-import { Navigate, useRoutes } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-// layouts
-import DashboardLayout from './layouts/dashboard';
-import LogoOnlyLayout from './layouts/LogoOnlyLayout';
-//
-// import Blog from './pages/Blog';
-import Login from './pages/Login';
-import NotFound from './pages/Page404';
-import Register from './pages/Register';
-import Reports from './pages/Reports';
-import Offers from './pages/Offers';
-import ForgetPassword from './pages/ForgetPassword';
-import VerifyToken from './pages/VerifyToken';
-import Companies from './pages/Companies';
-import DashBoard from './pages/DashBoard';
-import Profile from './pages/Profile';
-import Subscription from './pages/Subscription';
-import CompaniesList from './pages/CompaniesList';
-import Agenda from './pages/Agenda';
-import AdminTest from './pages/AdminTest';
-// ----------------------------------------------------------------------
+import React from "react"
+import { Routes, Route, Navigate } from "react-router-dom"
+import PublicRoutes from "./components/auth/PublicRoutes"
+import ProtectedRoutes from "./components/auth/ProtectedRoutes"
+import DashboardLayout from "./layouts/dashboard"
+import DashBoard from "./pages/DashBoard"
+import Subscription from "./pages/Subscription"
+import Offers from "./pages/Offers"
+import Reports from "./pages/Reports"
+import Agenda from "./pages/Agenda"
+import Companies from "./pages/Companies"
+import Profile from "./pages/Profile"
+import CompaniesList from "./pages/CompaniesList"
+import AdminTest from "./pages/AdminTest"
+import Page404 from "./pages/Page404"
+import Login from "./pages/Login"
+import Register from "./pages/Register"
+import ForgetPassword from "./pages/ForgetPassword"
+import VerifyToken from "./pages/VerifyToken"
 
-export default function Router() {
-  const { Auth, Role } = useSelector((state) => state.login);
+const MainRoutes = () => (
+	<Routes>
+		{/** Protected Routes */}
+		{/** Wrap all Route under ProtectedRoutes element */}
 
-  const token = localStorage.getItem('Jtoken');
+		<Route path="/" element={<ProtectedRoutes roleRequired="business" />}>
+			<Route path="/business" element={<DashboardLayout />}>
+				<Route path="/business/companies" element={<Companies />} />
+				<Route path="/business/companieslist" element={<CompaniesList />} />
+				<Route path="profile" element={<Profile />} />
+				<Route path="/business/" element={<Navigate replace to='/business/companieslist' />} />
+			</Route>
+			<Route path='/' element={<Navigate replace to='/business/companieslist' />}  />
+		</Route>
 
-  return useRoutes([
-    {
-      // path: '',
-      element: <DashboardLayout />,
-      children: [
-        { path: '/dashboard', element: <DashBoard /> },
-        { path: '/subscription', element: <Subscription /> },
-        { path: '/reports', element: <Reports /> },
-        { path: '/offers', element: <Offers /> },
-        { path: '/agenda', element: <Agenda /> },
-        { path: '/companies', element: <Companies /> },
-        { path: '/profile', element: <Profile /> },
-        { path: '/companieslist', element: <CompaniesList /> },
-        { path: '/admin/dashboard', element: <AdminTest /> },
-      ],
-    },
+		<Route path="/" element={<ProtectedRoutes roleRequired="admin" />}>
+			<Route path="/admin" element={<DashboardLayout />}>
+				<Route path="/admin/dashboard" element={<AdminTest />} />
+				<Route path="profile" element={<Profile />} />
+				<Route path="/admin/" element={<Navigate replace to='/admin/dashboard' />} />
+			</Route>
+			<Route path="/" element={<Navigate replace to='/admin/dashboard' />} />
+		</Route>
 
-    {
-      path: '/',
-      element: <LogoOnlyLayout />,
-      children: [
-        { path: '/', element: token ? <Navigate to="/dashboard" /> : <Navigate to="/login" /> },
-        { path: 'login', element: <Login /> },
-        { path: 'register', element: <Register /> },
-        // { path: 'registerbusiness', element: <Register /> },
-        { path: 'forgetpassword', element: <ForgetPassword /> },
-        { path: 'verify/:token', element: <VerifyToken /> },
-        { path: '404', element: <NotFound /> },
-        { path: '*', element: <Navigate to="/404" /> },
-      ],
-    },
+		<Route path="/" element={<ProtectedRoutes roleRequired="user" />}>
+			<Route path="/" element={<DashboardLayout />}>
+				<Route path="dashboard" element={<DashBoard />} />
+				<Route path='subscription' element={<Subscription />} />
+				<Route path="reports" element={<Reports />} />
+				<Route path="offers" element={<Offers />} />
+				<Route path="calendar" element={<Agenda />} />
+				<Route path="profile" element={<Profile />} />
+				<Route path="/" element={<Navigate replace to="/dashboard" />} />
+			</Route>
+		</Route>
 
-    { path: '*', element: <Navigate to="/404" replace /> },
-  ]);
-}
+		<Route path="/" element={<PublicRoutes data={{token: localStorage.getItem('Jtoken')}} />}>
+			<Route path="/login" element={<Login />} />
+			<Route path="/register" element={<Register />} />
+			<Route path="/forgetpassword" element={<ForgetPassword />} />
+			<Route path="/verify/:token" element={<VerifyToken />} />
+			<Route path="/404" element={<Page404 />} />
+		</Route>
+
+		{/** Permission denied route */}
+		<Route path="*" element={<Page404 />} />
+	</Routes>
+)
+
+export default MainRoutes

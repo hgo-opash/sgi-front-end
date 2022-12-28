@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import {  Link as RouterLink } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
 // @mui
@@ -9,47 +9,51 @@ import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Fab } fr
 // components
 import MenuPopover from '../../components/MenuPopover';
 // mocks_
-import account from '../../_mock/account';
+import { logout } from '../../slices/loginSlice';
 
 // ----------------------------------------------------------------------
-
-const MENU_OPTIONS = [
-  {
-    label: 'Home',
-    icon: 'eva:home-fill',
-    linkTo: '/',
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-    linkTo: '/profile',
-  },
-];
 
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+  
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(null);
-  const { Email, LastLogin } = useSelector((state) => state.login);
-  const navigate = useNavigate();
-  const { ProfilePic } = useSelector((state) => state.login);
-
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.login);
+  
+  const MENU_OPTIONS = [
+    {
+      label: 'Home',
+      icon: 'eva:home-fill',
+      linkTo: '/',
+    },
+    {
+      label: 'Settings',
+      icon: 'eva:settings-2-fill',
+      // eslint-disable-next-line no-nested-ternary
+      linkTo: user?.role === 'admin' ? '/admin/profile' : user?.role === 'business' ? '/business/profile':'/profile',
+    },
+  ];
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
-
+  
   const handleClose = () => {
     setOpen(null);
   };
   const handleLogout = () => {
     setOpen(null);
-    // localStorage.removeItem('Jtoken');
-    localStorage.clear();
-    window.location.reload();
-    // window.FB.getLoginStatus((e) => console.log('status ===== ', e));
-    // window.FB.logout();
-    // navigate('/login');
+    dispatch(logout())
+    .unwrap()
+    .then(()=>{
+      console.log('logout done');
+      // navigate('/login');
+    })
+    .catch((err)=>{
+      console.log({err});
+      // navigate('/')
+    })
   };
 
   return (
@@ -72,7 +76,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={`${process.env.REACT_APP_API_URL}/${ProfilePic}`} alt="photoURL" />
+        <Avatar src={`${process.env.REACT_APP_API_URL}/${user?.profilePic}`} alt="photoURL" />
       </IconButton>
 
       <MenuPopover
@@ -91,11 +95,11 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {Email}
+            {user.email}
             {/* {account.displayName} */}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            Last Logged in at :{moment(LastLogin).format('MMMM Do YYYY, h:mm:ss a')}
+            Last Logged in at :{moment(user.lastLoggedInAt).format('MMMM Do YYYY, h:mm:ss a')}
             {/* {account.email} */}
           </Typography>
         </Box>

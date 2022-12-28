@@ -1,5 +1,4 @@
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
@@ -7,44 +6,33 @@ import {
   Card,
   Table,
   Stack,
-  Avatar,
   Button,
   Checkbox,
   TableRow,
   TableBody,
   TableCell,
-  Container,
   Typography,
   TableContainer,
   TablePagination,
   Box,
-  TableHead,
   Menu,
-  alpha,
   MenuItem,
-  Divider,
-  Collapse,
-  IconButton,
 } from '@mui/material';
 import styled from 'styled-components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { CSVLink } from 'react-csv';
 // components
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
+import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import { setLogindata } from '../slices/loginSlice';
-import { deleteSubscription, setSubscriptions } from '../slices/subscriptionSlice';
+import { setSubscriptions } from '../slices/subscriptionSlice';
 import SubscriptionModal from './SubscriptionModal';
-import SuccessToast from '../toast/Success';
-import { DeletesubResponse, GetcompaniesResponse, GetsubsResponse } from '../services/Service';
+import { GetcompaniesResponse } from '../services/Service';
 import DeleteModal from './DeleteModal';
 import EditCompanyModal from './EditCompanyModal';
 
@@ -105,9 +93,6 @@ function applySortFilter(array, comparator, query, cname) {
     if (cname === 'subscriptionName') {
       return filter(array, (_user) => _user?.subscriptionName.toLowerCase().indexOf(query?.toLowerCase()) !== -1);
     }
-    // return filter(array, (_user) => {
-    //   return _user?.description.toLowerCase().indexOf(query?.toLowerCase()) !== -1;
-    // });
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -123,7 +108,6 @@ export default function CompaniesList(props) {
   const [orderBy, setOrderBy] = useState('name');
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [download, setDownload] = useState(false);
   const [filterName, setFilterName] = useState('');
   const [openSub, setOpenSub] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -142,14 +126,6 @@ export default function CompaniesList(props) {
       .then((res) => {
         console.log(res.data, 'company ????????/');
         if (res.data.success === true) {
-          dispatch(
-            setLogindata({
-              Email: res.data.email,
-              LastLogin: res.data.lastLoggedInAt,
-              FirstName: res.data.name,
-              ProfilePic: res.data.profilePic,
-            })
-          );
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
         }
       })
@@ -211,15 +187,6 @@ export default function CompaniesList(props) {
   const handleClickOpenSub = () => {
     setOpenSub(true);
   };
-
-  const handleClickOpenDel = () => {
-    setOpenDelete(true);
-  };
-
-  const handleClickCloseDel = () => {
-    setOpenDelete(false);
-  };
-
   const handleClickMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -286,8 +253,6 @@ export default function CompaniesList(props) {
       borderRadius: 6,
       marginTop: 1,
       minWidth: 180,
-      // color:
-      //   theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
       boxShadow:
         'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
       '& .MuiMenu-list': {
@@ -296,14 +261,7 @@ export default function CompaniesList(props) {
       '& .MuiMenuItem-root': {
         '& .MuiSvgIcon-root': {
           fontSize: 18,
-          // color: theme.palette.text.secondary,
           marginRight: 1.5,
-        },
-        '&:active': {
-          // backgroundColor: alpha(
-          //   theme.palette.primary.main,
-          //   theme.palette.action.selectedOpacity,
-          // ),
         },
       },
     },
@@ -319,7 +277,6 @@ export default function CompaniesList(props) {
 
   return (
     <Page title="Subscriptions">
-      {/* <Container> */}
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4" gutterBottom>
           Subscriptions List
@@ -500,18 +457,8 @@ export default function CompaniesList(props) {
                               <Iconify icon="ic:twotone-delete" color="#DF3E30" width={22} height={22} />
                             </Button>
                           </TableCell>
-                          {/* <TableCell align="left">
-                          <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
-                            {sentenceCase(status)}
-                          </Label>
-                        </TableCell> */}
-
-                          {/* <TableCell align="right">
-                            <UserMoreMenu />
-                          </TableCell> */}
                         </TableRow>
-                      </> //   )
-                      // )}
+                      </> 
                     );
                   })}
                 {emptyRows > 0 && (
@@ -544,7 +491,6 @@ export default function CompaniesList(props) {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
-      {/* </Container> */}
     </Page>
   );
 }

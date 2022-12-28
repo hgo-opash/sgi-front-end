@@ -5,7 +5,6 @@ import { Stack, Button, Divider, Typography } from '@mui/material';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setLogindata } from '../../slices/loginSlice';
 
 // component
 import Iconify from '../../components/Iconify';
@@ -17,15 +16,12 @@ import { FbloginResponse } from '../../services/Service';
 const CLIENT_ID = '1490110678165861';
 
 export default function AuthSocial() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleCallback = (res) => {
-    // res.Jtoken = localStorage.getItem('Jtoken');
     console.log('FB LOGIN => ', res);
     FbloginResponse(res)
       .then((res) => {
         if (res.data.success === true) {
-          dispatch(setLogindata({ Email: res.email }));
           localStorage.setItem('Jtoken', res.data.token);
           SuccessToast('Login Successful');
           navigate('/dashboard');
@@ -35,10 +31,6 @@ export default function AuthSocial() {
       })
       .catch((e) => console.log(e));
   };
-
-  // React.useEffect(() => {
-  //   window.FB.getLoginStatus((e) => console.log('status ===== ', e));
-  // }, []);
 
   return (
     <>
@@ -57,8 +49,6 @@ export default function AuthSocial() {
             </Button>
           )}
         />
-        {/* <Iconify icon="eva:facebook-fill" color="#1877F2" width={22} height={22} /> */}
-
         <Button fullWidth size="large" color="inherit" variant="outlined">
           <Iconify icon="eva:twitter-fill" color="#1C9CEA" width={22} height={22} />
         </Button>
