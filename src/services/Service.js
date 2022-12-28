@@ -73,9 +73,30 @@ export const DeletesubResponse = (id) =>
     }
   );
 
+export const DeleteCompanyResponse = (id) =>
+  axios.post(
+    `${process.env.REACT_APP_API_URL}/deletecompany`,
+    { id },
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+      },
+    }
+  );
+
 export const DeletAllResponse = (selectedIDs) =>
   axios.post(
     `${process.env.REACT_APP_API_URL}/deletsub`,
+    { id: selectedIDs },
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+      },
+    }
+  );
+export const DeletAllCompanyResponse = (selectedIDs) =>
+  axios.post(
+    `${process.env.REACT_APP_API_URL}/deletecompany`,
     { id: selectedIDs },
     {
       headers: {

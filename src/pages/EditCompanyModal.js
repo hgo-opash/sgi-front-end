@@ -17,15 +17,16 @@ import {
   Typography,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import * as Yup from 'yup';
 import { Field, FormikProvider, useFormik } from 'formik';
 import MomentUtils from '@date-io/moment';
-import React from 'react';
-import { EditComapnysubsResponse, GetsubsResponse } from '../services/Service';
+import React, { useEffect } from 'react';
+import { EditComapnysubsResponse, GetcompaniesResponse, GetsubsResponse } from '../services/Service';
 import SuccessToast from '../toast/Success';
 import { setSubscriptions } from '../slices/subscriptionSlice';
+import { setCompanies } from '../slices/companiesSlice';
 
 const style = {
   position: 'absolute',
@@ -44,29 +45,48 @@ const style = {
 };
 
 const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
+  const [selectedCompanyType, setSelectedCompanyType] = React.useState([]);
+  const [companyTypes, setCompanyTypes] = React.useState([]);
+  const { allCompaniesData } = useSelector((state) => state.companies);
+  const { Email } = useSelector((state) => state.login);
   const dispatch = useDispatch();
+  console.log(Email,"Email");
+
+  const handleCompanyClick = (data) => {
+    const CompanyType = allCompaniesData.filter((val) => val.companyType === data);
+    setSelectedCompanyType(CompanyType);
+  };
 
   const handleClose = () => {
     setOpenEditModal(false);
   };
+
+  useEffect(() => {
+    GetcompaniesResponse().then((res) => {
+      console.log('subscription companies => ', res.data);
+      dispatch(setCompanies({ allCompaniesData: res.data.data }));
+      const companiesType = [...new Set(res.data.data.map((item) => item.companyType))];
+      setCompanyTypes(companiesType);
+    });
+  }, []);
 
   const validationSchema = Yup.object().shape({
     companyType: Yup.string().required('Please Select Company-Type'),
     createdAt: Yup.string().required('Please Select Contract Start Date'),
     price: Yup.number().required('Please Enter Amount'),
     // autoRenewal: Yup.string().required('Please Select Auto Renewal'),
-    updatedAt: Yup.date()
-      .required('Please Select next billing Date')
-      .test('nextBillingDate', 'Must be greater than today', (value) => {
-        return moment(value) > moment();
-      }),
+    updatedBy: Yup.string()
+      // .required('Please Select next billing Date')
+      // .test('nextBillingDate', 'Must be greater than today', (value) => {
+      //   return moment(value) > moment();
+      // }),
     // status: Yup.string().required('Please select Status'),
   });
 
   const initialValues = {
     companyType: data?.companyType,
     createdAt: data?.createdAt,
-    updatedAt: data?.updatedAt,
+    updatedBy: data?.updatedBy,
     price: data?.price,
     popular: data?.popular ? 'true' : 'false',
     // status: `${data?.status}`,
@@ -79,12 +99,13 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
     initialValues,
     validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log('values', values);
+      console.log('values company', values);
+      values.updatedBy= Email
 
       EditComapnysubsResponse(data._id, values).then((res) => {
         console.log('subscription ADD comapany => ', res.data);
         if (res.data.success === true) {
-          GetsubsResponse()
+          GetcompaniesResponse()
             .then((res) => {
               if (res.data.success === true) {
                 dispatch(setSubscriptions({ subscriptions: res.data.data }));
@@ -114,7 +135,7 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
         <Box sx={{ ...style, height: '90%', width: 800 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ ml: 3, mb: 3 }}>
             <Typography variant="h4" gutterBottom>
-              {data?.subscriptionName} Subscription
+              {data.companyType} Subscription
             </Typography>
             <Box sx={{ pr: 2 }}>
               <Button onClick={handleClose} color="error">
@@ -132,18 +153,20 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
                       fullWidth
                       sx={{ mb: 3, mt: 2 }}
                     >
-                      <InputLabel id="select3">Frequency</InputLabel>
+                      <InputLabel id="select3">Company Type</InputLabel>
                       <Select
                         labelId="select3"
                         id="select3"
-                        name="frequency"
-                        label="Frequency"
+                        name="companyType"
+                        label="Company Type"
                         value={`${EditForm.values.companyType}`}
                         onChange={EditForm.handleChange}
                       >
-                        <MenuItem value={'Monthly'}>Monthly</MenuItem>
-                        <MenuItem value={'Annually'}>Annually</MenuItem>
-                        <MenuItem value={'Trial'}>Trial</MenuItem>
+                        {companyTypes.map((item) => (
+                            <MenuItem key={item} value={item} onClick={() => handleCompanyClick(item)}>
+                              {item}
+                            </MenuItem>
+                          ))}
                       </Select>
                     </FormControl>
 
@@ -169,7 +192,19 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
                       </LocalizationProvider>
                     </FormControl>
 
-                    <FormControl fullWidth sx={{ mb: 3 }}>
+                    {/* <FormControl fullWidth sx={{ mb: 3 }}>
+                      <Field
+                        as={TextField}
+                        id="input1"
+                        name="updatedBy"
+                        label="Updated By"
+                        variant="outlined"
+                        value={EditForm.values.updatedBy}
+                        onChange={EditForm.handleChange}
+                      />
+                    </FormControl> */}
+
+                    {/* <FormControl fullWidth sx={{ mb: 3 }}>
                       <LocalizationProvider dateAdapter={MomentUtils}>
                         <Field
                           as={DesktopDatePicker}
@@ -177,7 +212,7 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
                           inputFormat="MM/DD/YYYY"
                           onChange={(e) => {
                             EditForm.setFieldValue('updatedAt', moment(e._d).format('yyyy-MM-DD'));
-                            EditForm.setFieldTouched('updatedAt', true, false);
+                            // EditForm.setFieldTouched('updatedAt', true, false);
                           }}
                           value={EditForm.values.updatedAt}
                           renderInput={(params) => (
@@ -191,8 +226,9 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
                           )}
                         />
                       </LocalizationProvider>
-                    </FormControl>
+                    </FormControl> */}
 
+                    
                     <FormControl
                       fullWidth
                       sx={{ mb: 3 }}
@@ -200,7 +236,7 @@ const EditCompanyModal = ({ openEditModal, setOpenEditModal, data }) => {
                       <InputLabel htmlFor="amount">Amount</InputLabel>
                       <OutlinedInput
                         label="Amount"
-                        name="amount"
+                        name="price"
                         type="number"
                         value={EditForm.values.price}
                         onChange={EditForm.handleChange}

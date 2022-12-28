@@ -44,11 +44,6 @@ export default function UserListHead({
     onRequestSort(event, property);
   };
 
-  const dateSort = (a, b) => {
-    console.log(a, b, 'aaaaaaaaaaaaaaaaaaaaaaaaaab');
-    return moment(a).valueOf() - moment(b).valueOf();
-  };
-
   return (
     <TableHead sx={{ backgroundColor: '#d0eddb' }}>
       <TableRow>
@@ -89,9 +84,9 @@ export default function UserListHead({
                 </Box>
               )}
             </Box>
-            {orderBy === headCell.id ? (
+            {/* {orderBy === headCell.id ? (
               <Box sx={{ ...visuallyHidden }}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</Box>
-            ) : null}
+            ) : null} */}
             {/* </TableSortLabel> */}
           </TableCell>
         ))}

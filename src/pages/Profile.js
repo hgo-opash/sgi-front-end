@@ -23,6 +23,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
+import { useNavigate } from 'react-router-dom';
 import SuccessToast from '../toast/Success';
 import { ProfilepicResponse } from '../services/Service';
 import { updateLoginData } from '../slices/loginSlice';
@@ -32,6 +33,7 @@ const Profile = () => {
   const { user } = useSelector((state) => state.login);
   const [value, setValue] = useState(0);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const pictureUploader = (e) => {
     ProfilepicResponse(e)

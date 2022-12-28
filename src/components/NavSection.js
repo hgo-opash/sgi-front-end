@@ -142,8 +142,6 @@ NavSection.propTypes = {
 };
 
 export default function NavSection({ navConfig, ...other }) {
-
-
   const { pathname } = useLocation();
   const { user } = useSelector((state) => state.login);
 

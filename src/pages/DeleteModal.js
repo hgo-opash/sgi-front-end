@@ -16,6 +16,7 @@ import SuccessToast from '../toast/Success';
 import ErrorToast from '../toast/Error';
 
 const DeleteModal = ({ openDeleteModal, setOpenDelete, id, setSelected }) => {
+  // console.log(id,"idssssssss");
   const dispatch = useDispatch();
 
   const style = {

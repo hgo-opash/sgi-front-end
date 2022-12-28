@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import { filter } from 'lodash';
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -31,9 +32,10 @@ import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import { setSubscriptions } from '../slices/subscriptionSlice';
-import SubscriptionModal from './SubscriptionModal';
 import { GetcompaniesResponse } from '../services/Service';
 import DeleteModal from './DeleteModal';
+import DeleteCompanyModal from './DeleteCompanyModal';
+import SubscriptionModal from './SubscriptionModal';
 import EditCompanyModal from './EditCompanyModal';
 
 // ----------------------------------------------------------------------
@@ -359,7 +361,7 @@ export default function CompaniesList(props) {
       </Stack>
 
       <SubscriptionModal openModal={openSub} setOpenSubModal={setOpenSub} />
-
+              {console.log(selected,"selected")}
       <Card>
         <UserListToolbar
           numSelected={selected.length}
@@ -369,7 +371,7 @@ export default function CompaniesList(props) {
           setSelected={setSelected}
         />
         <Scrollbar>
-          <TableContainer sx={{ minWidth: 800, overflow: 'hidden' }}>
+          <TableContainer sx={{ minWidth: 800, overflowX: 'scroll' }}>
             <Table>
               <UserListHead
                 order={order}
@@ -387,7 +389,7 @@ export default function CompaniesList(props) {
                     return (
                       <>
                         <EditCompanyModal openEditModal={open} setOpenEditModal={setOpen} data={editData} />
-                        <DeleteModal
+                        <DeleteCompanyModal
                           openDeleteModal={openDelete}
                           setOpenDelete={setOpenDelete}
                           id={[deleteid]}
@@ -429,8 +431,8 @@ export default function CompaniesList(props) {
                             </span>
                           </TableCell>
                           <TableCell align="left">{row.website}</TableCell>
-                          <TableCell align="left">{row.popular ? 'Yes' : 'No'}</TableCell>
                           <TableCell align="left">{row.price}</TableCell>
+                          <TableCell align="left">{row.popular ? 'Yes' : 'No'}</TableCell>
                           <TableCell align="left">{moment(row.createdAt).format('MM/DD/yyyy')}</TableCell>
                           <TableCell align="left">{moment(row.updatedAt).format('MM/DD/yyyy')}</TableCell>
                           <TableCell align="left">{row.updatedBy}</TableCell>

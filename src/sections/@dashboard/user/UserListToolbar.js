@@ -3,7 +3,19 @@ import { useDispatch, useSelector } from 'react-redux';
 // material
 import { useState } from 'react';
 import { styled } from '@mui/material/styles';
-import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
+import {
+  Toolbar,
+  Tooltip,
+  IconButton,
+  Typography,
+  OutlinedInput,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+} from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
 import SuccessToast from '../../../toast/Success';
@@ -43,9 +55,22 @@ UserListToolbar.propTypes = {
   onFilterName: PropTypes.func,
 };
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName, selectedIDs, setSelected }) {
+export default function UserListToolbar({ numSelected, filterName, onFilterName, selectedIDs, setSelected, onRequestSort, headLabel }) {
   const dispatch = useDispatch();
   const [openDelete, setOpenDelete] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const createAscSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
 
   return (
     <RootStyle
@@ -93,12 +118,68 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
           </Tooltip>
         </>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Iconify icon="ic:round-filter-list" />
-          </IconButton>
-        </Tooltip>
+        <>
+          <Tooltip title="Filter list">
+            <IconButton
+              onClick={handleClick}
+              sx={{ ml: 2 }}
+              aria-controls={open ? 'account-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+            >
+              <Iconify icon="ic:round-filter-list" />
+            </IconButton>
+          </Tooltip>
+        </>
       )}
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem sx={{display:"flex"}}>
+          <FormGroup>
+            <FormControlLabel control={<Checkbox />} label="Subscription Name" onClick={createAscSortHandler()} />
+            <FormControlLabel control={<Checkbox />} label="Frequency" />
+            <FormControlLabel control={<Checkbox />} label="Trial Days" />
+          </FormGroup>
+          <FormGroup>
+            <FormControlLabel control={<Checkbox />} label="Amount"  />
+            <FormControlLabel control={<Checkbox />} label="Start Date" />
+            <FormControlLabel control={<Checkbox />} label="Next Billing Date" />
+          </FormGroup>
+        </MenuItem>
+      </Menu>
     </RootStyle>
   );
 }

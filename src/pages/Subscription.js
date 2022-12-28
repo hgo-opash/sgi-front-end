@@ -39,6 +39,7 @@ import DeleteModal from './DeleteModal';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  // { id: '', label: '' },
   {
     id: 'subscriptionName',
     label: 'Subscription Name',
@@ -116,6 +117,7 @@ export default function Subscription() {
   const [orderBy, setOrderBy] = useState('name');
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openTable, setOpenTable] = useState(false);
   const [filterName, setFilterName] = useState('');
   const [openSub, setOpenSub] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -280,6 +282,13 @@ export default function Subscription() {
     setDeleteId(id);
   };
 
+  console.log(filteredSubs, 'filteredSubs>>>');
+  const groupData = [...new Set(filteredSubs.map((row) => row.subscriptionName))];
+  console.log(groupData, 'groupData');
+
+  const displayData = groupData.map((type) => filteredSubs.filter((row) => row.subscriptionName === type)).flat();
+  console.log(displayData, 'displayData>>>');
+
   return (
     <Page title="User">
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -376,7 +385,7 @@ export default function Subscription() {
           headLabel={TABLE_HEAD}
         />
         <Scrollbar>
-          <TableContainer sx={{ minWidth: 800, overflow: 'hidden' }}>
+          <TableContainer sx={{ minWidth: 800, overflowX: 'scroll' }}>
             <Table>
               <UserListHead
                 order={order}
@@ -388,10 +397,11 @@ export default function Subscription() {
                 onSelectAllClick={handleSelectAllClick}
               />
               <TableBody>
-                {filteredSubs &&
-                  filteredSubs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                {displayData &&
+                  displayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                     const isItemSelected = selected.indexOf(row._id) !== -1;
                     return (
+                      // row.subscriptionName === type && (
                       <>
                         <EditModal openEditModal={open} setOpenEditModal={setOpen} data={editData} />
                         <DeleteModal
@@ -411,6 +421,12 @@ export default function Subscription() {
                           <TableCell padding="checkbox">
                             <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row._id)} />
                           </TableCell>
+                          {/* <TableCell>
+                            <IconButton aria-label="expand row" size="small" onClick={() => setOpenTable(!openTable)}>
+                              {openTable ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                            </IconButton>
+                          </TableCell> */}
+
                           <TableCell component="th" scope="row" padding="none">
                             <Stack
                               direction="row"
