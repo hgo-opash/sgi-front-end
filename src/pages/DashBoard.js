@@ -150,7 +150,7 @@ const DashBoard = () => {
   return (
     <>
       {/* {Role === 'user' && ( */}
-      <Page title="Subscription">
+      <Page title="DashBoard - SGI">
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
           <Button
             onClick={handleClickOpenSub}

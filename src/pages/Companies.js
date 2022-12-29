@@ -65,7 +65,7 @@ const Companies = () => {
 
   return (
     <>
-      <Page title="Subscription">
+      <Page title="Companies - SGI">
         <Container>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             <Typography variant="h4" gutterBottom>

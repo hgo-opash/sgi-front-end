@@ -27,6 +27,7 @@ import { useNavigate } from 'react-router-dom';
 import SuccessToast from '../toast/Success';
 import { ProfilepicResponse } from '../services/Service';
 import { updateLoginData } from '../slices/loginSlice';
+import Page from '../components/Page';
 
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -79,6 +80,7 @@ const Profile = () => {
   };
 
   return (
+    <Page title="Profile - SGI">
     <div>
       <form>
         <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
@@ -235,6 +237,7 @@ const Profile = () => {
         </Box>
       </form>
     </div>
+    </Page>
   );
 };
 

@@ -1,7 +1,11 @@
 import React from 'react';
+import Page from '../components/Page';
 
 const Offers = () => {
-  return <div>Offers</div>;
+  return (
+    <Page title="Offers - SGI">
+     <div>Offers</div></Page>)
 };
 
 export default Offers;
+

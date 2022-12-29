@@ -278,7 +278,7 @@ export default function CompaniesList(props) {
   console.log(sortData, 'sortData>>>>');
 
   return (
-    <Page title="Subscriptions">
+    <Page title="Companieslist - SGI">
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4" gutterBottom>
           Subscriptions List

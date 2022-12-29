@@ -6,6 +6,7 @@ import { format, parse, startOfWeek, getDay } from 'date-fns';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { setSubscriptions } from '../slices/subscriptionSlice';
 import { GetsubsResponse } from '../services/Service';
+import Page from '../components/Page';
 
 const locales = {
   'en-US': require('date-fns'),
@@ -25,9 +26,9 @@ const Agenda = () => {
 
     let date = new Date(e.start).toISOString().substring(0, 10).replaceAll('-', '');
     var eventDate = {
-        start: date,
-        end: date,
-      },
+      start: date,
+      end: date,
+    },
       summary = e.title,
       description = e.desc;
     var link = document.querySelector('#downloadLink');
@@ -106,26 +107,29 @@ const Agenda = () => {
   });
 
   return (
-    <div className="calendars">
-      <a style={{ display: 'none' }} href="" id="downloadLink" download="event.ics"></a>
-      <div>
-        <Calendar
-          // events={[
-          //   {
-          //     id: 0,
-          //     title: "Testing Agenda",
-          //     start: new Date(2022, 11, 28, 14, 0, 0),
-          //     end: new Date(2022, 11, 28, 16, 0, 0),
-          //   },
-          // ]}
-          events={eventData}
-          onSelectEvent={(e) => saveIcs(e)}
-          defaultDate={new Date()}
-          localizer={localizer}
-          style={{ height: 700 }}
-        />
+
+    <Page title="Calendar - SGI">
+      <div className="calendars">
+        <a style={{ display: 'none' }} href="" id="downloadLink" download="event.ics"></a>
+        <div>
+          <Calendar
+            // events={[
+            //   {
+            //     id: 0,
+            //     title: "Testing Agenda",
+            //     start: new Date(2022, 11, 28, 14, 0, 0),
+            //     end: new Date(2022, 11, 28, 16, 0, 0),
+            //   },
+            // ]}
+            events={eventData}
+            onSelectEvent={(e) => saveIcs(e)}
+            defaultDate={new Date()}
+            localizer={localizer}
+            style={{ height: 700 }}
+          />
+        </div>
       </div>
-    </div>
+    </Page>
   );
 };
 
