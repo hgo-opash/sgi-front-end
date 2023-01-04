@@ -17,9 +17,14 @@ import {
   Box,
   Menu,
   MenuItem,
+  Fab,
+  IconButton,
 } from '@mui/material';
 import styled from 'styled-components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import BackupOutlinedIcon from '@mui/icons-material/BackupOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { CSVLink } from 'react-csv';
@@ -35,11 +40,16 @@ import SubscriptionModal from './SubscriptionModal';
 import { GetsubsResponse } from '../services/Service';
 import EditModal from './EditModal';
 import DeleteModal from './DeleteModal';
+import downloadImage from '../images/download.png';
+import downArrow from '../images/downArrow.png';
+import uploadImage from '../images/upload.png';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   // { id: '', label: '' },
+  { id: 'edit', label: 'Edit', alignRight: false },
+  { id: 'delete', label: 'Delete', alignRight: false },
   {
     id: 'subscriptionName',
     label: 'Subscription Name',
@@ -59,8 +69,6 @@ const TABLE_HEAD = [
   },
   { id: 'autoRenewal', label: 'Auto Renewal', alignRight: false },
   { id: 'comments', label: 'Comments', alignRight: false },
-  { id: 'edit', label: 'Edit', alignRight: false },
-  { id: 'delete', label: 'Delete', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -292,15 +300,29 @@ export default function Subscription() {
   return (
     <Page title="Subscription - SGI">
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" sx={{ fontSize: '40px', fontWeight: 700, color: '#3D71FF' }}>
           Subscriptions
         </Typography>
+        <UserListToolbar
+          numSelected={selected.length}
+          filterName={filterName}
+          onFilterName={handleFilterByName}
+          selectedIDs={selected}
+          setSelected={setSelected}
+          onRequestSort={handleRequestSort}
+          headLabel={TABLE_HEAD}
+        />
         <Box sx={{ display: 'flex' }}>
           <Button
             onClick={handleClickOpenSub}
-            variant="contained"
+            variant="text"
             component={RouterLink}
-            startIcon={<Iconify icon="eva:plus-fill" />}
+            startIcon={
+              <Fab aria-label="add" size="small" sx={{ color: '#FFFFFF', backgroundColor: '#3D71FF', ml: '-5px' }}>
+                <AddIcon />
+              </Fab>
+            }
+            sx={{ backgroundColor: '#FFFFFF', borderRadius: '30px', height: '40px', textTransform: 'none' }}
           >
             ADD Subscription
           </Button>
@@ -310,12 +332,22 @@ export default function Subscription() {
               aria-controls={openMenu ? 'demo-customized-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={openMenu ? 'true' : undefined}
-              variant="contained"
+              variant="text"
               disableElevation
               onClick={handleClickMenu}
-              startIcon={<Iconify icon="ic:round-cloud-download" />}
-              endIcon={<KeyboardArrowDownIcon />}
-              sx={{ marginLeft: '15px' }}
+              startIcon={
+                <Fab aria-label="add" size="small" sx={{ color: '#FFFFFF', backgroundColor: '#3D71FF', ml: '-5px' }}>
+                  <img src={downloadImage} alt="downloadImage" />
+                </Fab>
+              }
+              endIcon={<img src={downArrow} alt="downArrow" />}
+              sx={{
+                marginLeft: '15px',
+                backgroundColor: '#FFFFFF',
+                borderRadius: '30px',
+                height: '40px',
+                textTransform: 'none',
+              }}
             >
               Download
             </Button>
@@ -368,6 +400,30 @@ export default function Subscription() {
                 </MenuItem>
               </CSVLink>
             </StyledMenu>
+            <Button
+              id="demo-customized-button"
+              aria-controls={openMenu ? 'demo-customized-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={openMenu ? 'true' : undefined}
+              variant="text"
+              disableElevation
+              onClick={handleClickMenu}
+              startIcon={
+                <Fab aria-label="add" size="small" sx={{ color: '#FFFFFF', backgroundColor: '#3D71FF', ml: '-5px' }}>
+                  <img src={uploadImage} alt="downloadImage" />
+                </Fab>
+              }
+              endIcon={<img src={downArrow} alt="upload" />}
+              sx={{
+                marginLeft: '15px',
+                backgroundColor: '#FFFFFF',
+                borderRadius: '30px',
+                height: '40px',
+                textTransform: 'none',
+              }}
+            >
+              Upload doc
+            </Button>
           </Box>
         </Box>
       </Stack>
@@ -375,17 +431,8 @@ export default function Subscription() {
       <SubscriptionModal openModal={openSub} setOpenSubModal={setOpenSub} />
 
       <Card>
-        <UserListToolbar
-          numSelected={selected.length}
-          filterName={filterName}
-          onFilterName={handleFilterByName}
-          selectedIDs={selected}
-          setSelected={setSelected}
-          onRequestSort={handleRequestSort}
-          headLabel={TABLE_HEAD}
-        />
         <Scrollbar>
-          <TableContainer sx={{ minWidth: 800, overflowX: 'scroll' }}>
+          <TableContainer sx={{ minWidth: 800, overflowX: 'auto' }}>
             <Table>
               <UserListHead
                 order={order}
@@ -417,6 +464,7 @@ export default function Subscription() {
                           role="checkbox"
                           selected={isItemSelected}
                           aria-checked={isItemSelected}
+                          style={{ borderRadius: '60px!important', backgroundColor: '#FFFFFF', mt: '26px' }}
                         >
                           <TableCell padding="checkbox">
                             <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row._id)} />
@@ -427,7 +475,31 @@ export default function Subscription() {
                             </IconButton>
                           </TableCell> */}
 
-                          <TableCell component="th" scope="row" padding="none">
+                          <TableCell align="center">
+                            <Button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleClickOpen(handleClickOpen);
+                                setEditData(row);
+                              }}
+                            >
+                              <Iconify icon="ic:twotone-mode-edit-outline" color="#1877F2" width={22} height={22} />
+                            </Button>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setOpenDelete(true);
+                                handledelete(row._id);
+                                setSelected([]);
+                              }}
+                            >
+                              <Iconify icon="ic:twotone-delete" color="#DF3E30" width={22} height={22} />
+                            </Button>
+                          </TableCell>
+
+                          <TableCell component="th" scope="row" padding="none" align="center">
                             <Stack
                               direction="row"
                               alignItems="center"
@@ -460,30 +532,6 @@ export default function Subscription() {
                           <TableCell align="left">{moment(row.nextBilling).format('MM/DD/yyyy')}</TableCell>
                           <TableCell align="left">{row.autoRenewal ? 'Yes' : 'No'}</TableCell>
                           <TableCell align="left">{row.comments}</TableCell>
-
-                          <TableCell align="center">
-                            <Button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleClickOpen(handleClickOpen);
-                                setEditData(row);
-                              }}
-                            >
-                              <Iconify icon="ic:twotone-mode-edit-outline" color="#1877F2" width={22} height={22} />
-                            </Button>
-                          </TableCell>
-                          <TableCell align="center">
-                            <Button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setOpenDelete(true);
-                                handledelete(row._id);
-                                setSelected([]);
-                              }}
-                            >
-                              <Iconify icon="ic:twotone-delete" color="#DF3E30" width={22} height={22} />
-                            </Button>
-                          </TableCell>
                         </TableRow>
                       </>
                     );

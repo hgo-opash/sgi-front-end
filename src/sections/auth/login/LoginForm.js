@@ -3,11 +3,23 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Field, FormikProvider, useFormik } from 'formik';
-import { Button, Checkbox, FormControlLabel, IconButton, InputAdornment, Link, Stack, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { Icon } from '@iconify/react';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../../../slices/loginSlice';
 import SuccessToast from '../../../toast/Success';
+import ErrorToast from '../../../toast/Error';
 
 // ----------------------------------------------------------------------
 
@@ -49,6 +61,7 @@ export default function LoginForm() {
         })
         .catch((err) => {
           console.log(err);
+          ErrorToast(err.data.message)
         });
     },
   });
@@ -60,8 +73,9 @@ export default function LoginForm() {
           <Stack spacing={3}>
             <Field
               as={TextField}
+              variant="standard"
               name="email"
-              label="Email"
+              label={<Typography sx={{color:"#B6B6B6"}}>Email Address</Typography>}
               onChange={LoginFormik.handleChange}
               value={LoginFormik.values.email}
               error={LoginFormik.touched.email && Boolean(LoginFormik.errors.email)}
@@ -70,9 +84,10 @@ export default function LoginForm() {
 
             <Field
               as={TextField}
+              variant="standard"
               type={showPassword ? 'text' : 'password'}
               name="password"
-              label="Password"
+              label={<Typography sx={{color:"#B6B6B6"}}>Password</Typography>}
               onChange={LoginFormik.handleChange}
               value={LoginFormik.values.password}
               error={LoginFormik.touched.password && Boolean(LoginFormik.errors.password)}
@@ -88,22 +103,23 @@ export default function LoginForm() {
               }}
             />
 
-            <FormControlLabel
-              value="start"
-              control={<Checkbox name="remember" label="Remember me" />}
-              label="Remember me"
-            />
+            <Box sx={{display:"flex",justifyContent:"space-between"}}>
+              <FormControlLabel
+                value="start"
+                control={<Checkbox name="remember" label="Remember me" />}
+                label={<Typography sx={{fontSize:"15px"}}>Remember me</Typography>}
+              />
+              <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
+                <Link variant="subtitle2" underline="hover" onClick={() => navigate('/forgetpassword')}>
+                  Forgot password?
+                </Link>
+              </Stack>
+            </Box>
 
-            <Button color="primary" variant="contained" type="submit">
+          </Stack>
+            <Button color="primary" variant="contained" type="submit" sx={{width:"170px",borderRadius:"30px",textTransform:"none", backgroundColor:"#3D71FF"}}>
               Log In
             </Button>
-          </Stack>
-
-          <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-            <Link variant="subtitle2" underline="hover" onClick={() => navigate('/forgetpassword')}>
-              Forgot password?
-            </Link>
-          </Stack>
         </form>
       </FormikProvider>
     </>

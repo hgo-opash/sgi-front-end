@@ -45,7 +45,7 @@ export default function UserListHead({
   };
 
   return (
-    <TableHead sx={{ backgroundColor: '#d0eddb' }}>
+    <TableHead sx={{ backgroundColor: '#7B9EFD' }}>
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
@@ -67,7 +67,7 @@ export default function UserListHead({
               // direction={orderBy === headCell.id ? order : 'asc'}
               // onClick={createSortHandler(headCell.id)}
             > */}
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center',color:"#FFFFFF" }}>
               <Box>{headCell.label}</Box>
               {headCell.sort && (
                 <Box sx={{ display: 'flex' }}>

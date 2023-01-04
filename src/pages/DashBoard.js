@@ -29,6 +29,10 @@ import Label from '../components/Label';
 import { setSubscriptions } from '../slices/subscriptionSlice';
 import { GetsubsResponse } from '../services/Service';
 import SubscriptionModal from './SubscriptionModal';
+import costPerMonthpic from '../images/costPerMonth.png';
+import costPerYearpic from '../images/costPerYear.png';
+import budgetpic from '../images/budget.png';
+import variancepic from '../images/variance.png';
 
 const TABLE_HEAD = [
   {
@@ -147,6 +151,35 @@ const DashBoard = () => {
   const costPerYear = costPerYearArray.reduce((a, v) => a + v, 0).toFixed(2);
   const variance = (budget - costPerYear).toFixed(2);
 
+  const imgStyle = {
+    height: '70px',
+    width: '70px',
+    borderRadius: '10px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: '-18px',
+    left: '20px',
+  };
+
+  const lineSyle = {
+    fontSize: '16px',
+    fontWeight: 700,
+    pb: '7px',
+    position: 'relative',
+    pt: '22px',
+    '::after': {
+      position: 'absolute',
+      content: '""',
+      left: '0',
+      bottom: '0',
+      height: '3px',
+      width: '60px',
+      backgroundColor: '#C1C8F6',
+    },
+  };
+
   return (
     <>
       {/* {Role === 'user' && ( */}
@@ -171,7 +204,7 @@ const DashBoard = () => {
 
           return (
             expire && (
-              <Collapse key={data._id} in={open} >
+              <Collapse key={data._id} in={open}>
                 <Alert
                   variant="filled"
                   severity="warning"
@@ -190,83 +223,116 @@ const DashBoard = () => {
           );
         })}
 
-        <Card sx={{ m: 6, height: '110px' }}>
-          <Grid
-            container
-            sx={{
-              height: '100%',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              pl: '50px',
-              pr: '80px',
-              fontSize: '25px',
-              backgroundColor: '#D1E9FC',
-              color: '#061B64',
-            }}
-          >
-            <Box>Total Cost Per Month</Box>
-            <Box>${costPerMonth}</Box>
+        <Grid
+          container
+          rowSpacing={{ xs: 5, sm: 4, md: 4 }}
+          columnSpacing={{ xs: 3, sm: 3, md: 3 }}
+          sx={{ pt: '35px' }}
+        >
+          <Grid item xs={12} sm={6} md={6} lg={6} xl={3} sx={{ width: '100%' }}>
+            <Card
+              sx={{
+                height: '130px',
+                position: 'relative',
+                overflow: 'visible',
+                boxShadow: '0px 4px 10px 5px rgba(162, 162, 162, 0.15)',
+              }}
+            >
+              <Grid container columnSpacing={{ xs: 1, sm: 2, md: 4 }}>
+                <Grid item xs={4}>
+                  <Box sx={{ ...imgStyle, background: 'linear-gradient(180deg, #0071E3 0%, #6AB2FD 100%)' }}>
+                    <img height="45px" width="45px" src={costPerMonthpic} alt="month" />
+                  </Box>
+                </Grid>
+                <Grid item xs={8}>
+                  <Box sx={{ width: '100%', display: 'flex', alignItems: 'baseline', flexDirection: 'column' }}>
+                    <Box sx={{ ...lineSyle, color: '#1F82E6' }}>Total Cost Per Month</Box>
+                    <Box sx={{ fontSize: '30px', fontWeight: 700, mt: '10px' }}>${costPerMonth}</Box>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Card>
           </Grid>
-        </Card>
-        <Card sx={{ m: 6, height: '110px ' }}>
-          <Grid
-            container
-            sx={{
-              height: '100%',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              pl: '50px',
-              pr: '80px',
-              fontSize: '25px',
-              backgroundColor: '#D0F2FF',
-              color: '#04297A',
-            }}
-          >
-            <Box>Total Cost Per Year</Box>
-            <Box>${costPerYear}</Box>
+
+          <Grid item xs={12} sm={6} md={6} lg={6} xl={3} sx={{ width: '100%' }}>
+            <Card
+              sx={{
+                height: '130px',
+                position: 'relative',
+                overflow: 'visible',
+                boxShadow: '0px 4px 10px 5px rgba(162, 162, 162, 0.15)',
+              }}
+            >
+              <Grid container columnSpacing={{ xs: 1, sm: 2, md: 4 }}>
+                <Grid item xs={4}>
+                  <Box sx={{ ...imgStyle, background: 'linear-gradient(180deg, #34DABA 0%, #54E1C2 100%)' }}>
+                    <img height="45px" width="45px" src={costPerYearpic} alt="year" />
+                  </Box>
+                </Grid>
+                <Grid item xs={8}>
+                  <Box sx={{ width: '100%', display: 'flex', alignItems: 'baseline', flexDirection: 'column' }}>
+                    <Box sx={{ ...lineSyle, color: '#35DBBB' }}>Total Cost Per Year</Box>
+                    <Box sx={{ fontSize: '30px', fontWeight: 700, mt: '10px' }}>${costPerYear}</Box>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Card>
           </Grid>
-        </Card>
-        <Card sx={{ m: 6, height: '110px ' }}>
-          <Grid
-            container
-            sx={{
-              height: '100%',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              pl: '50px',
-              pr: '80px',
-              fontSize: '25px',
-              backgroundColor: '#FFF7CD',
-              color: '#7A4F01',
-            }}
-          >
-            <Box>Total Budget</Box>
-            <Box>${budget}</Box>
+
+          <Grid item xs={12} sm={6} md={6} lg={6} xl={3} sx={{ width: '100%' }}>
+            <Card
+              sx={{
+                height: '130px',
+                position: 'relative',
+                overflow: 'visible',
+                boxShadow: '0px 4px 10px 5px rgba(162, 162, 162, 0.15)',
+              }}
+            >
+              <Grid container columnSpacing={{ xs: 1, sm: 2, md: 4 }}>
+                <Grid item xs={4}>
+                  <Box sx={{ ...imgStyle, background: 'linear-gradient(180deg, #FEB655 0%, #FFC774 100%)' }}>
+                    <img height="45px" width="45px" src={budgetpic} alt="budget" />
+                  </Box>
+                </Grid>
+                <Grid item xs={8}>
+                  <Box sx={{ width: '100%', display: 'flex', alignItems: 'baseline', flexDirection: 'column' }}>
+                    <Box sx={{ ...lineSyle, color: '#FDBE69' }}>Total Budget</Box>
+                    <Box sx={{ fontSize: '30px', fontWeight: 700, mt: '10px' }}>${budget}</Box>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Card>
           </Grid>
-        </Card>
-        <Card sx={{ m: 6, height: '110px' }}>
-          <Grid
-            container
-            sx={{
-              height: '100%',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              pl: '50px',
-              pr: '80px',
-              fontSize: '25px',
-              backgroundColor: '#FFE7D9',
-              color: '#7A0C2E',
-            }}
-          >
-            <Box>Variance from Budget</Box>
-            <Box>${variance}</Box>
+
+          <Grid item xs={12} sm={6} md={6} lg={6} xl={3} sx={{ width: '100%' }}>
+            <Card
+              sx={{
+                height: '130px',
+                position: 'relative',
+                overflow: 'visible',
+                boxShadow: '0px 4px 10px 5px rgba(162, 162, 162, 0.15)',
+              }}
+            >
+              <Grid container columnSpacing={{ xs: 1, sm: 2, md: 4 }}>
+                <Grid item xs={4}>
+                  <Box sx={{ ...imgStyle, background: 'linear-gradient(180deg, #FA5C7E 0%, #FF7C95 100%)' }}>
+                    <img height="45px" width="45px" src={variancepic} alt="variance" />
+                  </Box>
+                </Grid>
+                <Grid item xs={8}>
+                  <Box sx={{ width: '100%', display: 'flex', alignItems: 'baseline', flexDirection: 'column' }}>
+                    <Box sx={{ ...lineSyle, color: '#FB5D7F' }}>Varince from Budget</Box>
+                    <Box sx={{ fontSize: '30px', fontWeight: 700, mt: '10px' }}>${variance}</Box>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Card>
           </Grid>
-        </Card>
+        </Grid>
 
         <Container>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2} pt={3}>
             <Typography variant="h4" gutterBottom>
-              {/* User */}
               Subscriptions
             </Typography>
             {/* <Button variant="contained" component={RouterLink} to="#" startIcon={<Iconify icon="eva:plus-fill" />}>

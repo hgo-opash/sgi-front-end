@@ -19,6 +19,7 @@ import {
   ListItemAvatar,
   ListItemButton,
 } from '@mui/material';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 // utils
 import { fToNow } from '../../utils/formatTime';
 // components
@@ -104,16 +105,22 @@ export default function NotificationsPopover() {
 
   return (
     <>
-      <IconButton
+      {/* <IconButton
         ref={anchorRef}
         color={open ? 'primary' : 'default'}
         onClick={handleOpen}
-        sx={{ width: 40, height: 40 }}
+        sx={{ width: 25, height: 25 }}
+      > */}
+      <Avatar
+        onClick={handleOpen}
+        ref={anchorRef}
+        sx={{ width: 25, height: 25, color: 'black', backgroundColor: '#FFFF', cursor:"pointer" }}
       >
-        <Badge badgeContent={totalUnRead} color="error">
-          <Iconify icon="eva:bell-fill" width={20} height={20} />
+        <Badge badgeContent={totalUnRead} color="secondary" variant='dot' >
+          <NotificationsNoneIcon sx={{ width: 18, height: 18 }} />
         </Badge>
-      </IconButton>
+      </Avatar>
+      {/* </IconButton> */}
 
       <MenuPopover
         open={Boolean(open)}

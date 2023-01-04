@@ -10,7 +10,7 @@ SearchNotFound.propTypes = {
 
 export default function SearchNotFound({ searchQuery = '', ...other }) {
   return (
-    <Paper {...other}>
+    <Paper {...other} sx={{width:"100%"}}>
       <Typography gutterBottom align="center" variant="subtitle1">
         Not found
       </Typography>

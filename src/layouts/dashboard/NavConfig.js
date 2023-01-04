@@ -1,39 +1,44 @@
 // component
 import Iconify from '../../components/Iconify';
+import dashboardIcon from '../../images/dashboard.png'
+import subscriptionIcon from '../../images/subscription.png'
+import reportIcon from '../../images/reports.png'
+import offersIcon from '../../images/offers.png'
+import calendarIcon from '../../images/calendar.png'
 
 // ----------------------------------------------------------------------
 
-const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
+const getIcon = (name) => <img src={name} alt={name} width={15} height={15} />;
 
 const navConfig = [
   {
     title: 'Dashboard',
     path: '/dashboard',
-    icon: getIcon('eva:pie-chart-2-fill'),
+    icon: getIcon(dashboardIcon),
     roles: ['user'],
   },
   {
     title: 'Subscriptions',
     path: '/subscription',
-    icon: getIcon('eva:shopping-bag-fill'),
+    icon: getIcon(subscriptionIcon),
     roles: ['user'],
   },
   {
     title: 'Reports',
     path: '/reports',
-    icon: getIcon('eva:file-text-fill'),
+    icon: getIcon(reportIcon),
     roles: ['user'],
   },
   {
     title: 'Offers',
     path: '/offers',
-    icon: getIcon('bxs:offer'),
+    icon: getIcon(offersIcon),
     roles: ['user'],
   },
   {
     title: 'Calendar',
     path: '/calendar',
-    icon: getIcon('bxs:offer'),
+    icon: getIcon(calendarIcon),
     roles: ['user'],
   },
   {

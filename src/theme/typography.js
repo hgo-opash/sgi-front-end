@@ -18,7 +18,7 @@ function responsiveFontSizes({ sm, md, lg }) {
   };
 }
 
-const FONT_PRIMARY = 'Public Sans, sans-serif';
+const FONT_PRIMARY = 'Proxima Nova, sans-serif';
 
 const typography = {
   fontFamily: FONT_PRIMARY,
@@ -67,9 +67,9 @@ const typography = {
     fontSize: pxToRem(16),
   },
   subtitle2: {
-    fontWeight: 600,
+    fontWeight: 400,
     lineHeight: 22 / 14,
-    fontSize: pxToRem(14),
+    fontSize: pxToRem(16),
   },
   body1: {
     lineHeight: 1.5,

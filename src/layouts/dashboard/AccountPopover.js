@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import {  Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
@@ -16,12 +16,11 @@ import { logout } from '../../slices/loginSlice';
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
-  
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(null);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.login);
-  
+
   const MENU_OPTIONS = [
     {
       label: 'Home',
@@ -32,28 +31,28 @@ export default function AccountPopover() {
       label: 'Settings',
       icon: 'eva:settings-2-fill',
       // eslint-disable-next-line no-nested-ternary
-      linkTo: user?.role === 'admin' ? '/admin/profile' : user?.role === 'business' ? '/business/profile':'/profile',
+      linkTo: user?.role === 'admin' ? '/admin/profile' : user?.role === 'business' ? '/business/profile' : '/profile',
     },
   ];
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
-  
+
   const handleClose = () => {
     setOpen(null);
   };
   const handleLogout = () => {
     setOpen(null);
     dispatch(logout())
-    .unwrap()
-    .then(()=>{
-      console.log('logout done');
-      // navigate('/login');
-    })
-    .catch((err)=>{
-      console.log({err});
-      // navigate('/')
-    })
+      .unwrap()
+      .then(() => {
+        console.log('logout done');
+        // navigate('/login');
+      })
+      .catch((err) => {
+        console.log({ err });
+        // navigate('/')
+      });
   };
 
   return (
@@ -63,12 +62,14 @@ export default function AccountPopover() {
         onClick={handleOpen}
         sx={{
           p: 0,
+          width: 25,
+          height: 25,
           ...(open && {
             '&:before': {
               zIndex: 1,
               content: "''",
-              width: '100%',
-              height: '100%',
+              width: '25px',
+              height: '25px',
               borderRadius: '50%',
               position: 'absolute',
               bgcolor: (theme) => alpha(theme.palette.grey[900], 0.8),
@@ -76,7 +77,11 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={`${process.env.REACT_APP_API_URL}/${user?.profilePic}`} alt="photoURL" />
+        <Avatar
+          src={`${process.env.REACT_APP_API_URL}/${user?.profilePic}`}
+          alt="photoURL"
+          sx={{ width: 25, height: 25 }}
+        />
       </IconButton>
 
       <MenuPopover

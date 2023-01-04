@@ -3,7 +3,7 @@ import { Link as RouterLink, Navigate, useNavigate } from 'react-router-dom';
 // @mui
 import { useSelector } from 'react-redux';
 import { styled } from '@mui/material/styles';
-import { Card, Link, Container, Typography } from '@mui/material';
+import { Card, Link, Container, Typography, Grid, Box } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
@@ -12,10 +12,17 @@ import Logo from '../components/Logo';
 // sections
 import { LoginForm } from '../sections/auth/login';
 import AuthSocial from '../sections/auth/AuthSocial';
+import backgroundImage from '../images/login-background.png';
+import loginImage from '../images/login-image.png';
 
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
+  background: `url(${backgroundImage})`,
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  height: '100vh',
   [theme.breakpoints.up('md')]: {
     display: 'flex',
   },
@@ -33,13 +40,13 @@ const HeaderStyle = styled('header')(({ theme }) => ({
   justifyContent: 'space-between',
   [theme.breakpoints.up('md')]: {
     alignItems: 'flex-start',
-    padding: theme.spacing(7, 5, 0, 7),
+    // padding: theme.spacing(7, 5, 0, 7),
   },
 }));
 
-const SectionStyle = styled(Card)(({ theme }) => ({
+const SectionStyle = styled(Container)(({ theme }) => ({
   width: '100%',
-  maxWidth: 464,
+  // maxWidth: '901px',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
@@ -64,90 +71,96 @@ export default function Login() {
   const mdUp = useResponsive('up', 'md');
   const navigate = useNavigate();
 
-  const { Role } = useSelector((state) => state.login);
-
-  React.useEffect(() => {
-    if (Role === 'user') {
-      navigate('/dashboard', { replace: true });
-    }
-    if (Role === 'business') {
-      navigate('/companieslist', { replace: true });
-    }
-    if (Role === 'admin') {
-      navigate('/admin/dashboard', { replace: true });
-    }
-  }, []);
-
   return (
     <Page title="Login">
       <RootStyle>
-        <HeaderStyle>
-          {/* <Logo /> */}
+        <Container>
+          <Box display="inline-block" sx={{ width: '100%', height: '100vh' }} py={4}>
+            <Grid container height={'100%'}>
+              <Grid item display={{xs: "none", md:"block"}} xs={0} md={7} height={'100%'}>
+                <Card
+                  sx={{
+                    height: '100%',
+                    display: 'flex',
+                    padding: '20px',
+                    width: '100%',
+                    borderRadius: '10px',
+                    boxShadow: '0px 4px 50px 0px #C1C8F6',
+                    border: '2px solid #3D71FF',
+                    zIndex: 1,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexFlow: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '100%',
+                      width: '100%',
+                    }}
+                  >
+                    <Typography variant="h2" align='center' sx={{ fontSize: '38px', fontWeight: 300 }} mb={2}>
+                      Welcome to <span style={{ color: '#3D71FF', fontWeight: 700 }}>SafalSubscriptions</span>
+                    </Typography>
 
-          {/* {!smUp && (
-            <Typography variant="body2" sx={{ mt: { md: -2 } }}>
-              Don’t have an account? {''}
-              <Link variant="subtitle2" component={RouterLink} to="/register">
-                Get started
-              </Link>
-            </Typography>
-          )} */}
-        </HeaderStyle>
+                    <Typography variant="h2" sx={{ fontSize: '16px ', fontWeight: 300, color: '#1D1D1F' }} mb={2}>
+                      The Inkling client project admin Board
+                    </Typography>
 
-        {mdUp && (
-          <SectionStyle>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
-            </Typography>
-            <img src="/static/illustrations/illustration_login.png" alt="login" />
-          </SectionStyle>
-        )}
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <img src={loginImage} alt="login" width="85%" height="400px" style={{ objectFit: 'contain' }} />
+                    </Box>
+                  </Box>
+                </Card>
+              </Grid>
 
-        <Container maxWidth="sm">
-          <ContentStyle>
-            <Typography variant="h4" gutterBottom>
-              Sign in to SGI
-            </Typography>
+              <Grid item xs={12} md={5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                <Card
+                  sx={{
+                    height: 'calc(100% - 22%)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    padding: '50px',
+                    width: '100%',
+                    borderRadius: '0px',
+                    borderTopRightRadius: '10px',
+                    borderBottomRightRadius: '10px',
+                    boxShadow: 'none',
+                    pl: '80px',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexFlow: 'column',
+                      // alignItems: 'center',
+                      justifyContent: 'center',
+                      // height: '100%',
+                      // height: "calc(100% - 50%)",
+                      width: '100%',
+                    }}
+                  >
+                    <Typography variant="h2" sx={{ fontSize: '24px', fontWeight: 300, alignItems: 'center' }} mb={1}>
+                      <span style={{ color: '#3D71FF', fontWeight: 700 }}>Sign in</span> to SafalSubscriptions
+                    </Typography>
 
-            <Typography sx={{ color: 'text.secondary', mb: 5 }}>Enter your details below.</Typography>
-
-            {/* <AuthSocial /> */}
-
-            <LoginForm />
-
-            {smUp && (
-              <>
-                <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-                  Don’t have an account?{' '}
-                  <Link variant="subtitle2" component={RouterLink} to="/register">
-                    Get started
-                  </Link>
-                </Typography>
-                {/* <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-                  Register for business?{' '}
-                  <Link variant="subtitle2" component={RouterLink} to="/registerbusiness">
-                    click here
-                  </Link>
-                </Typography>  */}
-              </>
-            )}
-            {smDown && (
-              <>
-                <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-                  Don’t have an account?{' '}
-                  <Link variant="subtitle2" component={RouterLink} to="/register">
-                    Get started
-                  </Link>
-                </Typography>
-                {/* <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-                  Register for business?{' '}
-                  <Link variant="subtitle2" component={RouterLink} to="/registerbusiness">
-                    click here
-                  </Link>
-                </Typography> */}
-              </>
-            )}
-          </ContentStyle>
+                    <Typography variant="body1" sx={{ fontSize: '15px', fontWeight: 300, color: '#1D1D1F' }} mb={2}>
+                      Enter your details below.
+                    </Typography>
+                  </Box>
+                  <LoginForm />
+                  <Typography variant="body2" sx={{ mt: 3 }}>
+                    Don’t have an account?{' '}
+                    <Link variant="subtitle2" underline="hover" component={RouterLink} to="/register">
+                      Get started
+                    </Link>
+                  </Typography>
+                </Card>
+              </Grid>
+            </Grid>
+          </Box>
         </Container>
       </RootStyle>
     </Page>

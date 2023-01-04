@@ -15,6 +15,7 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Button,
 } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
@@ -24,18 +25,23 @@ import { deleteSubscription } from '../../../slices/subscriptionSlice';
 import { DeletAllResponse } from '../../../services/Service';
 // import DeleteModal from '../../../DeleteModal';
 import DeleteModal from '../../../pages/DeleteModal';
+import filterIcon from '../../../images/filterIcon.png'
 
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Toolbar)(({ theme }) => ({
-  height: 96,
+  height: 50,
   display: 'flex',
   justifyContent: 'space-between',
   padding: theme.spacing(0, 1, 0, 3),
 }));
 
 const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
-  width: 240,
+  width: 300,
+  height: 40,
+  backgroundColor: '#FFFFFF',
+  borderRadius: '30px',
+  borderColor:"#FFFFFF",
   transition: theme.transitions.create(['box-shadow', 'width'], {
     easing: theme.transitions.easing.easeInOut,
     duration: theme.transitions.duration.shorter,
@@ -55,7 +61,15 @@ UserListToolbar.propTypes = {
   onFilterName: PropTypes.func,
 };
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName, selectedIDs, setSelected, onRequestSort, headLabel }) {
+export default function UserListToolbar({
+  numSelected,
+  filterName,
+  onFilterName,
+  selectedIDs,
+  setSelected,
+  onRequestSort,
+  headLabel,
+}) {
   const dispatch = useDispatch();
   const [openDelete, setOpenDelete] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -92,7 +106,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
           placeholder="Search Subscription..."
           startAdornment={
             <InputAdornment position="start">
-              <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+              <Iconify icon="eva:search-fill" sx={{ color: '#3D71FF', width: 20, height: 20 }} />
             </InputAdornment>
           }
         />
@@ -122,12 +136,12 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
           <Tooltip title="Filter list">
             <IconButton
               onClick={handleClick}
-              sx={{ ml: 2 }}
+              sx={{ ml: 2, backgroundColor:"#3D71FF", height:"30px", width:"30px" }}
               aria-controls={open ? 'account-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
             >
-              <Iconify icon="ic:round-filter-list" />
+              <img src={filterIcon} alt="filterIcon" />
             </IconButton>
           </Tooltip>
         </>
@@ -167,14 +181,14 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem sx={{display:"flex"}}>
+        <MenuItem sx={{ display: 'flex' }}>
           <FormGroup>
             <FormControlLabel control={<Checkbox />} label="Subscription Name" onClick={createAscSortHandler()} />
             <FormControlLabel control={<Checkbox />} label="Frequency" />
             <FormControlLabel control={<Checkbox />} label="Trial Days" />
           </FormGroup>
           <FormGroup>
-            <FormControlLabel control={<Checkbox />} label="Amount"  />
+            <FormControlLabel control={<Checkbox />} label="Amount" />
             <FormControlLabel control={<Checkbox />} label="Start Date" />
             <FormControlLabel control={<Checkbox />} label="Next Billing Date" />
           </FormGroup>

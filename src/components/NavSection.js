@@ -1,4 +1,4 @@
-import {  useState } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink as RouterLink, matchPath, useLocation } from 'react-router-dom';
 // material
@@ -8,15 +8,15 @@ import { Box, List, Collapse, ListItemText, ListItemIcon, ListItemButton } from 
 import { useSelector } from 'react-redux';
 import Iconify from './Iconify';
 
-
 // ----------------------------------------------------------------------
 
 const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props} />)(({ theme }) => ({
   ...theme.typography.body2,
-  height: 48,
+  height: 32,
   position: 'relative',
   textTransform: 'capitalize',
-  color: theme.palette.text.secondary,
+  // color: theme.palette.text.secondary,
+  color: '#000000',
   borderRadius: theme.shape.borderRadius,
 }));
 
@@ -28,6 +28,20 @@ const ListItemIconStyle = styled(ListItemIcon)({
   alignItems: 'center',
   justifyContent: 'center',
 });
+
+const listItemTextStyle = {
+  position: 'relative',
+  '::after': {
+    position: 'absolute',
+    content: '""',
+    left: '50%',
+    bottom: '-13px',
+    height: '6px',
+    width: '6px',
+    backgroundColor: '#3D71FF',
+    borderRadius: '50%',
+  },
+};
 
 // ----------------------------------------------------------------------
 
@@ -50,9 +64,9 @@ function NavItem({ item, active }) {
   };
 
   const activeRootStyle = {
-    color: 'primary.main',
-    fontWeight: 'fontWeightMedium',
-    bgcolor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
+    // color: 'primary.main',
+    // fontWeight: 'fontWeightMedium',
+    // bgcolor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
   };
 
   const activeSubStyle = {
@@ -128,10 +142,11 @@ function NavItem({ item, active }) {
       to={path}
       sx={{
         ...(isActiveRoot && activeRootStyle),
+        // pl:"15px"
       }}
     >
-      <ListItemIconStyle>{icon && icon}</ListItemIconStyle>
-      <ListItemText disableTypography primary={title} />
+      <ListItemIconStyle sx={{pl:"8px"}}>{icon && icon}</ListItemIconStyle>
+      <ListItemText sx={{ ...(isActiveRoot && listItemTextStyle), ml:"-10px" }} disableTypography primary={title} />
       {info && info}
     </ListItemStyle>
   );
@@ -148,10 +163,11 @@ export default function NavSection({ navConfig, ...other }) {
   const match = (path) => (path ? !!matchPath({ path, end: false }, pathname) : false);
 
   return (
-    <Box {...other}>
-      <List disablePadding sx={{ p: 1 }}>
+    <Box {...other} sx={{ display: 'flex' }}>
+      <List disablePadding sx={{ display: 'flex' }}>
         {navConfig.map(
-          (item) => item.roles && item.roles.includes(user?.role) && <NavItem key={item.title} item={item} active={match} />
+          (item) =>
+            item.roles && item.roles.includes(user?.role) && <NavItem key={item.title} item={item} active={match} />
         )}
       </List>
     </Box>

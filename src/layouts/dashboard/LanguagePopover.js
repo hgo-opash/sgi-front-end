@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 // material
 import { alpha } from '@mui/material/styles';
-import { Box, MenuItem, Stack, IconButton } from '@mui/material';
+import { Box, MenuItem, Stack, IconButton, Avatar } from '@mui/material';
 // components
 import MenuPopover from '../../components/MenuPopover';
 
@@ -46,14 +46,14 @@ export default function LanguagePopover() {
         onClick={handleOpen}
         sx={{
           padding: 0,
-          width: 44,
-          height: 44,
+          width: 25,
+          height: 25,
           ...(open && {
             bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.focusOpacity),
           }),
         }}
       >
-        <img src={LANGS[0].icon} alt={LANGS[0].label} />
+        <Avatar src={LANGS[0].icon} alt={LANGS[0].label} sx={{ width: 25, height: 25 }} />
       </IconButton>
 
       <MenuPopover

@@ -47,23 +47,25 @@ export default function ForgetPasswordForm() {
           <Stack spacing={3}>
             <Field
               as={TextField}
+              variant="standard"
               name="email"
-              label="Email"
+              label="Email Address"
               onChange={ForgetPasswordFormik.handleChange}
               value={ForgetPasswordFormik.values.email}
               error={ForgetPasswordFormik.touched.email && Boolean(ForgetPasswordFormik.errors.email)}
               helperText={ForgetPasswordFormik.touched.email && ForgetPasswordFormik.errors.email}
             />
 
+          </Stack>
             <Button
               color="primary"
               variant="contained"
               type="submit"
               disabled={!(ForgetPasswordFormik.isValid && ForgetPasswordFormik.dirty)}
+              sx={{width:"250px",borderRadius:"30px",textTransform:"none", backgroundColor:"#3D71FF", mt:"25px"}}
             >
-              Send
+              Reset My Password
             </Button>
-          </Stack>
         </form>
       </FormikProvider>
     </>

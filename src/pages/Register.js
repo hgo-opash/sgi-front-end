@@ -2,22 +2,25 @@ import React from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Card, Link, Container, Typography } from '@mui/material';
+import { Card, Link, Container, Typography, Box, Button } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
 import Page from '../components/Page';
-import Logo from '../components/Logo';
 // sections
 import { RegisterForm } from '../sections/auth/register';
 import AuthSocial from '../sections/auth/AuthSocial';
+import backgroundImage from '../images/login-background.png';
+import Logo from '../images/Logo.png';
 
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
-  [theme.breakpoints.up('md')]: {
-    display: 'flex',
-  },
+  background: `url(${backgroundImage})`,
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  height: '100%',
 }));
 
 const HeaderStyle = styled('header')(({ theme }) => ({
@@ -27,13 +30,15 @@ const HeaderStyle = styled('header')(({ theme }) => ({
   width: '100%',
   display: 'flex',
   alignItems: 'center',
-  position: 'absolute',
-  padding: theme.spacing(3),
+  // position: 'absolute',
+  // padding: theme.spacing(1),
+  padding: '8px 20px',
   justifyContent: 'space-between',
-  [theme.breakpoints.up('md')]: {
-    alignItems: 'flex-start',
-    padding: theme.spacing(7, 5, 0, 7),
-  },
+  backgroundColor: '#BCCEFF',
+  // [theme.breakpoints.up('md')]: {
+  //   alignItems: 'flex-start',
+  //   padding: theme.spacing(7, 5, 0, 7),
+  // },
 }));
 
 const SectionStyle = styled(Card)(({ theme }) => ({
@@ -45,14 +50,13 @@ const SectionStyle = styled(Card)(({ theme }) => ({
   margin: theme.spacing(2, 0, 2, 2),
 }));
 
-const ContentStyle = styled('div')(({ theme }) => ({
-  maxWidth: 480,
+const ContentStyle = styled(Card)(({ theme }) => ({
+  maxWidth: 800,
   margin: 'auto',
-  minHeight: '100vh',
   display: 'flex',
   justifyContent: 'center',
   flexDirection: 'column',
-  padding: theme.spacing(12, 0),
+  padding: '35px',
 }));
 
 // ----------------------------------------------------------------------
@@ -75,10 +79,27 @@ export default function Register() {
 
   return (
     <Page title="Register">
-      <RootStyle>
-        <HeaderStyle>
-          {/* <Logo /> */}
-          {/* {!smUp && (
+      <HeaderStyle>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <img src={Logo} alt="login" style={{ objectFit: 'contain' }} />
+        </Box>
+        <Button
+        onClick={() => navigate("/login")}
+          color="primary"
+          variant="contained"
+          type="submit"
+          sx={{
+            width: '115px',
+            height: '35px',
+            borderRadius: '30px',
+            textTransform: 'none',
+            backgroundColor: '#3D71FF',
+          }}
+        >
+          Log In
+        </Button>
+        {/* <Logo /> */}
+        {/* {!smUp && (
             <Typography variant="body2" sx={{ mt: { md: -2 } }}>
               Already have an account? {''}
               <Link variant="subtitle2" component={RouterLink} to="/login">
@@ -86,52 +107,38 @@ export default function Register() {
               </Link>
             </Typography>
           )} */}
-        </HeaderStyle>
-
-        {mdUp && (
-          <SectionStyle>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Welcome to Safalvir SGI Application
-            </Typography>
-            <img alt="register" src="/static/illustrations/illustration_register.png" />
-          </SectionStyle>
-        )}
-
+      </HeaderStyle>
+      <RootStyle>
         <Container>
-          <ContentStyle>
-            <Typography variant="h4" gutterBottom>
-              {location.pathname === '/register' ? <>Get started absolutely free.</> : <></>}
-            </Typography>
+          <Box display="inline-block" sx={{ width: '100%', height: '100%' }} py={5}>
+            <ContentStyle>
+              <Typography variant="h4" sx={{ fontSize: '30px', fontWeight: 400 }}>
+                {location.pathname === '/register' ? (
+                  <>
+                    Get started absolutely <span style={{ color: '#3D71FF', fontWeight: 700 }}>free.</span>{' '}
+                  </>
+                ) : (
+                  <></>
+                )}
+              </Typography>
 
-            <Typography sx={{ color: 'text.secondary', mb: 5 }}>
-              {location.pathname === '/register' ? <> (15 days Free trial)</> : <></>}
-            </Typography>
+              <Typography sx={{ color: 'text.primary', mb: 2, mt: 1 }}>
+                {location.pathname === '/register' ? <> Enter your details below.</> : <></>}
+              </Typography>
 
-            {/* <AuthSocial /> */}
+              {/* <AuthSocial /> */}
 
-            <RegisterForm />
+              <RegisterForm />
 
-            <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
-              By registering, I agree to Minimal&nbsp;
-              <Link underline="always" color="text.primary" href="#">
-                Terms of Service
-              </Link>
-              {''}and{''}
-              <Link underline="always" color="text.primary" href="#">
-                Privacy Policy
-              </Link>
-              .
-            </Typography>
-
-            {smUp && (
-              <>
-                <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
-                  Already have an account?{' '}
-                  <Link variant="subtitle2" to="/login" component={RouterLink}>
-                    Login
-                  </Link>
-                </Typography>
-                {/* {location.pathname === '/registerbusiness' ? (
+              {/* {smUp && (
+                <>
+                  <Typography variant="body2" sx={{ mt: 3 }}>
+                    Already have an account?{' '}
+                    <Link variant="subtitle2" to="/login" component={RouterLink}>
+                      Login
+                    </Link>
+                  </Typography> */}
+              {/* {location.pathname === '/registerbusiness' ? (
                   <Typography variant="body2" align="center" sx={{ mt: 3 }}>
                     Don’t have an account?{' '}
                     <Link variant="subtitle2" component={RouterLink} to="/register">
@@ -146,17 +153,17 @@ export default function Register() {
                     </Link>
                   </Typography>
                 )} */}
-              </>
-            )}
-            {smDown && (
-              <>
-                <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
-                  Already have an account?{' '}
-                  <Link variant="subtitle2" to="/login" component={RouterLink}>
-                    Login
-                  </Link>
-                </Typography>
-                {/* {location.pathname === '/registerbusiness' ? (
+              {/* </>
+              )} */}
+              {/* {smDown && (
+                <>
+                  <Typography variant="body2" sx={{ mt: 3 }}>
+                    Already have an account?{' '}
+                    <Link variant="subtitle2" to="/login" component={RouterLink}>
+                      Login
+                    </Link>
+                  </Typography> */}
+              {/* {location.pathname === '/registerbusiness' ? (
                   <Typography variant="body2" align="center" sx={{ mt: 3 }}>
                     Don’t have an account?{' '}
                     <Link variant="subtitle2" component={RouterLink} to="/register">
@@ -171,9 +178,10 @@ export default function Register() {
                     </Link>
                   </Typography>
                 )} */}
-              </>
-            )}
-          </ContentStyle>
+              {/* </>
+              )} */}
+            </ContentStyle>
+          </Box>
         </Container>
       </RootStyle>
     </Page>
