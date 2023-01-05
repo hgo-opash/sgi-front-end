@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 import TextField from '@mui/material/TextField';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -21,6 +21,7 @@ import {
   OutlinedInput,
   InputAdornment,
   FormHelperText,
+  Input,
 } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -30,6 +31,8 @@ import Logo from '../components/Logo';
 import SuccsessModal from '../components/SuccsessModal';
 
 const Companies = () => {
+  const [image, setImage] = useState();
+
   const CompaniesFormSchema = Yup.object().shape({
     name: Yup.string().required('Please enter name'),
     website: Yup.string().required('Please enter website'),
@@ -54,12 +57,11 @@ const Companies = () => {
     initialValues,
     validationSchema: CompaniesFormSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log('values', values);
-      SaveCompanyResponse(values)
-      .then((res) => {
-          console.log('Company ADD => ', res);
-          resetForm(initialValues);
-        });
+      console.log('values', values, image);
+      SaveCompanyResponse(values, image).then((res) => {
+        console.log('Company ADD => ', res);
+        resetForm(initialValues);
+      });
     },
   });
 
@@ -75,15 +77,24 @@ const Companies = () => {
 
           <Card sx={{ p: 3 }}>
             <Grid container spacing={1}>
-              <Grid item xs={12} sm={4}>
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Logo width={160} height={160} />
-                </Box>
-              </Grid>
+              <FormikProvider value={CompaniesForm}>
+                <form onSubmit={CompaniesForm.handleSubmit}>
+                  <Grid item xs={12} sm={4}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                      {/* <Logo width={160} height={160} /> */}
+                      <Input
+                        type="file"
+                        name="image"
+                        inputProps={{ accept: 'image/*' }}
+                        onChange={(event) => {
+                          setImage(event.target.files[0]);
+                          // CompaniesForm.setFieldValue('image', event.target.files[0]);
+                        }}
+                      />
+                    </Box>
+                  </Grid>
 
-              <Grid item xs={12} sm={8}>
-                <FormikProvider value={CompaniesForm}>
-                  <form onSubmit={CompaniesForm.handleSubmit}>
+                  <Grid item xs={12} sm={8}>
                     <FormControl
                       fullWidth
                       sx={{ mb: 3 }}
@@ -216,9 +227,9 @@ const Companies = () => {
                     >
                       Create
                     </Button>
-                  </form>
-                </FormikProvider>
-              </Grid>
+                  </Grid>
+                </form>
+              </FormikProvider>
             </Grid>
           </Card>
         </Container>

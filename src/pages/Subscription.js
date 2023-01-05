@@ -211,8 +211,28 @@ export default function Subscription() {
     setAnchorEl(null);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SubscriptionData.length) : 0;
+  const uploadCSV = (e) => {
+    // Papa.parse(e.target.files[0], {
+    //   header: true,
+    //   complete: (results) => {
+    //     console.log(results.data);
+    //     SavesubsBulkResponse(results.data)
+    //       .then((data) => {
+    //         console.log('succefulyy inserted in bulk');
+    //       })
+    //       .catch((err) => console.log(err));
+    //   },
+    // });
+    // const file = e.target.files[0];
+    // const reader = new FileReader();
+    // reader.onload = function (e) {
+    //   const text = e.target.result;
+    //   console.log(text);
+    // };
+    // const csv = reader.readAsText(file);
+  };
 
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SubscriptionData.length) : 0;
   const sortName = (a, b) => {
     if (a.subscriptionName < b.subscriptionName) {
       return -1;
@@ -318,11 +338,24 @@ export default function Subscription() {
             variant="text"
             component={RouterLink}
             startIcon={
-              <Fab aria-label="add" size="small" sx={{ color: '#FFFFFF', backgroundColor: '#3D71FF', ml: '-5px' }}>
+              <Fab
+                aria-label="add"
+                size="small"
+                sx={{
+                  color: '#FFFFFF',
+                  backgroundColor: '#3D71FF',
+                  ml: '-5px',
+                }}
+              >
                 <AddIcon />
               </Fab>
             }
-            sx={{ backgroundColor: '#FFFFFF', borderRadius: '30px', height: '40px', textTransform: 'none' }}
+            sx={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: '30px',
+              height: '40px',
+              textTransform: 'none',
+            }}
           >
             ADD Subscription
           </Button>
@@ -336,7 +369,15 @@ export default function Subscription() {
               disableElevation
               onClick={handleClickMenu}
               startIcon={
-                <Fab aria-label="add" size="small" sx={{ color: '#FFFFFF', backgroundColor: '#3D71FF', ml: '-5px' }}>
+                <Fab
+                  aria-label="add"
+                  size="small"
+                  sx={{
+                    color: '#FFFFFF',
+                    backgroundColor: '#3D71FF',
+                    ml: '-5px',
+                  }}
+                >
                   <img src={downloadImage} alt="downloadImage" />
                 </Fab>
               }
@@ -409,7 +450,15 @@ export default function Subscription() {
               disableElevation
               onClick={handleClickMenu}
               startIcon={
-                <Fab aria-label="add" size="small" sx={{ color: '#FFFFFF', backgroundColor: '#3D71FF', ml: '-5px' }}>
+                <Fab
+                  aria-label="add"
+                  size="small"
+                  sx={{
+                    color: '#FFFFFF',
+                    backgroundColor: '#3D71FF',
+                    ml: '-5px',
+                  }}
+                >
                   <img src={uploadImage} alt="downloadImage" />
                 </Fab>
               }
@@ -464,7 +513,11 @@ export default function Subscription() {
                           role="checkbox"
                           selected={isItemSelected}
                           aria-checked={isItemSelected}
-                          style={{ borderRadius: '60px!important', backgroundColor: '#FFFFFF', mt: '26px' }}
+                          style={{
+                            borderRadius: '60px!important',
+                            backgroundColor: '#FFFFFF',
+                            mt: '26px',
+                          }}
                         >
                           <TableCell padding="checkbox">
                             <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row._id)} />

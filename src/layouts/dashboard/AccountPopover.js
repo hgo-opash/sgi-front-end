@@ -77,11 +77,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar
-          src={`${process.env.REACT_APP_API_URL}/${user?.profilePic}`}
-          alt="photoURL"
-          sx={{ width: 25, height: 25 }}
-        />
+        <Avatar src={user?.profilePic} alt="photoURL" sx={{ width: 25, height: 25 }} />
       </IconButton>
 
       <MenuPopover

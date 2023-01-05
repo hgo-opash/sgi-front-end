@@ -11,12 +11,19 @@ export const GetUserResponse = () =>
     },
   });
 
-export const SaveCompanyResponse = (values) =>
-  axios.post(`${process.env.REACT_APP_API_URL}/savecompany`, values, {
-    headers: {
-      authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
-    },
-  });
+export const SaveCompanyResponse = (values, image) => {
+  console.log('service img  => ', image);
+  return axios.post(
+    `${process.env.REACT_APP_API_URL}/savecompany`,
+    { values, logo: image },
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+};
 
 export const GetcountiesResponse = () => axios.get(`${process.env.REACT_APP_API_URL}/countries`);
 
@@ -40,6 +47,17 @@ export const SavesubsResponse = (values) =>
       authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
     },
   });
+
+export const SavesubsBulkResponse = (values) =>
+  axios.post(
+    `${process.env.REACT_APP_API_URL}/savebulk`,
+    { values },
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+      },
+    }
+  );
 
 export const EditsubsResponse = (id, values) =>
   axios.post(
