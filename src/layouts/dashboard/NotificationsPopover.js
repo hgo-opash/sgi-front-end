@@ -116,7 +116,7 @@ export default function NotificationsPopover() {
         ref={anchorRef}
         sx={{ width: 25, height: 25, color: 'black', backgroundColor: '#FFFF', cursor:"pointer" }}
       >
-        <Badge badgeContent={totalUnRead} color="secondary" variant='dot' >
+        <Badge badgeContent={totalUnRead} color="secondary" variant='dot' overlap="circular">
           <NotificationsNoneIcon sx={{ width: 18, height: 18 }} />
         </Badge>
       </Avatar>
