@@ -5,10 +5,13 @@ import {
   Box,
   Button,
   Card,
+  Checkbox,
   Collapse,
   Container,
+  Fab,
   Grid,
   IconButton,
+  Pagination,
   Stack,
   Table,
   TableBody,
@@ -19,6 +22,8 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -33,6 +38,8 @@ import costPerMonthpic from '../images/costPerMonth.png';
 import costPerYearpic from '../images/costPerYear.png';
 import budgetpic from '../images/budget.png';
 import variancepic from '../images/variance.png';
+import { UserListHead } from '../sections/@dashboard/user';
+import SearchNotFound from '../components/SearchNotFound';
 
 const TABLE_HEAD = [
   {
@@ -151,6 +158,9 @@ const DashBoard = () => {
   const costPerYear = costPerYearArray.reduce((a, v) => a + v, 0).toFixed(2);
   const variance = (budget - costPerYear).toFixed(2);
 
+  const isUserNotFound = sortedData.length === 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SubscriptionData.length) : 0;
+
   const imgStyle = {
     height: '70px',
     width: '70px',
@@ -182,18 +192,7 @@ const DashBoard = () => {
 
   return (
     <>
-      {/* {Role === 'user' && ( */}
       <Page title="DashBoard - SGI">
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            onClick={handleClickOpenSub}
-            variant="contained"
-            sx={{ mr: 6 }}
-            startIcon={<Iconify icon="eva:plus-fill" />}
-          >
-            ADD Subscription
-          </Button>
-        </Box>
         <SubscriptionModal openModal={openSub} setOpenSubModal={setOpenSub} />
 
         {SubscriptionData?.map((data) => {
@@ -330,103 +329,227 @@ const DashBoard = () => {
           </Grid>
         </Grid>
 
-        <Container>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2} pt={3}>
-            <Typography variant="h4" gutterBottom>
-              Subscriptions
-            </Typography>
-            {/* <Button variant="contained" component={RouterLink} to="#" startIcon={<Iconify icon="eva:plus-fill" />}>
-            Add New Subscription
-          </Button> */}
-          </Stack>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3} mt={5}>
+          <Typography variant="h4" sx={{ fontSize: '40px', fontWeight: 700, color: '#3D71FF' }}>
+            Subscriptions
+          </Typography>
+          <Button
+            onClick={handleClickOpenSub}
+            variant="text"
+            startIcon={
+              <Fab
+                aria-label="add"
+                size="small"
+                sx={{
+                  color: '#FFFFFF',
+                  backgroundColor: '#3D71FF',
+                  ml: '-5px',
+                }}
+              >
+                <AddIcon />
+              </Fab>
+            }
+            sx={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: '30px',
+              height: '40px',
+              textTransform: 'none',
+            }}
+          >
+            ADD Subscription
+          </Button>
+        </Stack>
 
-          <Card>
-            <Scrollbar>
-              <TableContainer sx={{ minWidth: 800 }}>
-                <Table>
-                  <TableHead sx={{ backgroundColor: '#d8e3f4' }}>
-                    <TableRow>
-                      <TableCell>SubScription Name</TableCell>
-                      <TableCell>Frequency</TableCell>
-                      <TableCell>Trial Days</TableCell>
-                      <TableCell>Amount</TableCell>
-                      <TableCell>Start Date</TableCell>
-                      <TableCell>Next Billing Date</TableCell>
-                      <TableCell>Auto Renewal</TableCell>
-                      <TableCell align="center">Status</TableCell>
-                    </TableRow>
-                  </TableHead>
+        <Scrollbar>
+          <TableContainer sx={{ minWidth: 800, overflowX: 'auto' }}>
+            <Table sx={{ borderCollapse: 'separate', borderSpacing: '0 10px' }}>
+              {/* <UserListHead
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={sortedData.length}
+                    numSelected={selected.length}
+                    onRequestSort={handleRequestSort}
+                    onSelectAllClick={handleSelectAllClick}
+                  /> */}
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      backgroundColor: '#7B9EFD',
+                      borderBottomLeftRadius: '35px',
+                      borderTopLeftRadius: '35px',
+                      color: '#FFFFFF',
+                    }}
+                  >
+                    SubScription Name
+                  </TableCell>
+                  <TableCell sx={{ backgroundColor: '#7B9EFD', color: '#FFFFFF' }}>Frequency</TableCell>
+                  <TableCell sx={{ backgroundColor: '#7B9EFD', color: '#FFFFFF' }}>Trial Days</TableCell>
+                  <TableCell sx={{ backgroundColor: '#7B9EFD', color: '#FFFFFF' }}>Amount</TableCell>
+                  <TableCell sx={{ backgroundColor: '#7B9EFD', color: '#FFFFFF' }}>Start Date</TableCell>
+                  <TableCell sx={{ backgroundColor: '#7B9EFD', color: '#FFFFFF' }}>Next Billing Date</TableCell>
+                  <TableCell sx={{ backgroundColor: '#7B9EFD', color: '#FFFFFF' }}>Auto Renewal</TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      backgroundColor: '#7B9EFD',
+                      borderBottomRightRadius: '35px',
+                      borderTopRightRadius: '35px',
+                      color: '#FFFFFF',
+                    }}
+                  >
+                    Status
+                  </TableCell>
+                </TableRow>
+              </TableHead>
 
-                  {!SubscriptionData || SubscriptionData?.length === 0 ? (
-                    <TableBody>
-                      <TableRow>
-                        <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
-                          Sorry, You Don't have any Active subscription. Please Add New Subscription.
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  ) : (
-                    <TableBody>
-                      {sortedData &&
-                        sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+              {!SubscriptionData || SubscriptionData?.length === 0 ? (
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                      Sorry, You Don't have any Active subscription. Please Add New Subscription.
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              ) : (
+                <TableBody>
+                  {sortedData &&
+                    sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                      const isItemSelected = selected.indexOf(row._id) !== -1;
+                      return (
+                        // row.subscriptionName === type && (
+                        <>
                           <TableRow
                             hover
                             key={row._id}
                             tabIndex={-1}
-                            // role="checkbox"
-                            // selected={isItemSelected}
-                            // aria-checked={isItemSelected}
+                            role="checkbox"
+                            selected={isItemSelected}
+                            aria-checked={isItemSelected}
                           >
-                            <TableCell align="left">
+                            <TableCell
+                              align="left"
+                              sx={{
+                                backgroundColor: '#FFFFFF',
+                                borderBottomLeftRadius: '35px',
+                                borderTopLeftRadius: '35px',
+                              }}
+                            >
                               <Typography
                                 variant="subtitle2"
-                                color={row.status === 'Active' ? '#229A16' : '#ff4c00'}
+                                // color={row.status === 'Active' ? '#229A16' : '#ff4c00'}
                                 noWrap
                               >
                                 {row.subscriptionName}
                               </Typography>
                             </TableCell>
-                            <TableCell align="left">{row.frequency}</TableCell>
-                            <TableCell align="left">{row.trialDays}</TableCell>
-                            <TableCell align="left">{row.amount}</TableCell>
-                            <TableCell align="left">{moment(row.startDate).format('MM/DD/yyyy')}</TableCell>
-                            <TableCell align="left">{moment(row.nextBilling).format('MM/DD/yyyy')}</TableCell>
-                            <TableCell align="left">{JSON.stringify(row.autoRenewal)}</TableCell>
-                            <TableCell align="left">
+                            {/* <TableCell
+                              component="th"
+                              scope="row"
+                              padding="none"
+                              align="center"
+                              sx={{ backgroundColor: '#FFFFFF' }}
+                            >
+                              <Stack
+                                direction="row"
+                                alignItems="center"
+                                spacing={2}
+                                color={row.status === 'Active' ? '#229A16' : '#ff4c00'}
+                              >
+                                <Typography variant="subtitle2" noWrap>
+                                  {row.subscriptionName}
+                                </Typography>
+                              </Stack>
+                            </TableCell> */}
+                            <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                              {row.frequency}
+                            </TableCell>
+                            <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                              {row.trialDays}
+                            </TableCell>
+                            <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                              ${row.amount}
+                            </TableCell>
+                            <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                              {moment(row.startDate).format('MM/DD/yyyy')}
+                            </TableCell>
+                            <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                              {moment(row.nextBilling).format('MM/DD/yyyy')}
+                            </TableCell>
+                            <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                              {row.autoRenewal ? 'Yes' : 'No'}
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              sx={{
+                                backgroundColor: '#FFFFFF',
+                                borderBottomRightRadius: '35px',
+                                borderTopRightRadius: '35px',
+                              }}
+                            >
                               {row.status === 'Active' && (
-                                <Label variant="ghost" color="success">
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                  <FiberManualRecordIcon
+                                    sx={{ color: '#34DABA', height: '13px', width: '13px', mr: '6px' }}
+                                  />
                                   {row.status}
-                                </Label>
+                                </Box>
                               )}
                               {row.status === 'Inactive' && (
-                                <Label variant="ghost" color="error">
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                  <FiberManualRecordIcon
+                                    sx={{ color: '#FF0031', height: '13px', width: '13px', mr: '6px' }}
+                                  />
                                   {row.status}
-                                </Label>
+                                </Box>
                               )}
                             </TableCell>
                           </TableRow>
-                        ))}
-                    </TableBody>
+                        </>
+                      );
+                    })}
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: 53 * emptyRows }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
                   )}
-                </Table>
-              </TableContainer>
-            </Scrollbar>
+                </TableBody>
+              )}
 
-            {SubscriptionData && (
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={sortedData?.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            )}
-          </Card>
-        </Container>
+              {isUserNotFound && (
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <SearchNotFound searchQuery={filterName} />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              )}
+            </Table>
+          </TableContainer>
+        </Scrollbar>
+
+        {SubscriptionData && (
+          <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={SubscriptionData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+            <Pagination
+              count={Math.ceil(SubscriptionData.length / rowsPerPage)}
+              onChange={handleChangePage}
+              color="primary"
+              sx={{ mt: '12px' }}
+            />
+          </Box>
+        )}
       </Page>
-      {/* )} */}
     </>
   );
 };

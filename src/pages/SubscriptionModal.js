@@ -169,7 +169,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
               </Fab>
             </Stack>
 
-            <Box sx={{ height: '90%' }}>
+            <Box sx={{ height: '90%' ,overflow:"auto"}}>
               <Scrollbar>
                 <FormikProvider value={SubscriptionForm} validateOnMount>
                   <form onSubmit={SubscriptionForm.handleSubmit}>

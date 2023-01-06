@@ -91,20 +91,17 @@ export default function DashboardNavbar({ onOpenSidebar }) {
 
           <NavSection navConfig={navConfig} />
 
-          <Avatar
+          {/* <Avatar
             sx={{
               height: '25px',
               width: '25px',
               backgroundColor: '#FFFF',
               cursor: 'pointer',
               ml:"20px"
-              // display: 'flex',
-              // alignItems: 'center',
-              // justifyContent: 'center',
             }}
           >
             <SearchIcon color="primary" sx={{ height: '18px', width: '18px' }} />
-          </Avatar>
+          </Avatar> */}
 
           <Box
             sx={{
@@ -114,7 +111,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
               display: 'flex',
               alignItems: 'center',
               p: '8px',
-              ml: '5px',
+              ml: '20px',
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center' }}>

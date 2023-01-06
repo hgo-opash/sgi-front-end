@@ -19,6 +19,7 @@ import {
   MenuItem,
   Fab,
   IconButton,
+  Pagination,
 } from '@mui/material';
 import styled from 'styled-components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -299,6 +300,10 @@ export default function Subscription() {
     },
   }));
 
+  const tabelcellStyle = {
+    backgroundColor: '#FFFFFF',
+  };
+
   const sortData = filteredSubs.map((row) => ({
     ...row,
     startDate: moment(row.startDate).format('MM-DD-yyyy'),
@@ -479,136 +484,159 @@ export default function Subscription() {
 
       <SubscriptionModal openModal={openSub} setOpenSubModal={setOpenSub} />
 
-      <Card>
+      {/* <Card> */}
+      <TableContainer sx={{ minWidth: 800, overflowX: 'auto' }}>
         <Scrollbar>
-          <TableContainer sx={{ minWidth: 800, overflowX: 'auto' }}>
-            <Table>
-              <UserListHead
-                order={order}
-                orderBy={orderBy}
-                headLabel={TABLE_HEAD}
-                rowCount={filteredSubs.length}
-                numSelected={selected.length}
-                onRequestSort={handleRequestSort}
-                onSelectAllClick={handleSelectAllClick}
-              />
-              <TableBody>
-                {displayData &&
-                  displayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const isItemSelected = selected.indexOf(row._id) !== -1;
-                    return (
-                      // row.subscriptionName === type && (
-                      <>
-                        <EditModal openEditModal={open} setOpenEditModal={setOpen} data={editData} />
-                        <DeleteModal
-                          openDeleteModal={openDelete}
-                          setOpenDelete={setOpenDelete}
-                          id={[deleteid]}
-                          setSelected={setSelected}
-                        />
-                        <TableRow
-                          hover
-                          key={row._id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                          style={{
-                            borderRadius: '60px!important',
+          <Table sx={{ borderCollapse: 'separate', borderSpacing: '0 10px' }}>
+            <UserListHead
+              order={order}
+              orderBy={orderBy}
+              headLabel={TABLE_HEAD}
+              rowCount={filteredSubs.length}
+              numSelected={selected.length}
+              onRequestSort={handleRequestSort}
+              onSelectAllClick={handleSelectAllClick}
+            />
+            <TableBody>
+              {displayData &&
+                displayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  const isItemSelected = selected.indexOf(row._id) !== -1;
+                  return (
+                    // row.subscriptionName === type && (
+                    <>
+                      <EditModal openEditModal={open} setOpenEditModal={setOpen} data={editData} />
+                      <DeleteModal
+                        openDeleteModal={openDelete}
+                        setOpenDelete={setOpenDelete}
+                        id={[deleteid]}
+                        setSelected={setSelected}
+                      />
+
+                      <TableRow
+                        hover
+                        key={row._id}
+                        tabIndex={-1}
+                        role="checkbox"
+                        selected={isItemSelected}
+                        aria-checked={isItemSelected}
+                      >
+                        <TableCell
+                          padding="checkbox"
+                          sx={{
                             backgroundColor: '#FFFFFF',
-                            mt: '26px',
+                            borderBottomLeftRadius: '35px',
+                            borderTopLeftRadius: '35px',
                           }}
                         >
-                          <TableCell padding="checkbox">
-                            <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row._id)} />
-                          </TableCell>
-                          {/* <TableCell>
+                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row._id)} />
+                        </TableCell>
+                        {/* <TableCell>
                             <IconButton aria-label="expand row" size="small" onClick={() => setOpenTable(!openTable)}>
                               {openTable ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                             </IconButton>
                           </TableCell> */}
 
-                          <TableCell align="center">
-                            <Button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleClickOpen(handleClickOpen);
-                                setEditData(row);
-                              }}
-                            >
-                              <Iconify icon="ic:twotone-mode-edit-outline" color="#1877F2" width={22} height={22} />
-                            </Button>
-                          </TableCell>
-                          <TableCell align="center">
-                            <Button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setOpenDelete(true);
-                                handledelete(row._id);
-                                setSelected([]);
-                              }}
-                            >
-                              <Iconify icon="ic:twotone-delete" color="#DF3E30" width={22} height={22} />
-                            </Button>
-                          </TableCell>
+                        <TableCell align="center" sx={{ backgroundColor: '#FFFFFF', p: 0 }}>
+                          <Button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleClickOpen(handleClickOpen);
+                              setEditData(row);
+                            }}
+                          >
+                            <Iconify icon="ic:twotone-mode-edit-outline" color="#1877F2" width={22} height={22} />
+                          </Button>
+                        </TableCell>
+                        <TableCell align="center" sx={{ backgroundColor: '#FFFFFF', p: 0 }}>
+                          <Button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setOpenDelete(true);
+                              handledelete(row._id);
+                              setSelected([]);
+                            }}
+                          >
+                            <Iconify icon="ic:twotone-delete" color="#DF3E30" width={22} height={22} />
+                          </Button>
+                        </TableCell>
 
-                          <TableCell component="th" scope="row" padding="none" align="center">
-                            <Stack
-                              direction="row"
-                              alignItems="center"
-                              spacing={2}
-                              color={row.status === 'Active' ? '#229A16' : '#ff4c00'}
-                            >
-                              <Typography variant="subtitle2" noWrap>
-                                {row.subscriptionName}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
+                        <TableCell align="left" sx={{ backgroundColor: '#FFFFFF', p: '8px' }}>
+                          <Typography
+                            variant="subtitle2"
+                            color={row.status === 'Active' ? '#229A16' : '#ff4c00'}
+                            noWrap
+                          >
+                            {row.subscriptionName}
+                          </Typography>
+                        </TableCell>
 
-                          <TableCell align="left">
-                            <span
-                              style={{
-                                display: '-webkit-box',
-                                overflow: 'hidden',
-                                WebkitBoxOrient: 'vertical',
-                                WebkitLineClamp: 3,
-                                textOverflow: 'ellipsis',
-                              }}
-                            >
-                              {row.description}
-                            </span>
-                          </TableCell>
-                          <TableCell align="left">{row.frequency}</TableCell>
-                          <TableCell align="left">{row.trialDays}</TableCell>
-                          <TableCell align="left">${row.amount}</TableCell>
-                          <TableCell align="left">{moment(row.startDate).format('MM/DD/yyyy')}</TableCell>
-                          <TableCell align="left">{moment(row.nextBilling).format('MM/DD/yyyy')}</TableCell>
-                          <TableCell align="left">{row.autoRenewal ? 'Yes' : 'No'}</TableCell>
-                          <TableCell align="left">{row.comments}</TableCell>
-                        </TableRow>
-                      </>
-                    );
-                  })}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 53 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-
-              {isUserNotFound && (
-                <TableBody>
-                  <TableRow>
-                    <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                      <SearchNotFound searchQuery={filterName} />
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
+                        <TableCell align="left" sx={{ backgroundColor: '#FFFFFF', p: '8px' }}>
+                          <span
+                            style={{
+                              display: '-webkit-box',
+                              overflow: 'hidden',
+                              WebkitBoxOrient: 'vertical',
+                              WebkitLineClamp: 2,
+                              textOverflow: 'ellipsis',
+                              width: '200px',
+                            }}
+                          >
+                            {row.description}
+                          </span>
+                        </TableCell>
+                        <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                          {row.frequency}
+                        </TableCell>
+                        <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                          {row.trialDays}
+                        </TableCell>
+                        <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                          ${row.amount}
+                        </TableCell>
+                        <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                          {moment(row.startDate).format('MM/DD/yyyy')}
+                        </TableCell>
+                        <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                          {moment(row.nextBilling).format('MM/DD/yyyy')}
+                        </TableCell>
+                        <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                          {row.autoRenewal ? 'Yes' : 'No'}
+                        </TableCell>
+                        <TableCell
+                          align="left"
+                          sx={{
+                            backgroundColor: '#FFFFFF',
+                            borderBottomRightRadius: '35px',
+                            borderTopRightRadius: '35px',
+                          }}
+                        >
+                          {row.comments}
+                        </TableCell>
+                      </TableRow>
+                    </>
+                  );
+                })}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={6} />
+                </TableRow>
               )}
-            </Table>
-          </TableContainer>
-        </Scrollbar>
+            </TableBody>
 
+            {isUserNotFound && (
+              <TableBody>
+                <TableRow>
+                  <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                    <SearchNotFound searchQuery={filterName} />
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            )}
+          </Table>
+        </Scrollbar>
+      </TableContainer>
+
+      <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -618,7 +646,14 @@ export default function Subscription() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Card>
+        <Pagination
+          count={Math.ceil(SubscriptionData.length / rowsPerPage)}
+          onChange={handleChangePage}
+          color="primary"
+          sx={{ mt: '12px' }}
+        />
+      </Box>
+      {/* </Card> */}
     </Page>
   );
 }

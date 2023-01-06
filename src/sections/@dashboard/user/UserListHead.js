@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 // material
 import { Box, Checkbox, TableRow, TableCell, TableHead, TableSortLabel, Button, Typography } from '@mui/material';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import moment from 'moment';
 import Iconify from '../../../components/Iconify';
 
@@ -43,15 +45,20 @@ export default function UserListHead({
   const createDscSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
+  console.log(order, 'order???');
 
   return (
-    <TableHead sx={{ backgroundColor: '#7B9EFD' }}>
+    <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
+        <TableCell
+          padding="checkbox"
+          sx={{ backgroundColor: '#7B9EFD', borderBottomLeftRadius: '35px', borderTopLeftRadius: '35px' }}
+        >
           <Checkbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
+            // sx={{backgroundColor: '#FFFFFF'}}
           />
         </TableCell>
         {console.log(headLabel, 'label.....')}
@@ -59,6 +66,14 @@ export default function UserListHead({
           <TableCell
             key={headCell.id}
             align={headCell.alignRight ? 'right' : 'left'}
+            sx={{
+              backgroundColor: '#7B9EFD',
+              p: '15px',
+              '&:last-child': {
+                borderBottomRightRadius: '35px',
+                borderTopRightRadius: '35px',
+              },
+            }}
             // sortDirection={orderBy === headCell.id ? order : false}
           >
             {/* <TableSortLabel
@@ -67,21 +82,30 @@ export default function UserListHead({
               // direction={orderBy === headCell.id ? order : 'asc'}
               // onClick={createSortHandler(headCell.id)}
             > */}
-            <Box sx={{ display: 'flex', alignItems: 'center',color:"#FFFFFF" }}>
-              <Box>{headCell.label}</Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', color: '#FFFFFF' }}>
+              <span>{headCell.label}</span>
               {headCell.sort && (
-                <Box sx={{ display: 'flex' }}>
-                  <Iconify
+                <>
+                  <Typography
                     onClick={createAscSortHandler(headCell.id)}
-                    icon={'mdi:arrow-up'}
-                    sx={{ cursor: 'pointer' }}
-                  />
-                  <Iconify
-                    onClick={createDscSortHandler(headCell.id)}
-                    icon={'mdi:arrow-down'}
-                    sx={{ cursor: 'pointer' }}
-                  />
-                </Box>
+                    style={{ display: 'flex', flexDirection: 'column', position: 'relative', cursor: 'pointer' }}
+                  >
+                    <ArrowDropUpIcon
+                      sx={{
+                        ...(order === 'asc' && orderBy === headCell.id && { color: '#000000' }),
+                        position: 'absolute',
+                        bottom: '-8px',
+                      }}
+                    />
+                    <ArrowDropDownIcon
+                      sx={{
+                        ...(order === 'desc' && orderBy === headCell.id && { color: '#000000' }),
+                        position: 'absolute',
+                        top: '-8px',
+                      }}
+                    />
+                  </Typography>
+                </>
               )}
             </Box>
             {/* {orderBy === headCell.id ? (
