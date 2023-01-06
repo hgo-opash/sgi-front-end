@@ -92,14 +92,14 @@ export default function UserListHead({
                   >
                     <ArrowDropUpIcon
                       sx={{
-                        ...(order === 'asc' && orderBy === headCell.id && { color: '#000000' }),
+                        ...(order === 'asc' && orderBy === headCell.id && { color: '#1877F2' }),
                         position: 'absolute',
                         bottom: '-8px',
                       }}
                     />
                     <ArrowDropDownIcon
                       sx={{
-                        ...(order === 'desc' && orderBy === headCell.id && { color: '#000000' }),
+                        ...(order === 'desc' && orderBy === headCell.id && { color: '#1877F2' }),
                         position: 'absolute',
                         top: '-8px',
                       }}

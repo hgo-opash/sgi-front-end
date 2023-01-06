@@ -3,8 +3,11 @@ import {
   Box,
   Button,
   Container,
+  Fab,
   FormControl,
+  FormHelperText,
   Grid,
+  Input,
   InputAdornment,
   InputLabel,
   MenuItem,
@@ -25,6 +28,7 @@ import React from 'react';
 import { EditsubsResponse, GetsubsResponse } from '../services/Service';
 import SuccessToast from '../toast/Success';
 import { setSubscriptions } from '../slices/subscriptionSlice';
+import Scrollbar from '../components/Scrollbar';
 
 const style = {
   position: 'absolute',
@@ -34,12 +38,10 @@ const style = {
   width: 400,
   bgcolor: 'background.paper',
   border: '2px solid #FFF',
-  borderRadius: '20px',
+  borderRadius: '10px',
   boxShadow: 24,
   // p: "4 0 4 4",
-  pl: 4,
-  pt: 4,
-  pb: 4,
+  p: '30px',
 };
 
 const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
@@ -55,10 +57,10 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
     amount: Yup.number().required('Please Enter Amount'),
     autoRenewal: Yup.string().required('Please Select Auto Renewal'),
     nextBillingDate: Yup.date()
-      .required('Please Select next billing Date')
-      .test('nextBillingDate', 'Must be greater than today', (value) => {
-        return moment(value) > moment();
-      }),
+      .required('Please Select next billing Date'),
+      // .test('nextBillingDate', 'Must be greater than today', (value) => {
+      //   return moment(value) > moment();
+      // })
     status: Yup.string().required('Please select Status'),
   });
 
@@ -103,174 +105,257 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
 
   return (
     <div>
-      <Modal
-        open={openEditModal}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <Box sx={{ ...style, height: '90%', width: 800 }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ ml: 3, mb: 3 }}>
-            <Typography variant="h4" gutterBottom>
-              {data.subscriptionName} Subscription
-            </Typography>
-            <Box sx={{ pr: 2 }}>
-              <Button onClick={handleClose} color="error">
-                <CloseIcon />
-              </Button>
+      <Modal open={openEditModal} aria-labelledby="parent-modal-title" aria-describedby="parent-modal-description">
+        <Box sx={{ ...style, height: '70%', width: { xs: '100%', sm: '400px', md: '600px', lg: '800px' } }}>
+          <Stack direction="row" justifyContent="space-between">
+            <Box>
+              <Typography variant="h4" gutterBottom sx={{ fontSize: '30px', fontWeight: 700, color: '#3D71FF' }}>
+                {data.subscriptionName} Subscription
+              </Typography>
+              <Typography variant="h4" gutterBottom sx={{ fontSize: '15px', fontWeight: 400 }}>
+                Edit your details below.
+              </Typography>
             </Box>
+            <Fab onClick={handleClose} size="small" color="primary" aria-label="add">
+              <CloseIcon />
+            </Fab>
           </Stack>
 
-          <Container sx={{ height: '90%', overflowY: 'scroll' }}>
-            <Grid container spacing={1}>
-              <Grid item xs={12} sm={12}>
-                <FormikProvider value={EditForm}>
-                  <form onSubmit={EditForm.handleSubmit}>
-                    <FormControl
-                      fullWidth
-                      sx={{ mb: 3, mt: 2 }}
-                    >
-                      <InputLabel id="select3">Frequency</InputLabel>
-                      <Select
-                        labelId="select3"
-                        id="select3"
-                        name="frequency"
-                        label="Frequency"
-                        value={`${EditForm.values.frequency}`}
-                        onChange={EditForm.handleChange}
-                      >
-                        <MenuItem value={'Monthly'}>Monthly</MenuItem>
-                        <MenuItem value={'Annually'}>Annually</MenuItem>
-                        <MenuItem value={'Trial'}>Trial</MenuItem>
-                      </Select>
-                    </FormControl>
-
-                    <FormControl fullWidth sx={{ mb: 3 }}>
-                      <LocalizationProvider dateAdapter={MomentUtils}>
-                        <Field
-                          as={DesktopDatePicker}
-                          label="Contract Start Date"
-                          inputFormat="MM/DD/YYYY"
-                          onChange={(e) => {
-                            EditForm.setFieldValue('contractStartDate', moment(e._d).format('yyyy-MM-DD'));
+          <Box sx={{ maxHeight: '90%', overflowY: 'auto' }}>
+            <Scrollbar>
+              <FormikProvider value={EditForm}>
+                <form onSubmit={EditForm.handleSubmit}>
+                  <Grid container rowSpacing={4} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ overflowX: 'hidden' }}>
+                    <Grid item xs={12} sm={12} md={6}>
+                      <FormControl fullWidth sx={{ mt: 2 }}>
+                        <InputLabel id="select3" sx={{ color: '#B6B6B6', ml: '-14px' }}>
+                          Frequency
+                        </InputLabel>
+                        <Select
+                          labelId="select3"
+                          id="select3"
+                          name="frequency"
+                          label="Frequency"
+                          variant="standard"
+                          size="small"
+                          value={`${EditForm.values.frequency}`}
+                          onChange={EditForm.handleChange}
+                          sx={{
+                            '& .MuiSvgIcon-root': {
+                              color: '#0071E3',
+                            },
                           }}
-                          value={EditForm.values.contractStartDate}
-                          renderInput={(params) => (
-                            <TextField
-                              name="contractStartDate"
-                              {...params}
-                              error={EditForm.touched.contractStartDate && Boolean(EditForm.errors.contractStartDate)}
-                              helperText={EditForm.touched.contractStartDate && EditForm.errors.contractStartDate}
-                            />
-                          )}
-                        />
-                      </LocalizationProvider>
-                    </FormControl>
+                        >
+                          <MenuItem value={'Monthly'}>Monthly</MenuItem>
+                          <MenuItem value={'Annually'}>Annually</MenuItem>
+                          <MenuItem value={'Trial'}>Trial</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
 
-                    <FormControl fullWidth sx={{ mb: 3 }}>
-                      <LocalizationProvider dateAdapter={MomentUtils}>
+                    <Grid item xs={12} sm={12} md={6}>
+                      {/* <FormControl fullWidth sx={{ mt: 2 }}>
+                        <InputLabel htmlFor="amount" sx={{ color: '#B6B6B6', ml: '-14px' }}>
+                          Amount
+                        </InputLabel>
+                        <Input
+                          label="Amount"
+                          name="amount"
+                          type="number"
+                          value={EditForm.values.amount}
+                          onChange={EditForm.handleChange}
+                          startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                        />
+                      </FormControl> */}
+                      <FormControl fullWidth sx={{ mt: 2 }} error={EditForm.touched.amount && EditForm.errors.amount}>
+                        <InputLabel htmlFor="amount"  sx={{ color: '#B6B6B6', ml: '-14px' }}>Amount</InputLabel>
                         <Field
-                          as={DesktopDatePicker}
-                          label="Next Billing Date"
-                          inputFormat="MM/DD/YYYY"
-                          onChange={(e) => {
-                            EditForm.setFieldValue('nextBillingDate', moment(e._d).format('yyyy-MM-DD'));
-                            EditForm.setFieldTouched('nextBillingDate', true, false);
+                          as={Input}
+                          onWheel={(event) => {
+                            event.preventDefault();
                           }}
-                          value={EditForm.values.nextBillingDate}
-                          renderInput={(params) => (
-                            <Field
-                              as={TextField}
-                              name="nextBillingDate"
-                              {...params}
-                              error={EditForm.touched.nextBillingDate && Boolean(EditForm.errors.nextBillingDate)}
-                              helperText={EditForm.touched.nextBillingDate && EditForm.errors.nextBillingDate}
-                            />
-                          )}
+                          label="Amount"
+                          name="amount"
+                          // type="number"
+                          value={EditForm.values.amount}
+                          onChange={EditForm.handleChange}
+                          startAdornment={<InputAdornment position="start">$</InputAdornment>}
                         />
-                      </LocalizationProvider>
-                    </FormControl>
+                        {EditForm.touched.amount && EditForm.errors.amount ? (
+                          <FormHelperText>{EditForm.touched.amount && EditForm.errors.amount}</FormHelperText>
+                        ) : null}
+                      </FormControl>
+                    </Grid>
 
-                    <FormControl
-                      fullWidth
-                      sx={{ mb: 3 }}
-                    >
-                      <InputLabel htmlFor="amount">Amount</InputLabel>
-                      <OutlinedInput
-                        label="Amount"
-                        name="amount"
-                        type="number"
-                        value={EditForm.values.amount}
-                        onChange={EditForm.handleChange}
-                        startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                      />
-                    </FormControl>
+                    <Grid item xs={12} sm={12} md={6}>
+                      <FormControl fullWidth>
+                        <LocalizationProvider dateAdapter={MomentUtils}>
+                          <Field
+                            as={DesktopDatePicker}
+                            label={<Typography sx={{ color: '#B6B6B6' }}>Contract Start Date</Typography>}
+                            inputFormat="MM/DD/YYYY"
+                            onChange={(e) => {
+                              EditForm.setFieldValue('contractStartDate', moment(e._d).format('yyyy-MM-DD'));
+                            }}
+                            value={EditForm.values.contractStartDate}
+                            sx={{
+                              '&:after': {
+                                borderBottomColor: '#0000',
+                              },
+                              '& .MuiSvgIcon-root': {
+                                color: '#0071E3',
+                              },
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                name="contractStartDate"
+                                variant="standard"
+                                size="small"
+                                {...params}
+                                error={EditForm.touched.contractStartDate && Boolean(EditForm.errors.contractStartDate)}
+                                helperText={EditForm.touched.contractStartDate && EditForm.errors.contractStartDate}
+                                sx={{ svg: { color: '#0071E3', mr: '5px' } }}
+                              />
+                            )}
+                          />
+                        </LocalizationProvider>
+                      </FormControl>
+                    </Grid>
 
-                    <FormControl
-                      fullWidth
-                      sx={{ mb: 3 }}
-                    >
-                      <InputLabel id="select4">Auto Renewal</InputLabel>
-                      <Select
-                        labelId="select4"
-                        id="select4"
-                        name="autoRenewal"
-                        label="Auto Renewal"
-                        value={EditForm.values.autoRenewal}
-                        onChange={EditForm.handleChange}
-                      >
-                        <MenuItem value="true">Yes</MenuItem>
-                        <MenuItem value="false">No</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <Grid item xs={12} sm={12} md={6}>
+                      <FormControl fullWidth>
+                        <LocalizationProvider dateAdapter={MomentUtils}>
+                          <Field
+                            as={DesktopDatePicker}
+                            label={<Typography sx={{ color: '#B6B6B6' }}>Next Billing Date</Typography>}
+                            inputFormat="MM/DD/YYYY"
+                            onChange={(e) => {
+                              EditForm.setFieldValue('nextBillingDate', moment(e._d).format('yyyy-MM-DD'));
+                              EditForm.setFieldTouched('nextBillingDate', true, false);
+                            }}
+                            value={EditForm.values.nextBillingDate}
+                            renderInput={(params) => (
+                              <Field
+                                as={TextField}
+                                name="nextBillingDate"
+                                variant="standard"
+                                size="small"
+                                {...params}
+                                error={EditForm.touched.nextBillingDate && Boolean(EditForm.errors.nextBillingDate)}
+                                helperText={EditForm.touched.nextBillingDate && EditForm.errors.nextBillingDate}
+                                sx={{ svg: { color: '#0071E3', mr: '5px' } }}
+                              />
+                            )}
+                          />
+                        </LocalizationProvider>
+                      </FormControl>
+                    </Grid>
 
-                    <FormControl
-                      fullWidth
-                      sx={{ mb: 3 }}
-                    >
-                      <InputLabel id="select4">Status</InputLabel>
-                      <Select
-                        labelId="select4"
-                        id="select4"
-                        name="status"
-                        label="Status"
-                        value={EditForm.values.status}
-                        onChange={EditForm.handleChange}
-                      >
-                        <MenuItem value={'Active'}>Active</MenuItem>
-                        <MenuItem value={'Inactive'}>Inactive</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <Grid item xs={12} sm={12} md={6}>
+                      <FormControl fullWidth>
+                        <InputLabel id="select4" sx={{ color: '#B6B6B6', ml: '-14px' }}>
+                          Auto Renewal
+                        </InputLabel>
+                        <Select
+                          labelId="select4"
+                          id="select4"
+                          name="autoRenewal"
+                          label="Auto Renewal"
+                          variant="standard"
+                          size="small"
+                          value={EditForm.values.autoRenewal}
+                          onChange={EditForm.handleChange}
+                          sx={{
+                            '& .MuiSvgIcon-root': {
+                              color: '#0071E3',
+                            },
+                          }}
+                        >
+                          <MenuItem value="true">Yes</MenuItem>
+                          <MenuItem value="false">No</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
 
-                    <FormControl fullWidth sx={{ mb: 3 }}>
-                      <Field
-                        as={TextField}
-                        id="input1"
-                        name="comments"
-                        multiline
-                        rows={2}
-                        label="Comments"
-                        variant="outlined"
-                        value={EditForm.values.comments}
-                        onChange={EditForm.handleChange}
-                      />
-                    </FormControl>
+                    <Grid item xs={12} sm={12} md={6}>
+                      <FormControl fullWidth>
+                        <InputLabel id="select4" sx={{ color: '#B6B6B6', ml: '-14px' }}>
+                          Status
+                        </InputLabel>
+                        <Select
+                          labelId="select4"
+                          id="select4"
+                          name="status"
+                          label="Status"
+                          variant="standard"
+                          size="small"
+                          value={EditForm.values.status}
+                          onChange={EditForm.handleChange}
+                          sx={{
+                            '& .MuiSvgIcon-root': {
+                              color: '#0071E3',
+                            },
+                          }}
+                        >
+                          <MenuItem value={'Active'}>Active</MenuItem>
+                          <MenuItem value={'Inactive'}>Inactive</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
 
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      type="submit"
-                      disabled={!EditForm.isValid}
-                    >
-                      Save
-                    </Button>
-                    <Button color="error" variant="contained" onClick={handleClose} sx={{ ml: 3 }}>
-                      Cancel
-                    </Button>
-                  </form>
-                </FormikProvider>
-              </Grid>
-            </Grid>
-          </Container>
+                    <Grid item xs={12} sm={12} md={12}>
+                      <FormControl fullWidth>
+                        <Field
+                          as={TextField}
+                          id="input1"
+                          name="comments"
+                          multiline
+                          rows={3}
+                          label={<Typography sx={{ color: '#B6B6B6' }}>Comments</Typography>}
+                          variant="standard"
+                          size="small"
+                          value={EditForm.values.comments}
+                          onChange={EditForm.handleChange}
+                        />
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    type="submit"
+                    // disabled={!EditForm.isValid}
+                    disabled={!(EditForm.isValid && EditForm.dirty)}
+                    sx={{
+                      width: '170px',
+                      height: '45px',
+                      backgroundColor: '#3D71FF',
+                      borderRadius: '30px',
+                      mt: '25px',
+                    }}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={handleClose}
+                    sx={{
+                      width: '170px',
+                      height: '45px',
+                      backgroundColor: '#3D71FF',
+                      borderRadius: '30px',
+                      mt: '25px',
+                      ml: '20px',
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </form>
+              </FormikProvider>
+            </Scrollbar>
+          </Box>
         </Box>
       </Modal>
     </div>

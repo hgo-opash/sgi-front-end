@@ -154,7 +154,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
           aria-labelledby="parent-modal-title"
           aria-describedby="parent-modal-description"
         >
-          <Box id="scrollbar" sx={{ ...style, height: '90%', width: 800 }}>
+          <Box id="scrollbar" sx={{ ...style, height: '90%', width: { xs: '100%',sm:"400px", md: '600px', lg: '800px' } }}>
             <Stack direction="row" justifyContent="space-between">
               <Box>
                 <Typography variant="h4" gutterBottom sx={{ fontSize: '30px', fontWeight: 700, color: '#3D71FF' }}>
@@ -169,12 +169,12 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
               </Fab>
             </Stack>
 
-            <Box sx={{ height: '90%' ,overflow:"auto"}}>
+            <Box sx={{ height: '90%', overflow: 'auto' }}>
               <Scrollbar>
                 <FormikProvider value={SubscriptionForm} validateOnMount>
                   <form onSubmit={SubscriptionForm.handleSubmit}>
                     <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ overflowX: 'hidden' }}>
-                      <Grid item xs={12} sm={6} md={6}>
+                      <Grid item xs={12} sm={12} md={6}>
                         <FormControl
                           fullWidth
                           sx={{ mt: 2 }}
@@ -223,7 +223,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         </FormControl>
                       </Grid>
 
-                      <Grid item xs={12} sm={6} md={6}>
+                      <Grid item xs={12} sm={12} md={6}>
                         <FormControl
                           fullWidth
                           sx={{ mt: 2 }}
@@ -300,7 +300,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         </FormControl>
                       </Grid>
 
-                      <Grid item xs={12} sm={6} md={6}>
+                      <Grid item xs={12} sm={12} md={6}>
                         <FormControl
                           fullWidth
                           // sx={{ mb: 3 }}
@@ -344,7 +344,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         </FormControl>
                       </Grid>
 
-                      <Grid item xs={12} sm={6} md={6}>
+                      <Grid item xs={12} sm={12} md={6}>
                         <FormControl
                           fullWidth
                           // sx={{ mb: 3 }}
@@ -364,7 +364,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                             type="number"
                             value={SubscriptionForm.values.amount}
                             onChange={SubscriptionForm.handleChange}
-                            startAdornment={<InputAdornment position="end" >$</InputAdornment>}
+                            startAdornment={<InputAdornment position="end">$</InputAdornment>}
                           />
                           {SubscriptionForm.touched.amount && SubscriptionForm.errors.amount ? (
                             <FormHelperText>
@@ -374,7 +374,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         </FormControl>
                       </Grid>
 
-                      <Grid item xs={12} sm={6} md={6}>
+                      <Grid item xs={12} sm={12} md={6}>
                         <FormControl fullWidth>
                           <LocalizationProvider dateAdapter={MomentUtils}>
                             <Field
@@ -416,7 +416,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         </FormControl>
                       </Grid>
 
-                      <Grid item xs={12} sm={6} md={6}>
+                      <Grid item xs={12} sm={12} md={6}>
                         <FormControl fullWidth>
                           <LocalizationProvider dateAdapter={MomentUtils}>
                             <Field
@@ -456,7 +456,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         </FormControl>
                       </Grid>
 
-                      <Grid item xs={12} sm={6} md={6}>
+                      <Grid item xs={12} sm={12} md={6}>
                         <FormControl
                           fullWidth
                           // sx={{ mb: 3 }}
@@ -495,7 +495,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                         </FormControl>
                       </Grid>
 
-                      <Grid item xs={12} sm={6} md={6}>
+                      <Grid item xs={12} sm={12} md={6}>
                         <FormControl
                           fullWidth
                           // sx={{ mb: 3 }}

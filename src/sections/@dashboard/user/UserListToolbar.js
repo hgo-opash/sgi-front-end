@@ -25,7 +25,7 @@ import { deleteSubscription } from '../../../slices/subscriptionSlice';
 import { DeletAllResponse } from '../../../services/Service';
 // import DeleteModal from '../../../DeleteModal';
 import DeleteModal from '../../../pages/DeleteModal';
-import filterIcon from '../../../images/filterIcon.png'
+import filterIcon from '../../../images/filterIcon.png';
 
 // ----------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
   height: 40,
   backgroundColor: '#FFFFFF',
   borderRadius: '30px',
-  borderColor:"#FFFFFF",
+  borderColor: '#FFFFFF',
   transition: theme.transitions.create(['box-shadow', 'width'], {
     easing: theme.transitions.easing.easeInOut,
     duration: theme.transitions.duration.shorter,
@@ -69,6 +69,7 @@ export default function UserListToolbar({
   setSelected,
   onRequestSort,
   headLabel,
+  setCname,
 }) {
   const dispatch = useDispatch();
   const [openDelete, setOpenDelete] = useState(false);
@@ -136,7 +137,7 @@ export default function UserListToolbar({
           <Tooltip title="Filter list">
             <IconButton
               onClick={handleClick}
-              sx={{ ml: 2, backgroundColor:"#3D71FF", height:"30px", width:"30px" }}
+              sx={{ ml: 2, backgroundColor: '#3D71FF', height: '30px', width: '30px' }}
               aria-controls={open ? 'account-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
@@ -183,14 +184,14 @@ export default function UserListToolbar({
       >
         <MenuItem sx={{ display: 'flex' }}>
           <FormGroup>
-            <FormControlLabel control={<Checkbox />} label="Subscription Name" onClick={createAscSortHandler()} />
-            <FormControlLabel control={<Checkbox />} label="Frequency" />
-            <FormControlLabel control={<Checkbox />} label="Trial Days" />
+            <FormControlLabel control={<Checkbox defaultChecked onChange={setCname('subscriptionName')} />} label="Subscription Name" />
+            <FormControlLabel control={<Checkbox onChange={setCname('frequency')} />} label="Frequency" />
+            <FormControlLabel control={<Checkbox onChange={setCname('trialDays')} />} label="Trial Days" />
           </FormGroup>
           <FormGroup>
-            <FormControlLabel control={<Checkbox />} label="Amount" />
-            <FormControlLabel control={<Checkbox />} label="Start Date" />
-            <FormControlLabel control={<Checkbox />} label="Next Billing Date" />
+            <FormControlLabel control={<Checkbox onChange={setCname('amount')} />} label="Amount" />
+            <FormControlLabel control={<Checkbox onChange={setCname('startDate')} />} label="Start Date" />
+            <FormControlLabel control={<Checkbox onChange={setCname('nextBilling')} />} label="Next Billing Date" />
           </FormGroup>
         </MenuItem>
       </Menu>

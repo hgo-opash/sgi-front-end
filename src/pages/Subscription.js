@@ -19,7 +19,6 @@ import {
   MenuItem,
   Fab,
   IconButton,
-  Pagination,
 } from '@mui/material';
 import styled from 'styled-components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -44,6 +43,7 @@ import DeleteModal from './DeleteModal';
 import downloadImage from '../images/download.png';
 import downArrow from '../images/downArrow.png';
 import uploadImage from '../images/upload.png';
+import Pagination from '../layouts/dashboard/Pagination';
 
 // ----------------------------------------------------------------------
 
@@ -93,8 +93,8 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function applySortFilter(array, comparator, query, cname) {
-  console.log(query, cname, 'query');
+function applySortFilter(array, comparator, query, cname='subscriptionName') {
+  console.log( cname, 'query>>>');
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -102,12 +102,14 @@ function applySortFilter(array, comparator, query, cname) {
     return a[1] - b[1];
   });
   if (query) {
-    if (cname === 'description') {
-      return filter(array, (_user) => _user?.description.toLowerCase().indexOf(query?.toLowerCase()) !== -1);
+    if (cname) {
+      return filter(array, (_user) => _user[cname].toString().toLowerCase().indexOf(query?.toLowerCase()) !== -1);
     }
-    if (cname === 'subscriptionName') {
-      return filter(array, (_user) => _user?.subscriptionName.toLowerCase().indexOf(query?.toLowerCase()) !== -1);
-    }
+
+    // if (cname === 'description') {
+    //   return filter(array, (_user) => _user?.description.toLowerCase().indexOf(query?.toLowerCase()) !== -1);
+    // }
+    
     // return filter(array, (_user) => {
     //   return _user?.description.toLowerCase().indexOf(query?.toLowerCase()) !== -1;
     // });
@@ -116,7 +118,7 @@ function applySortFilter(array, comparator, query, cname) {
 }
 
 export default function Subscription() {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   const [order, setOrder] = useState('asc');
 
@@ -137,6 +139,8 @@ export default function Subscription() {
   const dispatch = useDispatch();
   const { SubscriptionData } = useSelector((state) => state.subscription);
   const openMenu = Boolean(anchorEl);
+
+  console.log(cname,"cname>>>???");
 
   React.useEffect(() => {
     GetsubsResponse()
@@ -187,10 +191,11 @@ export default function Subscription() {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (event) => {
+    console.log(event,'////');
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    console.log(parseInt(event.target.value, 10), 'okkkk');
+    setPage(1);
   };
 
   const handleFilterByName = (event) => {
@@ -300,10 +305,6 @@ export default function Subscription() {
     },
   }));
 
-  const tabelcellStyle = {
-    backgroundColor: '#FFFFFF',
-  };
-
   const sortData = filteredSubs.map((row) => ({
     ...row,
     startDate: moment(row.startDate).format('MM-DD-yyyy'),
@@ -336,6 +337,7 @@ export default function Subscription() {
           setSelected={setSelected}
           onRequestSort={handleRequestSort}
           headLabel={TABLE_HEAD}
+          setCname={setCname}
         />
         <Box sx={{ display: 'flex' }}>
           <Button
@@ -544,7 +546,7 @@ export default function Subscription() {
                               setEditData(row);
                             }}
                           >
-                            <Iconify icon="ic:twotone-mode-edit-outline" color="#1877F2" width={22} height={22} />
+                            <Iconify icon="mdi:edit-circle" color="#1877F2" width={30} height={30} />
                           </Button>
                         </TableCell>
                         <TableCell align="center" sx={{ backgroundColor: '#FFFFFF', p: 0 }}>
@@ -556,7 +558,7 @@ export default function Subscription() {
                               setSelected([]);
                             }}
                           >
-                            <Iconify icon="ic:twotone-delete" color="#DF3E30" width={22} height={22} />
+                            <Iconify icon="mdi:delete-circle" color="#DF3E30" width={30} height={30} />
                           </Button>
                         </TableCell>
 
@@ -636,23 +638,30 @@ export default function Subscription() {
         </Scrollbar>
       </TableContainer>
 
-      <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={SubscriptionData.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-        <Pagination
+      <Pagination
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        count={Math.ceil(SubscriptionData.length / rowsPerPage)}
+        onChange={handleChangePage}
+      />
+      {console.log(rowsPerPage, page, '???')}
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={SubscriptionData.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      {/* <Pagination
           count={Math.ceil(SubscriptionData.length / rowsPerPage)}
           onChange={handleChangePage}
           color="primary"
           sx={{ mt: '12px' }}
-        />
-      </Box>
+        /> */}
       {/* </Card> */}
     </Page>
   );
