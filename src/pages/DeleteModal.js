@@ -16,7 +16,7 @@ import SuccessToast from '../toast/Success';
 import ErrorToast from '../toast/Error';
 
 const DeleteModal = ({ openDeleteModal, setOpenDelete, id, setSelected }) => {
-  // console.log(id,"idssssssss");
+  console.log(id,"idssssssss");
   const dispatch = useDispatch();
 
   const style = {
@@ -86,11 +86,12 @@ const DeleteModal = ({ openDeleteModal, setOpenDelete, id, setSelected }) => {
                 variant="contained"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (id.length > 1) {
-                    console.log('handle all');
-                    handleDeleteAll(id);
+                  console.log("id.legth" , id);
+                  if (id[0].length > 1) {
+                    console.log('handle all',id );
+                    handleDeleteAll(id[0]);
                   } else {
-                    console.log('handle 1');
+                    console.log('handle 1',id);
                     handledelete(id);
                   }
                   setOpenDelete(false);

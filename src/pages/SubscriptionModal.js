@@ -19,6 +19,7 @@ import {
   alpha,
   Input,
   Fab,
+  FormLabel,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -31,8 +32,10 @@ import { setCompanies } from '../slices/companiesSlice';
 import SuccsessModal from '../components/SuccsessModal';
 import { setSubscriptions } from '../slices/subscriptionSlice';
 import SuccessToast from '../toast/Success';
-import { GetcompaniesResponse, GetsubsResponse, SavesubsResponse } from '../services/Service';
+import ErrorToast from '../toast/Error';
+import { AttachmentResponse, GetcompaniesResponse, GetsubsResponse, SavesubsResponse } from '../services/Service';
 import Scrollbar from '../components/Scrollbar';
+import Iconify from '../components/Iconify';
 
 const style = {
   position: 'absolute',
@@ -55,8 +58,8 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
   const { allCompaniesData } = useSelector((state) => state.companies);
   const [companyTypes, setCompanyTypes] = React.useState([]);
   const [selectedCompanyType, setSelectedCompanyType] = React.useState([]);
-
   const [masterComapny, setMasterComapny] = React.useState();
+  const [selectedFileName, setSelectedFileName] = React.useState('');
 
   const handleCompanyClick = (data) => {
     const CompanyType = allCompaniesData.filter((val) => val.companyType === data);
@@ -80,7 +83,6 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
   React.useEffect(() => {
     GetsubsResponse()
       .then((res) => {
-        console.log('dashboard ==> ', res.data);
         if (res.data.success === true) {
           dispatch(setSubscriptions({ subscriptions: res.data.data }));
         }
@@ -91,7 +93,6 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
         }
       });
     GetcompaniesResponse().then((res) => {
-      console.log('subscription companies => ', res.data);
       dispatch(setCompanies({ allCompaniesData: res.data.data }));
       const companiesType = [...new Set(res.data.data.map((item) => item.companyType))];
       setCompanyTypes(companiesType);
@@ -126,6 +127,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
     autoRenewal: '',
     status: '',
     comments: '',
+    attachment: '',
   };
 
   const SubscriptionForm = useFormik({
@@ -133,10 +135,10 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
     initialValues,
     validationSchema: SubscriptionFormSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log('values', { ...values, isStandardAlert: true });
       values.companyId = masterComapny._id;
+
+      console.log('this is sub modal values ===> ', values);
       SavesubsResponse(values).then((res) => {
-        console.log('subscription ADD => ', res.data);
         if (res.data.success === true) {
           resetForm(initialValues);
         }
@@ -154,7 +156,10 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
           aria-labelledby="parent-modal-title"
           aria-describedby="parent-modal-description"
         >
-          <Box id="scrollbar" sx={{ ...style, height: '90%', width: { xs: '100%',sm:"400px", md: '600px', lg: '800px' } }}>
+          <Box
+            id="scrollbar"
+            sx={{ ...style, height: '90%', width: { xs: '100%', sm: '400px', md: '600px', lg: '800px' } }}
+          >
             <Stack direction="row" justifyContent="space-between">
               <Box>
                 <Typography variant="h4" gutterBottom sx={{ fontSize: '30px', fontWeight: 700, color: '#3D71FF' }}>
@@ -174,7 +179,7 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                 <FormikProvider value={SubscriptionForm} validateOnMount>
                   <form onSubmit={SubscriptionForm.handleSubmit}>
                     <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ overflowX: 'hidden' }}>
-                      <Grid item xs={12} sm={12} md={6}>
+                      <Grid item xs={12} sm={6} md={6}>
                         <FormControl
                           fullWidth
                           sx={{ mt: 2 }}
@@ -547,6 +552,29 @@ const SubscriptionModal = ({ openModal, setOpenSubModal }) => {
                             size="small"
                           />
                         </FormControl>
+                      </Grid>
+
+                      <Grid item xs={12} sm={12} md={12}>
+                        <input
+                          id="contained-button-file"
+                          style={{ display: 'none' }}
+                          type="file"
+                          onChange={(e) => {
+                            setSelectedFileName(e?.target?.files[0]?.name);
+                            SubscriptionForm.setFieldValue('attachment', e?.target?.files[0]);
+                          }}
+                        />
+                        <FormLabel htmlFor="contained-button-file" sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Button
+                            variant="contained"
+                            component="span"
+                            sx={{ bgcolor: '#fff', color: '#1D1D1F', borderRadius: '30px', boxShadow: 'none' , ":hover" : {bgcolor : "transparent"}}}
+                          >
+                            <Iconify icon="entypo:attachment" color="#3D71FF" width={20} height={20} />
+                            Attachment
+                          </Button>
+                          <Box sx={{ ml: 2 }}>{selectedFileName}</Box>
+                        </FormLabel>
                       </Grid>
                     </Grid>
 

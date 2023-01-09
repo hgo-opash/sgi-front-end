@@ -10,6 +10,9 @@ import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Fab } fr
 import MenuPopover from '../../components/MenuPopover';
 // mocks_
 import { logout } from '../../slices/loginSlice';
+import HomeIcon from '../../images/HomeIcon.png';
+import SettingsIcon from '../../images/SettingsIcon.png';
+import LogoutIcon from '../../images/LogoutIcon.png';
 
 // ----------------------------------------------------------------------
 
@@ -20,17 +23,17 @@ export default function AccountPopover() {
   const [open, setOpen] = useState(null);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.login);
-  console.log(user,"user>>>>>>>>");
+  console.log(user, 'user>>>>>>>>');
 
   const MENU_OPTIONS = [
     {
       label: 'Home',
-      icon: 'eva:home-fill',
+      icon: HomeIcon,
       linkTo: '/',
     },
     {
       label: 'Settings',
-      icon: 'eva:settings-2-fill',
+      icon: SettingsIcon,
       // eslint-disable-next-line no-nested-ternary
       linkTo: user?.role === 'admin' ? '/admin/profile' : user?.role === 'business' ? '/business/profile' : '/profile',
     },
@@ -78,7 +81,11 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={`${process.env.REACT_APP_API_URL}/${user?.profilePic}`} alt="photoURL" sx={{ width: 25, height: 25 }} />
+        <Avatar
+          src={user?.profilePic}
+          alt="photoURL"
+          sx={{ width: 25, height: 25 }}
+        />
       </IconButton>
 
       <MenuPopover
@@ -86,39 +93,48 @@ export default function AccountPopover() {
         anchorEl={open}
         onClose={handleClose}
         sx={{
-          p: 0,
+          width:"160px",
+          p: 2,
           mt: 1.5,
-          ml: 0.75,
+          ml: 1.75,
+          borderRadius: '25px',
           '& .MuiMenuItem-root': {
             typography: 'body2',
             borderRadius: 0.75,
           },
         }}
       >
-        <Box sx={{ my: 1.5, px: 2.5 }}>
+        {/* <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
             {user.email}
-            {/* {account.displayName} */}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             Last Logged in at :{moment(user.lastLoggedInAt).format('MMMM Do YYYY, h:mm:ss a')}
-            {/* {account.email} */}
           </Typography>
-        </Box>
+        </Box> */}
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        {/* <Divider sx={{ borderStyle: 'dashed' }} /> */}
 
-        <Stack sx={{ p: 1 }}>
+        <Stack>
           {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} to={option.linkTo} component={RouterLink} onClick={handleClose}>
-              {option.label}
-            </MenuItem>
+            <>
+              <MenuItem
+                sx={{ p: 0.5 }}
+                key={option.label}
+                to={option.linkTo}
+                component={RouterLink}
+                onClick={handleClose}
+              >
+                <img width="20px" height="20px" src={option.icon} alt="icon" style={{marginRight:"10px"}} />
+                {option.label}
+              </MenuItem>
+              <Divider />
+            </>
           ))}
         </Stack>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <MenuItem onClick={() => handleLogout()} sx={{ m: 1 }}>
+        <MenuItem sx={{ p: 0.5 }} onClick={() => handleLogout()}>
+          <img width="17px" height="17px" src={LogoutIcon} alt="icon" style={{marginRight:"10px",marginLeft:"5px"}} />
           Logout
         </MenuItem>
       </MenuPopover>

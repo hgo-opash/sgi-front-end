@@ -89,64 +89,38 @@ export default function UserListToolbar({
 
   return (
     <RootStyle
-      sx={{
-        ...(numSelected > 0 && {
-          color: 'primary.main',
-          bgcolor: 'primary.lighter',
-        }),
-      }}
+    // sx={{
+    //   ...(numSelected > 0 && {
+    //     color: 'primary.main',
+    //     bgcolor: 'primary.lighter',
+    //   }),
+    // }}
     >
-      {numSelected > 0 ? (
-        <Typography component="div" variant="subtitle1">
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <SearchStyle
-          value={filterName}
-          onChange={onFilterName}
-          placeholder="Search Subscription..."
-          startAdornment={
-            <InputAdornment position="start">
-              <Iconify icon="eva:search-fill" sx={{ color: '#3D71FF', width: 20, height: 20 }} />
-            </InputAdornment>
-          }
-        />
-      )}
+      <SearchStyle
+        value={filterName}
+        onChange={onFilterName}
+        placeholder="Search Subscription..."
+        startAdornment={
+          <InputAdornment position="start">
+            <Iconify icon="eva:search-fill" sx={{ color: '#3D71FF', width: 20, height: 20 }} />
+          </InputAdornment>
+        }
+      />
 
-      {numSelected > 0 ? (
-        <>
-          <DeleteModal
-            openDeleteModal={openDelete}
-            setOpenDelete={setOpenDelete}
-            id={selectedIDs}
-            setSelected={setSelected}
-          />
-          <Tooltip title="Delete">
-            <IconButton
-              onClick={() => {
-                setOpenDelete(true);
-                // handleDeleteAll();
-              }}
-            >
-              <Iconify icon="eva:trash-2-fill" />
-            </IconButton>
-          </Tooltip>
-        </>
-      ) : (
-        <>
-          <Tooltip title="Filter list">
-            <IconButton
-              onClick={handleClick}
-              sx={{ ml: 2, backgroundColor: '#3D71FF', height: '30px', width: '30px' }}
-              aria-controls={open ? 'account-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-            >
-              <img src={filterIcon} alt="filterIcon" />
-            </IconButton>
-          </Tooltip>
-        </>
-      )}
+      <>
+        <Tooltip title="Filter list">
+          <IconButton
+            onClick={handleClick}
+            sx={{ ml: 2, backgroundColor: '#3D71FF', height: '30px', width: '30px' }}
+            aria-controls={open ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+          >
+            <img src={filterIcon} alt="filterIcon" />
+          </IconButton>
+        </Tooltip>
+      </>
+
       <Menu
         anchorEl={anchorEl}
         id="account-menu"
@@ -184,14 +158,18 @@ export default function UserListToolbar({
       >
         <MenuItem sx={{ display: 'flex' }}>
           <FormGroup>
-            <FormControlLabel control={<Checkbox defaultChecked onChange={setCname('subscriptionName')} />} label="Subscription Name" />
-            <FormControlLabel control={<Checkbox onChange={setCname('frequency')} />} label="Frequency" />
-            <FormControlLabel control={<Checkbox onChange={setCname('trialDays')} />} label="Trial Days" />
+            <FormControlLabel
+              control={<Checkbox defaultChecked />}
+              label="Subscription Name"
+              onClick={() => setCname('subscriptionName')}
+            />
+            <FormControlLabel control={<Checkbox />} label="Frequency" onClick={() => setCname('frequency')} />
+            <FormControlLabel control={<Checkbox />} label="Trial Days" onClick={() => setCname('trialDays')} />
           </FormGroup>
           <FormGroup>
-            <FormControlLabel control={<Checkbox onChange={setCname('amount')} />} label="Amount" />
-            <FormControlLabel control={<Checkbox onChange={setCname('startDate')} />} label="Start Date" />
-            <FormControlLabel control={<Checkbox onChange={setCname('nextBilling')} />} label="Next Billing Date" />
+            <FormControlLabel control={<Checkbox />} label="Amount" />
+            <FormControlLabel control={<Checkbox />} label="Start Date" />
+            <FormControlLabel control={<Checkbox />} label="Next Billing Date" />
           </FormGroup>
         </MenuItem>
       </Menu>

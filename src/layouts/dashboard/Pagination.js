@@ -31,10 +31,9 @@ const Pagination = ({ page, onPageChange, count, onChange, onRowsPerPageChange, 
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={age}
+              value={rowsPerPage}
               onChange={(e) => {
-                console.log(e.target.value, 'ee');
-                handleChange(e);
+                onRowsPerPageChange(e);
               }}
               defaultValue={5}
               sx={{
@@ -63,10 +62,10 @@ const Pagination = ({ page, onPageChange, count, onChange, onRowsPerPageChange, 
         </Box>
       </Box>
       <MUIPagination
-        defaultPage={0}
+        // defaultPage={0}
         page={page}
         count={count}
-        onChange={onChange}
+        onChange={onPageChange}
         color="primary"
         sx={{ mt: '12px' }}
       />

@@ -41,10 +41,23 @@ export const GetsubsResponse = () =>
     },
   });
 
+  export const AttachmentResponse = (e) =>
+  axios.post(
+    `${process.env.REACT_APP_API_URL}/attachment`,
+    { attachment: e.target.files[0] },
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+
 export const SavesubsResponse = (values) =>
   axios.post(`${process.env.REACT_APP_API_URL}/savesubs`, values, {
     headers: {
       authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+      'Content-Type': 'multipart/form-data',
     },
   });
 
@@ -134,6 +147,8 @@ export const ProfilepicResponse = (e) =>
       },
     }
   );
+
+
 
 export const FbloginResponse = (res) => axios.post(`${process.env.REACT_APP_API_URL}/fblogin`, res);
 

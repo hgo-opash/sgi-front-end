@@ -75,7 +75,7 @@ export default function LoginForm() {
               as={TextField}
               variant="standard"
               name="email"
-              label={<Typography sx={{color:"#B6B6B6"}}>Email Address</Typography>}
+              label="Email Address"
               onChange={LoginFormik.handleChange}
               value={LoginFormik.values.email}
               error={LoginFormik.touched.email && Boolean(LoginFormik.errors.email)}
@@ -87,7 +87,7 @@ export default function LoginForm() {
               variant="standard"
               type={showPassword ? 'text' : 'password'}
               name="password"
-              label={<Typography sx={{color:"#B6B6B6"}}>Password</Typography>}
+              label="Password"
               onChange={LoginFormik.handleChange}
               value={LoginFormik.values.password}
               error={LoginFormik.touched.password && Boolean(LoginFormik.errors.password)}

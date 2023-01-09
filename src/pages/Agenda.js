@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import { Box } from '@mui/system';
 import { Card, Divider, Grid, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { useRef } from 'react';
 
 const locales = {
   'en-US': require('date-fns'),
@@ -47,7 +48,6 @@ const StyledWrapper = styled.div`
     color: #ffffff;
   }
   .rbc-month-view {
-    padding: 15px 30px;
     background: white;
   }
 
@@ -95,7 +95,7 @@ const StyledWrapper = styled.div`
     background-color: #3d71ff;
   }
   .rbc-off-range-bg {
-    border: 1px solid #ccd0d6;
+    border: 1px solid #ccd0d6 !important;
     background-color: #ffffff;
   }
   .rbc-header,
@@ -114,6 +114,10 @@ const StyledWrapper = styled.div`
 const Agenda = () => {
   const { SubscriptionData } = useSelector((state) => state.subscription);
   const [monthName, setMonthName] = useState(moment().month());
+  const [labelName, setLabelName] = useState();
+
+  const Calendarref = useRef();
+
   function createFile(e) {
     // let date = new Date(e.start).toISOString().substring(0, 10).replaceAll("-", "") + "T" + new Date(e.start).getHours() + new Date(e.start).getMinutes() + new Date(e.start).getSeconds() + "Z";
 
@@ -197,7 +201,7 @@ const Agenda = () => {
   const eventStyleGetter = (event, start, end, isSelected) => {
     var current_date = moment().format('YYYY-MM-DD');
     var days = moment(event.end).diff(current_date, 'days');
-    var backgroundColor = days > 0 ? '#54E1C2' : days === 0 ? '#3D71FF' : '#FF7C95';
+    var backgroundColor = days > 0 ? '#54E1C2' : days === 0 ? '#FF7C95' : '#FF7C95';
     var style = {
       backgroundColor: backgroundColor,
       borderRadius: '10px',
@@ -213,105 +217,111 @@ const Agenda = () => {
 
   return (
     <Page title="Calendar - SGI">
-        <Typography variant="h4" sx={{ fontSize: '40px', fontWeight: 700, color: '#3D71FF' }}>
-          Calendar
-        </Typography>
       <div className="calendars">
         <a style={{ display: 'none' }} href="" id="downloadLink" download="event.ics"></a>
         <StyledWrapper>
-          <Grid container spacing={2}>
-            <Grid item xs={9}>
-              <Calendar
-                events={eventData}
-                onSelectEvent={(e) => saveIcs(e)}
-                defaultDate={new Date()}
-                localizer={localizer}
-                style={{ height: 580 }}
-                eventPropGetter={eventStyleGetter}
-                x
-                components={{
-                  toolbar: (props) => {
-                    return (
-                      <>
-                        <div class="rbc-toolbar">
-                          <span class="rbc-btn-group">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setMonthName(() => moment().month());
-                                props.onNavigate('today', new Date());
-                                props.onView('month');
-                              }}
-                            >
-                              Today
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const t = moment(props.date).subtract(1, 'month').toDate();
-                                props.onNavigate('past', t);
-                                setMonthName(() => moment(t).month());
-                                props.onView('month');
-                              }}
-                            >
-                              Back
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const t = moment(props.date).add(1, 'month').toDate();
-                                props.onNavigate('future', t);
-                                setMonthName(() => moment(t).month());
-                                props.onView('month');
-                              }}
-                            >
-                              Next
-                            </button>
-                          </span>
-                          <span class="rbc-toolbar-label">
-                            <div className="toolbar-group">
-                              <PlayCircleFilledIcon
-                                sx={{ color: '#3D71FF', transform: 'rotate(180deg)', marginRight: 2 }}
-                                onClick={() => {
-                                  const t = moment(props.date).subtract(1, 'month').toDate();
-                                  props.onNavigate('past', t);
-                                  setMonthName(() => moment(t).month());
-                                }}
-                              />
-                              <>{props.label}</>
-                              <PlayCircleFilledIcon
-                                sx={{ color: '#3D71FF', marginLeft: 2 }}
-                                onClick={() => {
-                                  const t = moment(props.date).add(1, 'month').toDate();
-                                  props.onNavigate('future', t);
-                                  setMonthName(() => moment(t).month());
-                                }}
-                              />
-                            </div>
-                          </span>
-                          <span class="rbc-btn-group">
-                            {props.views
-                              .filter((f, idx) => idx < props.views.length - 1)
-                              .map((val) => (
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    props.onView(val);
-                                  }}
-                                >
-                                  {val.charAt(0).toUpperCase() + val.slice(1)}
-                                </button>
-                              ))}
-                          </span>
-                        </div>
-                      </>
-                    );
-                  },
+          <div className="rbc-toolbar">
+            <Typography variant="h4" sx={{ fontSize: '40px', fontWeight: 700, color: '#3D71FF', mr: 5 }}>
+              Calendar
+            </Typography>
+            <span className="rbc-btn-group">
+              <button
+                type="button"
+                onClick={() => {
+                  setMonthName(() => moment().month());
+                  Calendarref.current?.props?.onNavigate(new Date());
+                  Calendarref.current?.props?.onView('month');
                 }}
-              />
+              >
+                Today
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const t = moment(Calendarref.current?.props?.date).subtract(1, 'month').toDate();
+                  Calendarref.current?.props?.onNavigate(t);
+                  setMonthName(() => moment(t).month());
+                  Calendarref.current?.props?.onView('month');
+                }}
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const t = moment(Calendarref.current?.props?.date).add(1, 'month').toDate();
+                  Calendarref.current?.props?.onNavigate(t);
+                  setMonthName(() => moment(t).month());
+                  Calendarref.current?.props?.onView('month');
+                }}
+              >
+                Next
+              </button>
+            </span>
+            <span className="rbc-toolbar-label">
+              <div className="toolbar-group">
+                <PlayCircleFilledIcon
+                  sx={{ color: '#3D71FF', transform: 'rotate(180deg)', marginRight: 2 }}
+                  onClick={() => {
+                    const view = Calendarref.current?.props?.view;                  
+                    const t = moment(Calendarref.current?.props?.date).subtract(1, view).toDate();
+                    Calendarref.current?.props?.onNavigate(t);
+                    setMonthName(() => moment(t).month());
+                  }}
+                />
+                {/* <>{moment(Calendarref.current?.props?.date).format('MMMM YYYY')}</> */}
+                <>{labelName}</>
+                <PlayCircleFilledIcon
+                  sx={{ color: '#3D71FF', marginLeft: 2 }}
+                  onClick={() => {
+                    const view = Calendarref.current?.props?.view;
+                    const t = moment(Calendarref.current?.props?.date).add(1, view).toDate();
+                    Calendarref.current?.props?.onNavigate(t);
+                    setMonthName(() => moment(t).month());
+                  }}
+                />
+              </div>
+            </span>
+            <span className="rbc-btn-group">
+              {Calendarref.current?.props?.views
+                .filter((f, idx) => idx < Calendarref.current?.props?.views?.length - 1)
+                .map((val, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      Calendarref.current?.props?.onView(val);
+                    }}
+                  >
+                    {val.charAt(0).toUpperCase() + val.slice(1)}
+                  </button>
+                ))}
+            </span>
+          </div>
+
+          <Grid container spacing={2} sx={{ bgcolor: '#fff', mt: 2 }}>
+            <Grid item xs={0.4} />
+            <Grid item xs={8.6}>
+              <Box display="inline-block" sx={{ width: '100%' }} py={1}>
+                <Calendar
+                  ref={Calendarref}
+                  events={eventData}
+                  onSelectEvent={(e) => saveIcs(e)}
+                  defaultDate={new Date()}
+                  localizer={localizer}
+                  style={{ height: 580 }}
+                  eventPropGetter={eventStyleGetter}
+                  components={{
+                    toolbar: (props) => {
+                      setLabelName(props.label);
+                      return <></>;
+                    },
+                  }}
+                />
+              </Box>
             </Grid>
             <Grid item xs={3}>
-              <Box sx={{height: '100%' , marginTop:"12%"}}>
+              <Box display="inline-block" sx={{ height: '100%', width: '100%' }} paddingRight={2}>
                 <Card
                   sx={{
                     padding: '10px',
@@ -323,31 +333,32 @@ const Agenda = () => {
                 >
                   Notes
                 </Card>
-                <Box sx={{height: '485px', border: 'solid 1px #ccc'}}>
-                  <List sx={{ width: '100%', height: '100%',  maxWidth: 360, bgcolor: 'background.paper' }}>
+                <Box sx={{ height: '485px', border: 'solid 1px #ccc' }}>
+                  <List sx={{ width: '100%', height: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                     {SubscriptionData.filter((f) => moment(f.nextBilling).month() === monthName).map((val, idx) => {
                       return (
-                        <>
+                        <div key={idx}>
                           <ListItem alignItems="flex-start">
                             <ListItemText
                               secondary={
                                 <>
-                                {(idx + 1)}{". "} Your {" "}
+                                  {idx + 1}
+                                  {'. '} Your{' '}
                                   <Typography
                                     sx={{ display: 'inline' }}
                                     component="span"
                                     variant="body2"
                                     color="text.primary"
                                   >
-                                     {val.subscriptionName}
-                                  </Typography>
-                                  {" "} subscription is about to expire on {moment(val.nextBilling).format('MM/DD/YYYY')}
+                                    {val.subscriptionName}
+                                  </Typography>{' '}
+                                  subscription is about to expire on {moment(val.nextBilling).format('MM/DD/YYYY')}
                                 </>
                               }
                             />
                           </ListItem>
-                          <Divider variant="inset" sx={{marginLeft: 0}} />
-                        </>
+                          <Divider variant="inset" sx={{ marginLeft: 0 }} />
+                        </div>
                       );
                     })}
                   </List>

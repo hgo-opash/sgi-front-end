@@ -11,7 +11,6 @@ import {
   Fab,
   Grid,
   IconButton,
-  Pagination,
   Stack,
   Table,
   TableBody,
@@ -40,6 +39,7 @@ import budgetpic from '../images/budget.png';
 import variancepic from '../images/variance.png';
 import { UserListHead } from '../sections/@dashboard/user';
 import SearchNotFound from '../components/SearchNotFound';
+import Pagination from '../layouts/dashboard/Pagination';
 
 const TABLE_HEAD = [
   {
@@ -82,7 +82,7 @@ const DashBoard = () => {
   };
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage-1);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -407,7 +407,7 @@ const DashBoard = () => {
               {!SubscriptionData || SubscriptionData?.length === 0 ? (
                 <TableBody>
                   <TableRow>
-                    <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                    <TableCell align="center" colSpan={12} sx={{ borderRadius: '35px', backgroundColor: '#FFFFFF' }}>
                       Sorry, You Don't have any Active subscription. Please Add New Subscription.
                     </TableCell>
                   </TableRow>
@@ -517,22 +517,36 @@ const DashBoard = () => {
                 </TableBody>
               )}
 
-              {isUserNotFound && (
+              {/* {isUserNotFound && (
                 <TableBody>
                   <TableRow>
-                    <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                    <TableCell
+                      align="center"
+                      colSpan={12}
+                      sx={{ p: 0, borderRadius: '35px', backgroundColor: '#FFFFFF' }}
+                    >
                       <SearchNotFound searchQuery={filterName} />
                     </TableCell>
                   </TableRow>
                 </TableBody>
-              )}
+              )} */}
             </Table>
           </TableContainer>
         </Scrollbar>
 
         {SubscriptionData && (
-          <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
-            <TablePagination
+          <>
+            <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+              <Pagination
+                page={page + 1}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                count={Math.ceil(SubscriptionData.length / rowsPerPage)}
+                onChange={handleChangePage}
+              />
+            </Box>
+            {/* <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
               count={SubscriptionData.length}
@@ -540,14 +554,8 @@ const DashBoard = () => {
               page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-            <Pagination
-              count={Math.ceil(SubscriptionData.length / rowsPerPage)}
-              onChange={handleChangePage}
-              color="primary"
-              sx={{ mt: '12px' }}
-            />
-          </Box>
+            /> */}
+          </>
         )}
       </Page>
     </>

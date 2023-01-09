@@ -1,3 +1,4 @@
+/* eslint-disable */
 import PropTypes from 'prop-types';
 // material
 import { alpha, styled } from '@mui/material/styles';
@@ -69,39 +70,26 @@ export default function DashboardNavbar({ onOpenSidebar }) {
   const { user } = useSelector((state) => state.login);
   const navigate = useNavigate();
 
+  const handleClick = () => {
+    navigate('/');
+  };
+
   return (
     <RootStyle>
       <HeaderStyle>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <img src={Logo} width="150px" height="40px" alt="login" style={{ objectFit: 'contain' }} />
+          <img
+            src={Logo}
+            width="150px"
+            height="40px"
+            alt="login"
+            style={{ objectFit: 'contain', cursor: 'pointer' }}
+            onClick={handleClick}
+          />
         </Box>
 
         <ToolbarStyle>
-          {/* <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary', display: { lg: 'none' } }}>
-            <Avatar
-              // sx={{ width: 150, height: 150 }}
-              alt="Avtar"
-              // src="http://localhost:3000/638ed335be04698b37d40b75avatar1.png"
-              src={`${process.env.REACT_APP_API_URL}/${ProfilePic}`}
-            />
-          </IconButton> */}
-
-          {/* <Searchbar /> */}
-          {/* <Box sx={{ flexGrow: 1 }} /> */}
-
           <NavSection navConfig={navConfig} />
-
-          {/* <Avatar
-            sx={{
-              height: '25px',
-              width: '25px',
-              backgroundColor: '#FFFF',
-              cursor: 'pointer',
-              ml:"20px"
-            }}
-          >
-            <SearchIcon color="primary" sx={{ height: '18px', width: '18px' }} />
-          </Avatar> */}
 
           <Box
             sx={{

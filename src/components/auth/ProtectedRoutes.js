@@ -8,8 +8,6 @@ import Loader from "../Loader"
 const ProtectedRoutes = (props) => {
 	const { user } = useSelector(state => state.login)
 	const token = localStorage.getItem('Jtoken')
-	console.log("this is props ===> ", props)
-
 	const getDashboardComponent = (role) => {
 		switch (role) {
 		  case 'business':
@@ -27,8 +25,8 @@ const ProtectedRoutes = (props) => {
 		return token ? (
 			user?.role ?
 				props.roleRequired === user.role ? (
-					<Outlet />
-				) : (
+					<Outlet />					
+					) : (
 					<>
 						{getDashboardComponent(user.role)}
 					</>

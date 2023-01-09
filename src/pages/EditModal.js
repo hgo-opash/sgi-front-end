@@ -1,3 +1,4 @@
+import React from 'react';
 import moment from 'moment';
 import {
   Box,
@@ -6,10 +7,12 @@ import {
   Fab,
   FormControl,
   FormHelperText,
+  FormLabel,
   Grid,
   Input,
   InputAdornment,
   InputLabel,
+  Link,
   MenuItem,
   Modal,
   OutlinedInput,
@@ -24,7 +27,6 @@ import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import * as Yup from 'yup';
 import { Field, FormikProvider, useFormik } from 'formik';
 import MomentUtils from '@date-io/moment';
-import React from 'react';
 import { EditsubsResponse, GetsubsResponse } from '../services/Service';
 import SuccessToast from '../toast/Success';
 import { setSubscriptions } from '../slices/subscriptionSlice';
@@ -46,6 +48,7 @@ const style = {
 
 const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
   const dispatch = useDispatch();
+  const [selectedFileName, setSelectedFileName] = React.useState();
 
   const handleClose = () => {
     setOpenEditModal(false);
@@ -56,11 +59,10 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
     contractStartDate: Yup.string().required('Please Select Contract Start Date'),
     amount: Yup.number().required('Please Enter Amount'),
     autoRenewal: Yup.string().required('Please Select Auto Renewal'),
-    nextBillingDate: Yup.date()
-      .required('Please Select next billing Date'),
-      // .test('nextBillingDate', 'Must be greater than today', (value) => {
-      //   return moment(value) > moment();
-      // })
+    nextBillingDate: Yup.date().required('Please Select next billing Date'),
+    // .test('nextBillingDate', 'Must be greater than today', (value) => {
+    //   return moment(value) > moment();
+    // })
     status: Yup.string().required('Please select Status'),
   });
 
@@ -73,6 +75,7 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
     status: `${data?.status}`,
     comments: data?.comments,
     description: data?.description,
+    attachment: data?.attachment,
   };
 
   const EditForm = useFormik({
@@ -154,21 +157,10 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
                     </Grid>
 
                     <Grid item xs={12} sm={12} md={6}>
-                      {/* <FormControl fullWidth sx={{ mt: 2 }}>
+                      <FormControl fullWidth sx={{ mt: 2 }} error={EditForm.touched.amount && EditForm.errors.amount}>
                         <InputLabel htmlFor="amount" sx={{ color: '#B6B6B6', ml: '-14px' }}>
                           Amount
                         </InputLabel>
-                        <Input
-                          label="Amount"
-                          name="amount"
-                          type="number"
-                          value={EditForm.values.amount}
-                          onChange={EditForm.handleChange}
-                          startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                        />
-                      </FormControl> */}
-                      <FormControl fullWidth sx={{ mt: 2 }} error={EditForm.touched.amount && EditForm.errors.amount}>
-                        <InputLabel htmlFor="amount"  sx={{ color: '#B6B6B6', ml: '-14px' }}>Amount</InputLabel>
                         <Field
                           as={Input}
                           onWheel={(event) => {
@@ -319,6 +311,38 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
                         />
                       </FormControl>
                     </Grid>
+                  </Grid>
+
+                  <Grid>
+                    {/* <FormControl fullWidth>
+                      <Field
+                        as={Link}
+                        id="input1"
+                        name="attachment"
+                        label="Attachment"
+                        href={EditForm.values.attachment}
+                        
+                        onChange={EditForm.handleChange}
+                      >Download</Field>
+                    </FormControl> */}
+
+                    <input
+                      id="contained-button-file"
+                      style={{ display: 'none' }}
+                      type="file"
+                      onChange={(e) => {
+                        console.log('this is e ==> ', e.target.files.name);
+                        setSelectedFileName(e?.target?.files[0]?.name);
+                        EditForm.setFieldValue('attachment', e?.target?.files[0]);
+                      }}
+                    />
+                    <FormLabel htmlFor="contained-button-file">
+                      <Button variant="contained" component="span" sx={{ ml: 4, mt: 2 }}>
+                        Attachment
+                      </Button>
+                      <br />
+                      <span>{selectedFileName}dssd</span>
+                    </FormLabel>
                   </Grid>
 
                   <Button

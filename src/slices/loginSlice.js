@@ -84,6 +84,7 @@ export const loginSlice = createSlice({
     },
     [getProfile.rejected]: (state) => {
       state.isLoading = false;
+      localStorage.clear();
     },
     [logout.pending]: (state) => {
       state.isLoading = true;

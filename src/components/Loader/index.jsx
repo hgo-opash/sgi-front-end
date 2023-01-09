@@ -1,82 +1,49 @@
+import { Typography } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
+import Image from  "../../images/Loader.png"
+import ssLoaderIcon from  "../../images/ssLoaderIcon.png"
 
-export const LoaderWrapper = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+
 const StyledLoader = styled.div`
-  display: block;
+
+display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+
   position: relative;
-  width: 64px;
-  height: 64px;
-  & div {
+
+  .ss_logo {
     position: absolute;
-    top: 27px;
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    background: #04297A;
-    animation-timing-function: cubic-bezier(0, 1, 1, 0);
-
-    &:nth-child(1) {
-      left: 6px;
-      animation: lds-ellipsis1 0.6s infinite;
-    }
-
-    &:nth-child(2) {
-      left: 6px;
-      animation: lds-ellipsis2 0.6s infinite;
-    }
-
-    &:nth-child(3) {
-      left: 26px;
-      animation: lds-ellipsis2 0.6s infinite;
-    }
-
-    &:nth-child(4) {
-      left: 45px;
-      animation: lds-ellipsis3 0.6s infinite;
-    }
   }
-  @keyframes lds-ellipsis1 {
-    0% {
-      transform: scale(0);
-    }
-    100% {
-      transform: scale(1);
-    }
+
+
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
   }
-  @keyframes lds-ellipsis3 {
-    0% {
-      transform: scale(1);
-    }
-    100% {
-      transform: scale(0);
-    }
+  to {
+    transform: rotate(359deg);
   }
-  @keyframes lds-ellipsis2 {
-    0% {
-      transform: translate(0, 0);
-    }
-    100% {
-      transform: translate(19px, 0);
-    }
-  }
+}
+.rotate {
+  width: 100px;
+  animation: rotation 1.5s infinite linear;
+}
+
+
+
 `;
 
 const Loader = (props) => (
-    <LoaderWrapper>
-      <StyledLoader className="lds-ellipsis">
-        <div />
-        <div />
-        <div />
-        <div />
+      <StyledLoader>
+        <img src={Image} className="rotate" alt="logo"/>
+        <img src={ssLoaderIcon} alt="logo" className='ss_logo'/>
+
+        <Typography variant="body2"  sx={{fontSize: "16px", position: "absolute", marginTop: "150px"}}>SafalSubscriptions </Typography>
       </StyledLoader>
-    </LoaderWrapper>
   )
 
 export default Loader;
