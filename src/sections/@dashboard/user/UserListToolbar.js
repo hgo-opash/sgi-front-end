@@ -70,6 +70,7 @@ export default function UserListToolbar({
   onRequestSort,
   headLabel,
   setCname,
+  cname,
 }) {
   const dispatch = useDispatch();
   const [openDelete, setOpenDelete] = useState(false);
@@ -159,17 +160,38 @@ export default function UserListToolbar({
         <MenuItem sx={{ display: 'flex' }}>
           <FormGroup>
             <FormControlLabel
-              control={<Checkbox defaultChecked />}
+              control={
+                <Checkbox
+                  defaultChecked
+                  checked={cname === 'subscriptionName'}
+                  onChange={() => setCname('subscriptionName')}
+                  name='subscriptionName'
+                />
+              }
               label="Subscription Name"
-              onClick={() => setCname('subscriptionName')}
             />
-            <FormControlLabel control={<Checkbox />} label="Frequency" onClick={() => setCname('frequency')} />
-            <FormControlLabel control={<Checkbox />} label="Trial Days" onClick={() => setCname('trialDays')} />
+            <FormControlLabel
+              control={<Checkbox checked={cname === 'frequency'} onChange={() => setCname('frequency')} name='frequency' />}
+              label="Frequency"
+            />
+            <FormControlLabel
+              control={<Checkbox checked={cname === 'trialDays'} onChange={() => setCname('trialDays')} name='trialDays' />}
+              label="Trial Days"
+            />
           </FormGroup>
           <FormGroup>
-            <FormControlLabel control={<Checkbox />} label="Amount" />
-            <FormControlLabel control={<Checkbox />} label="Start Date" />
-            <FormControlLabel control={<Checkbox />} label="Next Billing Date" />
+            <FormControlLabel
+              control={<Checkbox checked={cname === 'amount'} onClick={() => setCname('amount')} name='amount' />}
+              label="Amount"
+            />
+            <FormControlLabel
+              control={<Checkbox checked={cname === 'startDate'} onClick={() => setCname('startDate')} name='startDate' />}
+              label="Start Date"
+            />
+            <FormControlLabel
+              control={<Checkbox checked={cname === 'nextBilling'} onClick={() => setCname('nextBilling')} name='nextBilling' />}
+              label="Next Billing Date"
+            />
           </FormGroup>
         </MenuItem>
       </Menu>

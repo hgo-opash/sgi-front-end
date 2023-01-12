@@ -29,12 +29,12 @@ const navConfig = [
     icon: getIcon(reportIcon),
     roles: ['user'],
   },
-  {
-    title: 'Offers',
-    path: '/offers',
-    icon: getIcon(offersIcon),
-    roles: ['user'],
-  },
+  // {
+  //   title: 'Offers',
+  //   path: '/offers',
+  //   icon: getIcon(offersIcon),
+  //   roles: ['user'],
+  // },
   {
     title: 'Calendar',
     path: '/calendar',
@@ -44,13 +44,13 @@ const navConfig = [
   {
     title: 'Companies',
     path: '/business/companieslist',
-    icon: getIcon('eva:people-fill'),
+    // icon: getIcon('eva:people-fill'),
     roles: ['business'],
   },
   {
     title: 'Add Companies',
     path: '/business/companies',
-    icon: getIcon('eva:people-fill'),
+    // icon: getIcon('eva:people-fill'),
     roles: ['business'],
   },
   {

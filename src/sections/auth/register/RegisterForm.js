@@ -324,6 +324,10 @@ export default function RegisterForm() {
                   error={SignUpFormik.touched.country && Boolean(SignUpFormik.errors.country)}
                   sx={{
                     width: '100%',
+                    '& .MuiSelect-select':{
+                      display:"flex",
+                      alignItems:"center"
+                    },
                     '&:after': {
                       borderBottomColor: '#0000',
                     },

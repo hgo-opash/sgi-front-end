@@ -53,12 +53,10 @@ export const loginSlice = createSlice({
   initialState,
   reducers: {
     setLogindata: (state, action) => {
-      console.log(action.payload);
       state.user = {...state.user, ...action.payload.data};
       return state;
     },
     updateLoginData: (state, {payload}) => {
-      console.log("this is update payload ====> ",payload);
       state.user.profilePic = payload.data.profilePic
       return state;
     },

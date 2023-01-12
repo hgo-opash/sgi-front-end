@@ -320,7 +320,7 @@ const DashBoard = () => {
                 </Grid>
                 <Grid item xs={8}>
                   <Box sx={{ width: '100%', display: 'flex', alignItems: 'baseline', flexDirection: 'column' }}>
-                    <Box sx={{ ...lineSyle, color: '#FB5D7F' }}>Varince from Budget</Box>
+                    <Box sx={{ ...lineSyle, color: '#FB5D7F' }}>Variance from Budget</Box>
                     <Box sx={{ fontSize: '30px', fontWeight: 700, mt: '10px' }}>${variance}</Box>
                   </Box>
                 </Grid>

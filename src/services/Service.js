@@ -72,16 +72,51 @@ export const SavesubsBulkResponse = (values) =>
     }
   );
 
-export const EditsubsResponse = (id, values) =>
+export const EditsubsResponse = (id, {attachment, ...values}) =>
   axios.post(
     `${process.env.REACT_APP_API_URL}/editsub`,
-    { id, values },
+    { id, attachment, ...values },
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+         'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+
+export const ChangeStatusResponse = (id, status) =>
+  axios.post(
+    `${process.env.REACT_APP_API_URL}/changestatus`,
+    { id, values : {status} },
     {
       headers: {
         authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
       },
     }
   );
+
+export const ChangeRatingResponse = (id, rating) =>
+  axios.post(
+    `${process.env.REACT_APP_API_URL}/changerating`,
+    { id, values : {rating} },
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+      },
+    }
+  );
+
+export const ChangeLikeResponse = (id, isLiked) =>
+  axios.post(
+    `${process.env.REACT_APP_API_URL}/changelike`,
+    { id, values : {isLiked} },
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('Jtoken')}`,
+      },
+    }
+  );
+
 export const EditComapnysubsResponse = (id, values) =>
   axios.post(
     `${process.env.REACT_APP_API_URL}/editcompany`,

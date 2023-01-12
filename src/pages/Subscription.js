@@ -22,11 +22,11 @@ import {
   Fab,
   IconButton,
   Tooltip,
+  Rating,
 } from '@mui/material';
 import styled from 'styled-components';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import BackupOutlinedIcon from '@mui/icons-material/BackupOutlined';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import AddIcon from '@mui/icons-material/Add';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
@@ -38,9 +38,9 @@ import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import { setSubscriptions } from '../slices/subscriptionSlice';
+import {  setSubscriptions } from '../slices/subscriptionSlice';
 import SubscriptionModal from './SubscriptionModal';
-import { GetsubsResponse,SavesubsBulkResponse } from '../services/Service';
+import { ChangeLikeResponse, ChangeRatingResponse, GetsubsResponse, SavesubsBulkResponse } from '../services/Service';
 import EditModal from './EditModal';
 import DeleteModal from './DeleteModal';
 import downloadImage from '../images/download.png';
@@ -64,6 +64,8 @@ const TABLE_HEAD = [
   },
   { id: 'description', label: 'Description', alignRight: false },
   { id: 'frequency', label: 'Frequency', alignRight: false },
+  { id: 'rating', label: 'Rating', alignRight: false },
+  { id: 'action', label: 'Action', alignRight: false },
   { id: 'trialDays', label: 'Trial Days', alignRight: false },
   { id: 'amount', label: 'Amount', alignRight: false, sort: true },
   { id: 'startDate', label: 'Start Date', alignRight: false, sort: true },
@@ -78,7 +80,6 @@ const TABLE_HEAD = [
   { id: 'logo', label: 'Logo', alignRight: false },
   { id: 'comments', label: 'Comments', alignRight: false },
   { id: 'attachments', label: 'Attachments', alignRight: false },
-
 ];
 
 // ----------------------------------------------------------------------
@@ -148,11 +149,16 @@ export default function Subscription() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { SubscriptionData } = useSelector((state) => state.subscription);
-  
+
   const { user } = useSelector((state) => state.login);
   const openMenu = Boolean(anchorEl);
   const openMenu2 = Boolean(anchorEl2);
 
+  React.useEffect(() => {
+    if (editData) {
+      handleClickOpen();
+    }
+  }, [editData]);
 
   React.useEffect(() => {
     GetsubsResponse()
@@ -200,7 +206,7 @@ export default function Subscription() {
   };
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage-1);
+    setPage(newPage - 1);
   };
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(event.target.value);
@@ -222,14 +228,13 @@ export default function Subscription() {
   const handleClickMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  
+
   const handleClickMenu2 = (event) => {
     setAnchorEl2(event.currentTarget);
   };
   const handleCloseMenu = () => {
     setAnchorEl(null);
     setAnchorEl2(null);
-
   };
 
   const uploadCSV = (e) => {
@@ -348,7 +353,7 @@ export default function Subscription() {
   };
   const handleDeleteMultiple = (id) => {
     setDeleteId(id);
-    console.log("multiple delete ",id);
+    console.log('multiple delete ', id);
   };
 
   console.log(filteredSubs, 'filteredSubs>>>');
@@ -373,6 +378,7 @@ export default function Subscription() {
           onRequestSort={handleRequestSort}
           headLabel={TABLE_HEAD}
           setCname={setCname}
+          cname={cname}
         />
         <Box sx={{ display: 'flex' }}>
           <Button
@@ -518,29 +524,32 @@ export default function Subscription() {
             Upload doc
           </Button>
           <StyledMenu
-              id="demo-customized-menu2"
-              MenuListProps={{
-                'aria-labelledby': 'demo-customized-button2',
-              }}
-              anchorEl={anchorEl2}
-              open={openMenu2}
-              onClose={handleCloseMenu}
-            >
-              <MenuItem disableRipple html>
-                <input type="file" accept=".csv" hidden name="kkk" id="kkk" onChange={(e) => uploadCSV(e)} />
-                <label htmlFor="kkk">Import as Comma-Separated Spreadsheet(.csv)</label>
-              </MenuItem>
-              <MenuItem disableRipple>
-                <input type="file" hidden name="kkk2" id="kkk2" />
-                <label htmlFor="kkk2" onClick={() => handleCloseMenu()}>
-                  Import as Plain Text(.TXT)
-                </label>
-              </MenuItem>
-            </StyledMenu>
+            id="demo-customized-menu2"
+            MenuListProps={{
+              'aria-labelledby': 'demo-customized-button2',
+            }}
+            anchorEl={anchorEl2}
+            open={openMenu2}
+            onClose={handleCloseMenu}
+          >
+            <MenuItem disableRipple html>
+              <input type="file" accept=".csv" hidden name="kkk" id="kkk" onChange={(e) => uploadCSV(e)} />
+              <label htmlFor="kkk">Import as Comma-Separated Spreadsheet(.csv)</label>
+            </MenuItem>
+            <MenuItem disableRipple>
+              <input type="file" hidden name="kkk2" id="kkk2" />
+              <label htmlFor="kkk2" onClick={() => handleCloseMenu()}>
+                Import as Plain Text(.TXT)
+              </label>
+            </MenuItem>
+          </StyledMenu>
         </Box>
       </Stack>
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mb: 5 }}>
-        <span style={{ width: '167px' }}>to use templates under the settings tab.</span>
+        <span style={{}}>
+          Go To Profile &gt; Settings &gt; Templates Tab to use the template of Mass Upload along with detailed
+          instructions
+        </span>
       </Box>
 
       {selected.length > 1 && (
@@ -558,13 +567,7 @@ export default function Subscription() {
           <Typography component="div" variant="subtitle1" color="#FFFFFF">
             {selected.length} selected
           </Typography>
-          {console.log("this is selected ",selected)}
-          {/* <DeleteModal
-            openDeleteModal={openDelete}
-            setOpenDelete={setOpenDelete}
-            id={selected}
-            setSelected={setSelected}
-          /> */}
+
           <Tooltip title="Delete">
             <IconButton
               onClick={() => {
@@ -602,22 +605,12 @@ export default function Subscription() {
               </TableBody>
             ) : (
               <TableBody>
-                {console.log(page * rowsPerPage,page * rowsPerPage + rowsPerPage,"num????>>")}
                 {displayData &&
                   displayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                     const isItemSelected = selected.indexOf(row._id) !== -1;
                     return (
                       // row.subscriptionName === type && (
                       <>
-                        <EditModal openEditModal={open} setOpenEditModal={setOpen} data={editData} />
-                        <DeleteModal
-                          openDeleteModal={openDelete}
-                          setOpenDelete={setOpenDelete}
-                          // id={[deleteid]}
-                          id={[deleteid]}
-                          setSelected={setSelected}
-                        />
-
                         <TableRow
                           hover
                           key={row._id}
@@ -646,7 +639,6 @@ export default function Subscription() {
                             <Button
                               onClick={(e) => {
                                 e.preventDefault();
-                                handleClickOpen(handleClickOpen);
                                 setEditData(row);
                               }}
                             >
@@ -687,11 +679,67 @@ export default function Subscription() {
                                 width: '200px',
                               }}
                             >
-                              {row.description}
+                              {row.company.description}
                             </span>
                           </TableCell>
                           <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
                             {row.frequency}
+                          </TableCell>
+                          <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                            <Rating
+                              name="simple-controlled"
+                              value={row.rating}
+                              onChange={(event, newValue) => {
+                                // setValue(newValue);
+                                ChangeRatingResponse(row._id, newValue).then((res) =>
+                                 { 
+                                  GetsubsResponse()
+                                  .then((res) => {
+                                    console.log(res.data);
+                                    if (res.data.success === true) {
+                                      dispatch(setSubscriptions({ subscriptions: res.data.data }));
+                                    }
+                                  })
+                                  console.log('This is row ==> ', res.data)
+                                }
+                                );
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
+                            <Box sx={{ display: 'flex' }}>
+                              <ThumbUpIcon
+                                sx={{ fill: row.isLiked === 1 ? 'green' : '#AAA' }}
+                                onClick={() => {
+                                  ChangeLikeResponse(row._id, 1).then((res) => {
+                                    GetsubsResponse()
+                                    .then((res) => {
+                                      console.log(res.data);
+                                      if (res.data.success === true) {
+                                        dispatch(setSubscriptions({ subscriptions: res.data.data }));
+                                      }
+                                    })
+                                    console.log('This is like ==> ', res.data);
+                                  });
+                                }}
+                              />
+                              <ThumbDownIcon
+                                sx={{ fill: row.isLiked === -1 ? 'red' : '#AAA' }}
+                                onClick={() => {
+                                  ChangeLikeResponse(row._id, -1).then((res) => {
+                                    GetsubsResponse()
+                                    .then((res) => {
+                                      console.log(res.data);
+                                      if (res.data.success === true) {
+                                        dispatch(setSubscriptions({ subscriptions: res.data.data }));
+                                      }
+                                    })
+                                    // dispatch(changeLike({id:row._id,like: -1}));
+                                    console.log('This is like ==> ', res.data);
+                                  });
+                                }}
+                              />
+                            </Box>
                           </TableCell>
                           <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
                             {row.trialDays}
@@ -709,35 +757,35 @@ export default function Subscription() {
                             {row.autoRenewal ? 'Yes' : 'No'}
                           </TableCell>
                           <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
-                            {row.website}
+                            {row.company.website}
                           </TableCell>
                           <TableCell align="left" sx={{ backgroundColor: '#FFFFFF' }}>
-                            {row.logo}
+                            <img height="30px" src={row?.company?.logo} alt="Logo" style={{ maxWidth: 'none' }} />
                           </TableCell>
                           <TableCell
-                          align="left"
-                          sx={{
-                            backgroundColor: '#FFFFFF',
-                          //   borderBottomRightRadius: '35px',
-                          //   borderTopRightRadius: '35px',
-                          }}
-                        >
-                          {row.comments}
-                        </TableCell>
-                        <TableCell
-                          align="left"
-                          sx={{
-                            backgroundColor: '#FFFFFF',
-                            borderBottomRightRadius: '35px',
-                            borderTopRightRadius: '35px',
-                          }}
-                        >
-                       { row.attachment && <a href={row.attachment}>Download</a>}
-                        </TableCell>
-                      </TableRow>
-                    </>
-                  );
-                })}
+                            align="left"
+                            sx={{
+                              backgroundColor: '#FFFFFF',
+                              //   borderBottomRightRadius: '35px',
+                              //   borderTopRightRadius: '35px',
+                            }}
+                          >
+                            {row.comments}
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            sx={{
+                              backgroundColor: '#FFFFFF',
+                              borderBottomRightRadius: '35px',
+                              borderTopRightRadius: '35px',
+                            }}
+                          >
+                            {row.attachment && <a href={row.attachment}>Download</a>}
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    );
+                  })}
                 {emptyRows > 0 && (
                   <TableRow style={{ height: 53 * emptyRows }}>
                     <TableCell colSpan={6} />
@@ -764,14 +812,21 @@ export default function Subscription() {
       </TableContainer>
 
       <Pagination
-        page={page+1}
+        page={page + 1}
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         count={Math.ceil(SubscriptionData.length / rowsPerPage)}
         onChange={handleChangePage}
       />
-     
+      <EditModal openEditModal={open} setOpenEditModal={setOpen} data={editData} />
+      <DeleteModal
+        openDeleteModal={openDelete}
+        setOpenDelete={setOpenDelete}
+        // id={[deleteid]}
+        id={[deleteid]}
+        setSelected={setSelected}
+      />
       {/* <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import {
   Box,
@@ -31,6 +31,7 @@ import { EditsubsResponse, GetsubsResponse } from '../services/Service';
 import SuccessToast from '../toast/Success';
 import { setSubscriptions } from '../slices/subscriptionSlice';
 import Scrollbar from '../components/Scrollbar';
+import Iconify from '../components/Iconify';
 
 const style = {
   position: 'absolute',
@@ -48,13 +49,13 @@ const style = {
 
 const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
   const dispatch = useDispatch();
-  const [selectedFileName, setSelectedFileName] = React.useState();
-
+  const [selectedEditFileName, setSelectedEditFileName] = useState('');
   const handleClose = () => {
     setOpenEditModal(false);
   };
 
   const validationSchema = Yup.object().shape({
+    website: Yup.string().required('Please Enter Website'),
     frequency: Yup.string().required('Please Select frequency'),
     contractStartDate: Yup.string().required('Please Select Contract Start Date'),
     amount: Yup.number().required('Please Enter Amount'),
@@ -66,20 +67,25 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
     status: Yup.string().required('Please select Status'),
   });
 
-  const initialValues = {
-    frequency: data?.frequency,
-    contractStartDate: data?.startDate,
-    nextBillingDate: data?.nextBilling,
-    amount: data?.amount,
-    autoRenewal: data?.autoRenewal ? 'true' : 'false',
-    status: `${data?.status}`,
-    comments: data?.comments,
-    description: data?.description,
-    attachment: data?.attachment,
-  };
+  const initialValues = React.memo(
+    () => ({
+      website: data?.company?.website,
+      frequency: data?.frequency,
+      contractStartDate: data?.startDate,
+      nextBillingDate: data?.nextBilling,
+      amount: data?.amount,
+      autoRenewal: data?.autoRenewal ? 'true' : 'false',
+      status: `${data?.status}`,
+      comments: data?.comments,
+      description: data?.description,
+      attachment: data?.attachment,
+      review:data?.review
+    }),
+    []
+  );
 
   const EditForm = useFormik({
-    enableReinitialize: true,
+    enableReinitialize: false,
     initialValues,
     validationSchema,
     onSubmit: (values, { resetForm }) => {
@@ -106,13 +112,36 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
     },
   });
 
+  useEffect(() => {
+    // console.log(selectedEditFileName, 'abc');
+    const formdata = {
+      website: data?.company?.website,
+      frequency: data?.frequency,
+      contractStartDate: data?.startDate,
+      nextBillingDate: data?.nextBilling,
+      amount: data?.amount,
+      autoRenewal: data?.autoRenewal ? 'true' : 'false',
+      status: `${data?.status}`,
+      comments: data?.comments,
+      description: data?.description,
+      attachment: `${data?.attachment}`.split('-').pop(),
+      review: data?.review
+    };
+    EditForm.setValues(formdata);
+  }, [data]);
+
   return (
-    <div>
+    // <div>
+    <>
       <Modal open={openEditModal} aria-labelledby="parent-modal-title" aria-describedby="parent-modal-description">
-        <Box sx={{ ...style, height: '70%', width: { xs: '100%', sm: '400px', md: '600px', lg: '800px' } }}>
+        <Box sx={{ ...style, height: '90%', width: { xs: '100%', sm: '400px', md: '600px', lg: '800px' } }}>
           <Stack direction="row" justifyContent="space-between">
             <Box>
-              <Typography variant="h4" gutterBottom sx={{ fontSize: '30px', fontWeight: 700, color: '#3D71FF' }}>
+              <Typography
+                variant="h4"
+                gutterBottom
+                sx={{ display: 'flex', alignItems: 'center', fontSize: '30px', fontWeight: 700, color: '#3D71FF' }}
+              >
                 {data.subscriptionName} Subscription
               </Typography>
               <Typography variant="h4" gutterBottom sx={{ fontSize: '15px', fontWeight: 400 }}>
@@ -129,33 +158,36 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
               <FormikProvider value={EditForm}>
                 <form onSubmit={EditForm.handleSubmit}>
                   <Grid container rowSpacing={4} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ overflowX: 'hidden' }}>
-                    <Grid item xs={12} sm={12} md={6}>
-                      <FormControl fullWidth sx={{ mt: 2 }}>
-                        <InputLabel id="select3" sx={{ color: '#B6B6B6', ml: '-14px' }}>
-                          Frequency
-                        </InputLabel>
-                        <Select
-                          labelId="select3"
-                          id="select3"
-                          name="frequency"
-                          label="Frequency"
+                    <Grid item xs={12} sm={12} md={6} sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Box>
+                        <img height={60} width={75} src={data?.company?.logo} alt="Logo" />
+                      </Box>
+                      <FormControl
+                        fullWidth
+                        sx={{ mt: 2, ml: 3 }}
+                        error={EditForm.touched.website && EditForm.errors.website}
+                      >
+                        {/* <InputLabel htmlFor="amount" sx={{ color: '#B6B6B6', ml: '-14px' }}>
+                        Website
+                      </InputLabel> */}
+                        <Field
+                          as={TextField}
+                          onWheel={(event) => {
+                            event.preventDefault();
+                          }}
+                          disabled
+                          label="Website"
+                          name="website"
                           variant="standard"
                           size="small"
-                          value={`${EditForm.values.frequency}`}
+                          value={EditForm.values.website}
                           onChange={EditForm.handleChange}
-                          sx={{
-                            '& .MuiSvgIcon-root': {
-                              color: '#0071E3',
-                            },
-                          }}
-                        >
-                          <MenuItem value={'Monthly'}>Monthly</MenuItem>
-                          <MenuItem value={'Annually'}>Annually</MenuItem>
-                          <MenuItem value={'Trial'}>Trial</MenuItem>
-                        </Select>
+                        />
+                        {/* {EditForm.touched.website && EditForm.errors.website ? (
+                        <FormHelperText>{EditForm.touched.website && EditForm.errors.website}</FormHelperText>
+                      ) : null} */}
                       </FormControl>
                     </Grid>
-
                     <Grid item xs={12} sm={12} md={6}>
                       <FormControl fullWidth sx={{ mt: 2 }} error={EditForm.touched.amount && EditForm.errors.amount}>
                         <InputLabel htmlFor="amount" sx={{ color: '#B6B6B6', ml: '-14px' }}>
@@ -245,6 +277,33 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
 
                     <Grid item xs={12} sm={12} md={6}>
                       <FormControl fullWidth>
+                        <InputLabel id="select3" sx={{ color: '#B6B6B6', ml: '-14px' }}>
+                          Frequency
+                        </InputLabel>
+                        <Select
+                          labelId="select3"
+                          id="select3"
+                          name="frequency"
+                          label="Frequency"
+                          variant="standard"
+                          size="small"
+                          value={`${EditForm.values.frequency}`}
+                          onChange={EditForm.handleChange}
+                          sx={{
+                            '& .MuiSvgIcon-root': {
+                              color: '#0071E3',
+                            },
+                          }}
+                        >
+                          <MenuItem value={'Monthly'}>Monthly</MenuItem>
+                          <MenuItem value={'Annually'}>Annually</MenuItem>
+                          <MenuItem value={'Trial'}>Trial</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+
+                    <Grid item xs={12} sm={12} md={6}>
+                      <FormControl fullWidth>
                         <InputLabel id="select4" sx={{ color: '#B6B6B6', ml: '-14px' }}>
                           Auto Renewal
                         </InputLabel>
@@ -311,46 +370,69 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
                         />
                       </FormControl>
                     </Grid>
+                    <Grid item xs={12} sm={12} md={12}>
+                      <FormControl fullWidth>
+                        <Field
+                          as={TextField}
+                          id="input1"
+                          name="review"
+                          multiline
+                          rows={3}
+                          label={<Typography sx={{ color: '#B6B6B6' }}>Review</Typography>}
+                          variant="standard"
+                          size="small"
+                          value={EditForm.values.review}
+                          onChange={EditForm.handleChange}
+                        />
+                      </FormControl>
+                    </Grid>
                   </Grid>
 
-                  <Grid>
-                    {/* <FormControl fullWidth>
-                      <Field
-                        as={Link}
-                        id="input1"
-                        name="attachment"
-                        label="Attachment"
-                        href={EditForm.values.attachment}
-                        
-                        onChange={EditForm.handleChange}
-                      >Download</Field>
-                    </FormControl> */}
 
+                  <Grid>
                     <input
                       id="contained-button-file"
                       style={{ display: 'none' }}
                       type="file"
+                      name="attachment"
                       onChange={(e) => {
-                        console.log('this is e ==> ', e.target.files.name);
-                        setSelectedFileName(e?.target?.files[0]?.name);
+                        console.log('this is e ==> ', e.target.files[0].name);
+                        const fileName = e.target.files[0].name;
                         EditForm.setFieldValue('attachment', e?.target?.files[0]);
+                        setSelectedEditFileName(fileName);
                       }}
                     />
-                    <FormLabel htmlFor="contained-button-file">
-                      <Button variant="contained" component="span" sx={{ ml: 4, mt: 2 }}>
+                    <FormLabel
+                      htmlFor="contained-button-file"
+                      sx={{ display: 'flex', alignItems: 'center', mt: '16px' }}
+                    >
+                      <Button
+                        variant="contained"
+                        component="span"
+                        sx={{
+                          fontWeight: 700,
+                          textTransform: 'none',
+                          bgcolor: '#fff',
+                          color: '#1D1D1F',
+                          borderRadius: '30px',
+                          boxShadow: '0px 4px 25px rgba(150, 150, 150, 0.15)',
+                          ':hover': { bgcolor: 'transparent' },
+                        }}
+                      >
+                        <Iconify icon="entypo:attachment" color="#3D71FF" width={20} height={20} mr={1} />
                         Attachment
                       </Button>
-                      <br />
-                      <span>{selectedFileName}dssd</span>
+                      <Box sx={{ ml: 2 }}>
+                        <span>{ EditForm.values.attachment === 'undefined'? "" : selectedEditFileName }</span>
+                      </Box>
                     </FormLabel>
                   </Grid>
-
                   <Button
                     color="primary"
                     variant="contained"
                     type="submit"
                     // disabled={!EditForm.isValid}
-                    disabled={!(EditForm.isValid && EditForm.dirty)}
+                    disabled={!EditForm.isValid || !EditForm.dirty}
                     sx={{
                       width: '170px',
                       height: '45px',
@@ -382,7 +464,7 @@ const EditModal = ({ openEditModal, setOpenEditModal, data }) => {
           </Box>
         </Box>
       </Modal>
-    </div>
+    </>
   );
 };
 

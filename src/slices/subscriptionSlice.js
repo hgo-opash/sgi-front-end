@@ -28,6 +28,6 @@ export const subscriptionSlice = createSlice({
   },
 });
 
-export const { setSubscriptions, deleteSubscription } = subscriptionSlice.actions;
+export const { setSubscriptions, deleteSubscription  } = subscriptionSlice.actions;
 
 export default subscriptionSlice.reducer;
